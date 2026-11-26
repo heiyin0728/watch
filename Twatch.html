@@ -82,10 +82,10 @@
     .v-dot.on { height: 13px; background: #FFFFFF; }
     .v-dot.on-blue { height: 13px; background: #64D2FF; }
 
-    /* OLED 純黑高對比區塊（移除多餘圓角外邊距，改用緊湊分割） */
+    /* OLED 純黑高對比區塊 */
     .oled-box {
       background: #0D0D0F; border: 1px solid #262629; border-radius: 11px;
-      padding: 3px 5px;
+      padding: 4px 5px;
     }
     .footer-bar {
       padding-top: 2px; margin-top: 2px; border-top: 1px solid #262629;
@@ -93,28 +93,39 @@
       font-size: clamp(14px, 8vw, 17px); font-weight: 900; line-height: 1.1; flex-shrink: 0;
     }
 
-    /* ================= 中控主頁：極限大字體 ================= */
+    /* ================= 中控主頁：日期・時間・星期同一行 ================= */
     .bat-strip {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1px 4px; font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; line-height: 1.05;
+      padding: 1px 4px 3px 4px; font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; line-height: 1.05;
+      border-bottom: 1px solid #1E1E22;
     }
-    .date-strip {
+    .date-time-row {
       display: flex; align-items: center; justify-content: space-between;
-      font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; color: #64D2FF; line-height: 1.08;
-      margin-top: 1px;
+      gap: 2px; padding: 5px 1px 2px 1px;
     }
-    .clock-big {
-      text-align: center; font-size: clamp(46px, 26vw, 58px); font-weight: 900;
-      line-height: 0.94; letter-spacing: -1.5px; color: #FFFFFF; margin: 2px 0 1px 0;
+    .side-date-box {
+      display: flex; align-items: center; gap: 1px;
+      font-size: clamp(16px, 9vw, 21px); font-weight: 900; color: #64D2FF;
+      line-height: 1; flex-shrink: 0;
     }
-    .clock-sec { font-size: clamp(24px, 13.5vw, 32px); color: #30D158; font-weight: 900; margin-left: 1px; }
+    .side-week-box {
+      display: flex; align-items: center; gap: 1px;
+      font-size: clamp(16px, 9vw, 21px); font-weight: 900; color: #FFD60A;
+      line-height: 1; flex-shrink: 0;
+    }
+    .clock-center {
+      font-size: clamp(32px, 18vw, 44px); font-weight: 900;
+      line-height: 0.95; letter-spacing: -1.2px; color: #FFFFFF;
+      text-align: center; flex-shrink: 0;
+    }
+    .clock-sec { font-size: clamp(16px, 9vw, 22px); color: #30D158; font-weight: 900; margin-left: 1px; }
 
     .lunar-box {
       display: flex; align-items: center; justify-content: space-between; gap: 3px;
-      padding: 3px 5px; border-color: rgba(255, 214, 10, 0.45);
+      padding: 4px 5px; border-color: rgba(255, 214, 10, 0.45);
     }
     .lunar-txt {
-      font-size: clamp(16px, 9vw, 19px); font-weight: 900; color: #FFD60A;
+      font-size: clamp(16px, 9vw, 20px); font-weight: 900; color: #FFD60A;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1;
     }
     .fest-pill {
@@ -122,10 +133,10 @@
       border-radius: 6px; flex-shrink: 0; line-height: 1.1;
     }
 
-    .weather-box { padding: 3px 5px; border-color: rgba(100, 210, 255, 0.45); }
+    .weather-box { padding: 4px 5px; border-color: rgba(100, 210, 255, 0.45); }
     .weather-top {
       display: flex; align-items: center; justify-content: space-between; gap: 3px;
-      font-size: clamp(14px, 8vw, 17px); font-weight: 900; margin-bottom: 2px; line-height: 1.05;
+      font-size: clamp(15px, 8.2vw, 18px); font-weight: 900; margin-bottom: 3px; line-height: 1.05;
     }
     .warn-pill {
       padding: 1px 5px; border-radius: 5px; background: rgba(48, 209, 88, 0.18);
@@ -135,9 +146,11 @@
     }
     .warn-pill.alert { background: #FF3B30; color: #FFFFFF; border-color: #FF6961; }
     .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; text-align: center; }
-    .w-cell { background: #000000; border: 1px solid #262629; border-radius: 8px; padding: 2px 1px; }
-    .w-val { font-size: clamp(22px, 12.5vw, 28px); font-weight: 900; line-height: 1.05; }
-    .w-unit { font-size: clamp(12px, 7vw, 15px); font-weight: 800; color: #A1A1AA; line-height: 1; }
+    .w-cell {
+      background: #000000; border: 1px solid #262629; border-radius: 8px;
+      padding: 5px 1px; display: flex; align-items: center; justify-content: center;
+    }
+    .w-val { font-size: clamp(24px, 13.5vw, 31px); font-weight: 900; line-height: 1; }
 
     /* QR Code 卡片：最大化QR尺寸 */
     .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
@@ -315,20 +328,25 @@
               </div>
             </div>
 
-            <!-- Slide 1 (預設主畫面): 零多餘留白，大字時鐘 + 精簡日期氣象 -->
+            <!-- Slide 1 (預設主畫面): 日期(左) · 時間(中) · 星期(右) 同一行 -->
             <div class="v-sec" style="justify-content:space-between;">
-              <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:3px;">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:4px;">
                 <div class="oled-box">
                   <div class="bat-strip btn" onclick="promptManualBattery()">
                     <span style="color:#30D158;" class="tabular">📱<span id="hub-phone-bat">--%</span></span>
                     <span style="color:#64D2FF;" class="tabular">⌚<span id="hub-watch-bat">--%</span></span>
                   </div>
-                  <div class="date-strip">
-                    <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:0 4px;">◀</span>
-                    <span id="hub-gregorian-date">11/26 週四</span>
-                    <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:0 4px;">▶</span>
+                  <div class="date-time-row tabular">
+                    <div class="side-date-box">
+                      <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">◀</span>
+                      <span id="hub-gregorian-date">11/26</span>
+                    </div>
+                    <div id="hub-live-time" class="clock-center">--:--<span class="clock-sec">:--</span></div>
+                    <div class="side-week-box">
+                      <span id="hub-weekday">週四</span>
+                      <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">▶</span>
+                    </div>
                   </div>
-                  <div id="hub-live-time" class="clock-big tabular">--:--<span class="clock-sec">:--</span></div>
                 </div>
 
                 <div class="oled-box lunar-box">
@@ -342,9 +360,9 @@
                     <span id="hub-weather-warning" class="warn-pill">無警告</span>
                   </div>
                   <div class="w-grid tabular">
-                    <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div><div class="w-unit">氣溫</div></div>
-                    <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div><div class="w-unit">雨mm</div></div>
-                    <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div><div class="w-unit">風力</div></div>
+                    <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div></div>
+                    <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div></div>
+                    <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div></div>
                   </div>
                 </div>
               </div>
@@ -1035,7 +1053,8 @@
 
       const dObj = parseLocalDate(targetDateStr);
       const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
-      document.getElementById('hub-gregorian-date').textContent = `${dObj.getMonth() + 1}/${dObj.getDate()} ${weekdays[dObj.getDay()]}`;
+      document.getElementById('hub-gregorian-date').textContent = `${dObj.getMonth() + 1}/${dObj.getDate()}`;
+      document.getElementById('hub-weekday').textContent = weekdays[dObj.getDay()];
 
       const { lunarText, fest } = getLunarAndFestival(dObj);
       document.getElementById('hub-lunar-date').textContent = lunarText;
@@ -1109,7 +1128,7 @@
           document.getElementById('hub-weather-temp').textContent = temp;
           document.getElementById('hub-weather-rain').textContent = rain;
           document.getElementById('hub-weather-wind').textContent = getBeaufortScale(windKmh);
-          if (manual) showToast(`${temp}C · ${rain}mm`);
+          if (manual) showToast(`${temp} · ${rain}`);
         } catch {
           if (locEl) locEl.textContent = '⚠️失敗';
         }
@@ -1573,9 +1592,13 @@
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
       if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-        if (currentHorizontalPage === 1) shiftHubDate(dx < 0 ? 1 : -1);
-        else if (currentHorizontalPage === 0 && dx < 0) goToPage(1);
-        else if (currentHorizontalPage === 2 && dx > 0) goToPage(1);
+        if (currentHorizontalPage === 1) {
+          goToPage(dx < 0 ? 2 : 0);
+        } else if (currentHorizontalPage === 0 && dx < 0) {
+          goToPage(1);
+        } else if (currentHorizontalPage === 2 && dx > 0) {
+          goToPage(1);
+        }
       }
     }, { passive: true });
 
