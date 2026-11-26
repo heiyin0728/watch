@@ -49,7 +49,7 @@
       #watch-screen { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; }
     }
 
-    /* 超薄頂部導航膠囊：僅佔 18px 高度 */
+    /* 超薄頂部導航膠囊 */
     .mini-nav {
       position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 30;
       display: flex; align-items: center; gap: 5px;
@@ -71,7 +71,7 @@
     }
     .h-page { width: 33.3333%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; background: #000000; }
 
-    /* 垂直滑動容器：極限收縮邊距，讓出最大可視寬高 */
+    /* 垂直滑動容器 */
     .v-snap { width: 100%; height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     .v-sec {
       width: 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always;
@@ -152,7 +152,7 @@
     }
     .w-val { font-size: clamp(24px, 13.5vw, 31px); font-weight: 900; line-height: 1; }
 
-    /* QR Code 卡片：最大化QR尺寸 */
+    /* QR Code 卡片 */
     .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
     .qr-card {
       background: #FFFFFF; color: #000000; border-radius: 12px; padding: 4px 2px;
@@ -161,41 +161,37 @@
     }
     .qr-card img { width: 92%; max-width: 118px; aspect-ratio: 1/1; image-rendering: pixelated; }
 
-    /* 行事曆網格：零多餘留白 */
+    /* 行事曆網格 */
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.05; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center; flex-shrink: 0; }
     .cal-cell { background: #141416; border-radius: 5px; padding: 1px 0; display: flex; flex-direction: column; align-items: center; color: #FFFFFF; border: 1px solid transparent; }
     .cal-cell.today { background: #0A84FF; font-weight: 900; }
     .cal-cell.selected { background: rgba(48,209,88,0.28); border-color: #30D158; }
 
-    /* ================= 更表名單：大字人名 + 精簡崗位 ================= */
+    /* ================= 更表名單：純淨大字人名 + 更碼（已刪除黃色字） ================= */
     .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
     .duty-subbar {
       display: flex; justify-content: space-between; font-size: clamp(14px, 8vw, 17px); font-weight: 900;
       color: #FFFFFF; background: #141416; border-radius: 8px; padding: 2px 6px; margin-bottom: 3px; line-height: 1.1;
     }
-    .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding-right: 2px; }
+    .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; }
     .staff-card {
       background: #121214; border: 1px solid #27272A; border-radius: 10px;
-      padding: 4px 6px; display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 8px; display: flex; align-items: center; justify-content: space-between;
     }
     .staff-card.me { border-color: #30D158; background: rgba(48, 209, 88, 0.2); }
     .staff-name {
-      font-size: clamp(22px, 12.5vw, 27px); font-weight: 900; color: #FFFFFF;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05;
-    }
-    .staff-post {
-      font-size: clamp(14px, 7.8vw, 16px); font-weight: 800; color: #FFD60A;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05; margin-top: 1px;
+      font-size: clamp(23px, 13vw, 28px); font-weight: 900; color: #FFFFFF;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1;
     }
     .post-badge {
-      font-size: clamp(16px, 9vw, 20px); font-weight: 900; padding: 3px 6px;
+      font-size: clamp(17px, 9.5vw, 21px); font-weight: 900; padding: 4px 7px;
       border-radius: 7px; background: #27272A; color: #FFFFFF; line-height: 1;
     }
     .post-badge.me { background: #30D158; color: #000000; }
     .post-badge.mid { background: rgba(100, 210, 255, 0.25); color: #64D2FF; border: 1px solid #64D2FF; }
 
-    /* ================= 九巴 Watch：大路線號 + 大分鐘 ================= */
+    /* ================= 九巴 Watch ================= */
     .bus-page { display: flex; flex-direction: column; padding: 19px 2px 2px 2px; background: #000000; }
     .bus-topbar { display: flex; align-items: center; justify-content: space-between; gap: 2px; padding: 2px; border-bottom: 1px solid #27272A; margin-bottom: 3px; flex-shrink: 0; }
     .bus-group-btn { background: #1C1C1E; color: #64D2FF; font-size: clamp(15px, 8.5vw, 18px); font-weight: 900; padding: 2px 7px; border-radius: 99px; border: 1px solid #3F3F46; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -489,10 +485,10 @@
     <button onclick="goToPage(2)" style="padding:6px 12px;border-radius:99px;border:none;background:#E3001B;color:#fff;font-weight:800;cursor:pointer;">九巴 Watch →</button>
   </div>
 
-  <!-- Firebase & 九巴即時到站 ETA 模組 -->
+  <!-- Firebase：九巴即時到站 ETA + 電話/Watch 雲端電量即時同步 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAwleOsALATtT61-J0QLq41LD3dKghD0aE",
@@ -502,6 +498,71 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    /* 雲端電量同步（解決 Apple Watch 無法直接讀取 iPhone 電量的問題） */
+    const batteryDocRef = doc(db, "settings", "battery_status");
+
+    function applyBatteryUI(phoneVal, watchVal) {
+      if (phoneVal !== undefined && phoneVal !== null && String(phoneVal).trim() !== '') {
+        const cleanP = String(phoneVal).replace('%', '').trim();
+        localStorage.setItem('hub_phone_bat', cleanP);
+        const pEl = document.getElementById('hub-phone-bat');
+        if (pEl) pEl.textContent = `${cleanP}%`;
+      }
+      if (watchVal !== undefined && watchVal !== null && String(watchVal).trim() !== '') {
+        const cleanW = String(watchVal).replace('%', '').trim();
+        localStorage.setItem('hub_watch_bat', cleanW);
+        const wEl = document.getElementById('hub-watch-bat');
+        if (wEl) wEl.textContent = `${cleanW}%`;
+      }
+    }
+
+    // 即時監聽 Firestore 中的電量紀錄，iPhone 捷徑或任何裝置更新後 Watch 立即同步
+    onSnapshot(batteryDocRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        applyBatteryUI(data.phone, data.watch);
+      }
+    });
+
+    // 支援 URL 參數自動寫入雲端（例如 iPhone 捷徑開啟 ?phone=85 時自動同步給 Watch）
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlPhone = urlParams.get('phoneBat') || urlParams.get('phone');
+    const urlWatch = urlParams.get('watchBat') || urlParams.get('watch');
+    if (urlPhone || urlWatch) {
+      const payload = { updatedAt: Timestamp.now() };
+      if (urlPhone) payload.phone = String(urlPhone).replace('%', '').trim();
+      if (urlWatch) payload.watch = String(urlWatch).replace('%', '').trim();
+      applyBatteryUI(payload.phone, payload.watch);
+      setDoc(batteryDocRef, payload, { merge: true }).catch(() => {});
+    }
+
+    // 同時嘗試讀取瀏覽器原生 Battery API（如支援則自動寫入）
+    if (navigator.getBattery) {
+      navigator.getBattery().then((bat) => {
+        const isMobile = /iPhone|Android/i.test(navigator.userAgent);
+        const updateNativeBat = () => {
+          const pct = Math.round(bat.level * 100);
+          if (isMobile) {
+            applyBatteryUI(pct, null);
+            setDoc(batteryDocRef, { phone: String(pct), updatedAt: Timestamp.now() }, { merge: true }).catch(() => {});
+          }
+        };
+        updateNativeBat();
+        bat.addEventListener('levelchange', updateNativeBat);
+      }).catch(() => {});
+    }
+
+    // 暴露給手動設定電量視窗同步寫入雲端
+    window.saveBatteryToCloud = async (phoneVal, watchVal) => {
+      const payload = { updatedAt: Timestamp.now() };
+      if (phoneVal) payload.phone = String(phoneVal).replace('%', '').trim();
+      if (watchVal) payload.watch = String(watchVal).replace('%', '').trim();
+      applyBatteryUI(payload.phone, payload.watch);
+      try {
+        await setDoc(batteryDocRef, payload, { merge: true });
+      } catch {}
+    };
 
     const PASS_COST = 834;
     let savedRoutes = [];
@@ -783,23 +844,10 @@
       N: { code: 'N', label: 'N更', time: '22:30-07:18', next: 'A', color: '#64D2FF' }
     };
 
-    /* 精簡崗位標籤：字數越少，字體越能放大 */
-    const POST_DETAILS = {
-      'Aa': { post: 'A區主崗', order: 1 },
-      'Ac': { post: 'C區 · 07:00', order: 2 },
-      'Ad': { post: 'D區 · 07:00', order: 3 },
-      'Ae': { post: 'E區/G1', order: 4 },
-      '11-8': { post: '中更 11:15', order: 5 },
-      '11/8': { post: '中更 11:15', order: 5 },
-      '9-6': { post: '中更 09:00', order: 6 },
-      '9/5': { post: '中更 09:00', order: 6 },
-      'Pa': { post: 'P區主崗', order: 1 },
-      'Ec': { post: 'C區 · 14:15', order: 2 },
-      'Pe': { post: 'E區 · 13:45', order: 3 },
-      'Ed': { post: 'D區 · 14:15', order: 4 },
-      'Pu': { post: '支援/替假', order: 5 },
-      'Na': { post: '夜更主區', order: 1 },
-      'Ne': { post: '夜更E區', order: 2 }
+    const POST_ORDERS = {
+      'Aa': 1, 'Ac': 2, 'Ad': 3, 'Ae': 4, '11-8': 5, '11/8': 5, '9-6': 6, '9/5': 6,
+      'Pa': 1, 'Ec': 2, 'Pe': 3, 'Ed': 4, 'Pu': 5,
+      'Na': 1, 'Ne': 2
     };
 
     const MASTER_21_ROTATION = [
@@ -1146,12 +1194,6 @@
     }
 
     function initBatteryMonitor() {
-      const params = new URLSearchParams(window.location.search);
-      const pUrl = params.get('phoneBat') || params.get('phone');
-      const wUrl = params.get('watchBat') || params.get('watch');
-      if (pUrl) localStorage.setItem('hub_phone_bat', pUrl.trim());
-      if (wUrl) localStorage.setItem('hub_watch_bat', wUrl.trim());
-
       const savedPhone = localStorage.getItem('hub_phone_bat');
       const savedWatch = localStorage.getItem('hub_watch_bat');
       if (savedPhone) document.getElementById('hub-phone-bat').textContent = `${savedPhone}%`;
@@ -1164,9 +1206,15 @@
       const input = prompt('輸入「電話電量,Watch電量」(例如 85,92)：', `${curP},${curW}`);
       if (!input) return;
       const [p, w] = input.split(',').map(s => s.trim().replace('%', ''));
-      if (p && !isNaN(Number(p))) { localStorage.setItem('hub_phone_bat', p); document.getElementById('hub-phone-bat').textContent = `${p}%`; }
-      if (w && !isNaN(Number(w))) { localStorage.setItem('hub_watch_bat', w); document.getElementById('hub-watch-bat').textContent = `${w}%`; }
-      showToast('已更新電量');
+      const validP = (p && !isNaN(Number(p))) ? p : null;
+      const validW = (w && !isNaN(Number(w))) ? w : null;
+      if (window.saveBatteryToCloud) {
+        window.saveBatteryToCloud(validP, validW);
+      } else {
+        if (validP) { localStorage.setItem('hub_phone_bat', validP); document.getElementById('hub-phone-bat').textContent = `${validP}%`; }
+        if (validW) { localStorage.setItem('hub_watch_bat', validW); document.getElementById('hub-watch-bat').textContent = `${validW}%`; }
+      }
+      showToast('已同步電量');
     }
 
     function renderLoginQrCodes() {
@@ -1407,9 +1455,9 @@
         const raw = item.code;
         if (raw.startsWith('[') && raw.endsWith(']')) continue;
         if (shiftCode === 'A' && ['Aa','Ac','Ad','Ae','9-6','9/5','11-8','11/8'].includes(raw)) {
-          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED', order: POST_DETAILS[raw]?.order || 99 });
+          result.push({ name: item.name, code: raw, order: POST_ORDERS[raw] || 99 });
         } else if (shiftCode === 'P' && ['Pa','Ec','Pe','Ed','Pu','11-8','11/8'].includes(raw)) {
-          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED', order: POST_DETAILS[raw]?.order || 99 });
+          result.push({ name: item.name, code: raw, order: POST_ORDERS[raw] || 99 });
         }
       }
       return result.sort((a, b) => a.order - b.order);
@@ -1420,7 +1468,7 @@
         const nextDay = addDays(dateStr, 1);
         return getRosterForDate(nextDay)
           .filter(x => !x.code.startsWith('[') && (x.code === 'Na' || x.code === 'Ne'))
-          .map(x => ({ name: x.name, code: x.code, post: POST_DETAILS[x.code]?.post || '夜更', order: POST_DETAILS[x.code]?.order || 99 }))
+          .map(x => ({ name: x.name, code: x.code, order: POST_ORDERS[x.code] || 99 }))
           .sort((a, b) => a.order - b.order);
       }
       return classifyStaffByShift(dateStr, shiftCode);
@@ -1491,7 +1539,6 @@
           <div class="${cardCls}">
             <div style="min-width:0;">
               <div class="staff-name">${escapeHtmlDuty(person.name)}</div>
-              <div class="staff-post">${escapeHtmlDuty(person.post)}</div>
             </div>
             <div style="flex-shrink:0;margin-left:4px;"><span class="${badgeCls}">${badgeTxt}</span></div>
           </div>
