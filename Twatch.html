@@ -1,101 +1,66 @@
 <!DOCTYPE html>
-<html lang="zh-HK" class="dark">
+<html lang="zh-HK">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <title>QEH AED Watch 中控台 · 更表 · 九巴 ETA</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', '"Noto Sans TC"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-          },
-          colors: {
-            watchBg: '#000000',
-            watchCard: '#1C1C1E',
-            watchCardHover: '#2C2C2E',
-            kmbRed: '#E3001B',
-            aedTeal: '#30D158',
-            aedBlue: '#0A84FF',
-            aedAmber: '#FF9F0A',
-          }
-        }
-      }
-    };
-  </script>
-
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation; }
     html, body {
-      margin: 0; padding: 0; width: 100%; height: 100%;
+      width: 100%; height: 100%;
       background-color: #000000; color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Noto Sans TC', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang HK", "Noto Sans TC", sans-serif;
       overflow: hidden;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .kmb-red { background-color: #E3001B; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .btn { transition: transform 0.12s ease, opacity 0.12s ease; cursor: pointer; }
+    .btn:active { transform: scale(0.95); opacity: 0.85; }
 
-    /* watch_4.html 巴士字體與自適應尺寸 */
-    .w-route-badge { font-size: 17px; min-width: 42px; }
-    .w-dest-text { font-size: 15px; }
-    .w-stop-text { font-size: 12px; }
-    .w-eta-text { font-size: 17px; }
-    .w-eta-nobus { font-size: 14px; }
-    .w-fare-btn { font-size: 14px; }
-
-    @media (min-width: 240px) {
-      .w-route-badge { font-size: 19px; min-width: 48px; }
-      .w-dest-text { font-size: 17px; }
-      .w-stop-text { font-size: 14px; }
-      .w-eta-text { font-size: 19px; }
-      .w-eta-nobus { font-size: 15px; }
-      .w-fare-btn { font-size: 16px; }
-    }
-
+    /* 桌面預覽外框 */
     @media (min-width: 460px) {
       body {
         background: radial-gradient(circle at 50% 35%, #1c1e24 0%, #090a0d 100%);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
       }
       #watch-bezel {
-        position: relative; width: 318px; height: 388px; border-radius: 68px;
+        position: relative; width: 340px; height: 416px; border-radius: 72px;
         background: linear-gradient(145deg, #3a3d45, #18191d); padding: 14px;
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85), inset 0 2px 4px rgba(255, 255, 255, 0.25), inset 0 -3px 6px rgba(0, 0, 0, 0.8);
         display: flex; align-items: center; justify-content: center;
       }
       #digital-crown {
-        display: block !important; position: absolute; right: -11px; top: 84px; width: 11px; height: 54px;
-        background: linear-gradient(to right, #2c2e33, #4a4d55, #222428); border-radius: 0 6px 6px 0;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); cursor: pointer;
+        display: block !important; position: absolute; right: -11px; top: 88px; width: 11px; height: 56px;
+        background: linear-gradient(to right, #2c2e33, #4a4d55, #222428); border-radius: 0 6px 6px 0; cursor: pointer;
       }
       #side-button {
-        display: block !important; position: absolute; right: -7px; top: 162px; width: 7px; height: 76px;
+        display: block !important; position: absolute; right: -7px; top: 168px; width: 7px; height: 78px;
         background: linear-gradient(to right, #26282c, #3e4148); border-radius: 0 4px 4px 0; cursor: pointer;
       }
-      #watch-screen {
-        width: 100%; height: 100%; border-radius: 54px; overflow: hidden;
-        background-color: #000000; position: relative; box-shadow: inset 0 0 0 2px #000000;
-      }
-      #desktop-helper { display: flex !important; }
+      #watch-screen { width: 100%; height: 100%; border-radius: 58px; overflow: hidden; background: #000; position: relative; }
+      #desktop-helper { display: flex !important; margin-top: 16px; gap: 8px; }
     }
-
     @media (max-width: 459px) {
       #watch-bezel { width: 100vw; height: 100dvh; }
-      #watch-screen { width: 100%; height: 100%; background-color: #000000; position: relative; overflow: hidden; }
+      #watch-screen { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; }
     }
 
-    /* 三頁水平軌道：0 = 更表, 1 = 中控時鐘資訊(預設), 2 = 九巴 Watch */
+    /* 精簡迷你頁面指示膠囊（不佔高度、不遮擋內容） */
+    .mini-nav {
+      position: absolute; top: 2px; left: 50%; transform: translateX(-50%); z-index: 30;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(28, 28, 30, 0.82); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 99px; padding: 2px 10px; font-size: 12px; font-weight: 900; color: #fff;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
+    .dot.active-duty { width: 13px; background: #30D158; }
+    .dot.active-hub { width: 13px; background: #0A84FF; }
+    .dot.active-bus { width: 13px; background: #E3001B; }
+
+    /* 水平三頁軌道 */
     #horizontal-track {
       display: flex; width: 300%; height: 100%;
       transform: translateX(-33.3333%);
@@ -104,388 +69,367 @@
     }
     .h-page { width: 33.3333%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; }
 
-    .v-snap-container {
-      width: 100%; height: 100%; overflow-y: auto;
-      scroll-snap-type: y mandatory; scroll-behavior: smooth;
-    }
-    .v-section {
+    /* 垂直滑動容器（頂部只留 22px 給迷你膠囊，最大化可視空間） */
+    .v-snap { width: 100%; height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    .v-sec {
       width: 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always;
-      display: flex; flex-direction: column; padding: 34px 10px 8px 10px;
+      display: flex; flex-direction: column; padding: 24px 6px 6px 6px;
     }
-    .watch-btn:active { transform: scale(0.95); opacity: 0.85; }
-    .watch-btn { transition: transform 0.12s ease, opacity 0.12s ease, background-color 0.15s ease; }
+    .v-dots { position: absolute; right: 3px; top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+    .v-dot { width: 4px; height: 7px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
+    .v-dot.on { height: 14px; background: #fff; }
+    .v-dot.on-blue { height: 14px; background: #0A84FF; }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    /* 通用卡片與大字體頁尾 */
+    .card { background: #1C1C1E; border: 1px solid rgba(255,255,255,0.11); border-radius: 16px; }
+    .footer-bar {
+      padding-top: 4px; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 900;
+      flex-shrink: 0;
     }
-    .live-dot { animation: pulseDot 2s infinite; }
-    .qr-box img, .qr-box canvas { display: block; margin: 0 auto; image-rendering: pixelated; }
+
+    /* 中控主頁大字體樣式 */
+    .bat-strip {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 3px 8px; margin-bottom: 4px; font-size: 15px; font-weight: 900;
+    }
+    .date-strip { display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 800; color: #7dd3fc; }
+    .clock-big { text-align: center; font-size: 42px; font-weight: 900; line-height: 1.02; margin-top: 2px; letter-spacing: -1px; }
+    .clock-sec { font-size: 24px; color: #30D158; font-weight: 900; margin-left: 2px; }
+    .lunar-box {
+      padding: 6px 8px; border-color: rgba(245,158,11,0.35);
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    }
+    .fest-pill { font-size: 14px; font-weight: 900; padding: 2px 8px; border-radius: 8px; flex-shrink: 0; }
+    .weather-box { padding: 6px 8px; border-color: rgba(14,165,233,0.35); }
+    .weather-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 14px; font-weight: 800; margin-bottom: 5px; }
+    .warn-pill { padding: 2px 7px; border-radius: 7px; background: rgba(16,185,129,0.18); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+    .warn-pill.alert { background: #dc2626; color: #fff; border-color: #f87171; font-weight: 900; }
+    .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; text-align: center; }
+    .w-cell { background: rgba(0,0,0,0.5); border-radius: 10px; padding: 4px 2px; }
+    .w-label { font-size: 13px; color: #a1a1aa; font-weight: 700; line-height: 1.1; }
+    .w-val { font-size: 21px; font-weight: 900; line-height: 1.15; margin-top: 1px; }
+
+    /* QR Code 卡片 */
+    .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: center; }
+    .qr-card {
+      background: #fff; color: #000; border-radius: 16px; padding: 8px 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      height: 100%; max-height: 240px;
+    }
+    .qr-card img { width: 104px; height: 104px; image-rendering: pixelated; }
+
+    /* 行事曆網格（大字體） */
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; flex-shrink: 0; }
+    .cal-cell { background: rgba(28,28,30,0.95); border-radius: 7px; padding: 2px 0; display: flex; flex-direction: column; align-items: center; color: #fff; border: 1px solid transparent; }
+    .cal-cell.today { background: #0A84FF; font-weight: 900; }
+    .cal-cell.selected { background: rgba(48,209,88,0.25); border-color: #30D158; }
+
+    /* 更表名單大字體樣式 */
+    .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .duty-subbar { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #e4e4e7; background: rgba(28,28,30,0.85); border-radius: 10px; padding: 4px 8px; margin-bottom: 5px; }
+    .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+    .staff-card { background: #1C1C1E; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; }
+    .staff-card.me { border-color: rgba(48,209,88,0.75); background: rgba(48,209,88,0.18); }
+    .post-badge { font-size: 15px; font-weight: 900; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.14); color: #fff; }
+    .post-badge.me { background: #30D158; color: #000; font-weight: 900; }
+    .post-badge.mid { background: rgba(6,182,212,0.25); color: #67e8f9; border: 1px solid rgba(6,182,212,0.4); }
+
+    /* 九巴 Watch 大字體樣式 */
+    .bus-page { display: flex; flex-direction: column; padding: 24px 4px 6px 4px; background: #000; }
+    .bus-topbar { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 4px; border-bottom: 1px solid #27272a; margin-bottom: 4px; flex-shrink: 0; }
+    .bus-group-btn { background: #27272a; color: #7dd3fc; font-size: 15px; font-weight: 900; padding: 4px 9px; border-radius: 99px; border: none; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bus-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; transition: transform 0.15s; }
+    .bus-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 6px 6px; border-radius: 13px; background: #18181b; border: 1px solid #27272a; }
+    .kmb-badge { background: #E3001B; color: #fff; font-size: 20px; font-weight: 900; min-width: 50px; padding: 5px 4px; border-radius: 9px; text-align: center; line-height: 1; flex-shrink: 0; }
+    .fare-btn { background: #059669; color: #fff; font-size: 16px; font-weight: 900; padding: 8px 7px; border-radius: 9px; border: none; line-height: 1; flex-shrink: 0; }
+
+    /* 彈窗與提示 */
+    .modal-overlay { position: absolute; inset: 0; z-index: 40; background: rgba(0,0,0,0.96); display: none; flex-direction: column; padding: 26px 10px 10px 10px; }
+    .modal-overlay.show { display: flex; }
+    .qr-zoom { position: absolute; inset: 0; z-index: 50; background: #fff; color: #000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
+    .qr-zoom.show { display: flex; }
+    #watch-toast {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 60;
+      background: rgba(44,44,46,0.96); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 14px; font-weight: 800; padding: 6px 14px; border-radius: 99px;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap;
+    }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .live-dot { width: 7px; height: 7px; border-radius: 99px; background: #34d399; animation: pulseDot 2s infinite; display: inline-block; }
   </style>
 </head>
 <body>
-
   <div id="watch-bezel">
     <div id="digital-crown" title="按此返回中控主頁" onclick="goToPage(1)"></div>
     <div id="side-button" title="按此切換頁面" onclick="cycleHorizontalPage()"></div>
 
     <div id="watch-screen">
-      <!-- Top Status Bar -->
-      <header class="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-3.5 pt-2 pb-1 bg-gradient-to-b from-black via-black/95 to-transparent pointer-events-auto">
-        <button onclick="cycleHorizontalPage()" class="watch-btn flex items-center gap-1 bg-[#1C1C1E]/95 border border-white/10 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-tight">
-          <span id="dot-duty" class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all"></span>
-          <span id="dot-hub" class="w-2.5 h-1.5 rounded-full bg-[#0A84FF] transition-all"></span>
-          <span id="dot-bus" class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all"></span>
-          <span id="top-page-label" class="text-white/90 ml-0.5">主頁</span>
-        </button>
-
-        <div class="flex items-center gap-1.5">
-          <span id="sync-dot" class="w-1.5 h-1.5 rounded-full bg-[#30D158]" title="資料狀態"></span>
-          <div id="watch-clock" class="text-[12px] font-extrabold tracking-tight text-white tabular-nums">--:--</div>
-        </div>
-      </header>
+      <!-- 精簡迷你分頁膠囊（不佔高度、不遮擋畫面） -->
+      <button onclick="cycleHorizontalPage()" class="mini-nav btn">
+        <span id="dot-duty" class="dot"></span>
+        <span id="dot-hub" class="dot active-hub"></span>
+        <span id="dot-bus" class="dot"></span>
+        <span id="top-page-label">主頁</span>
+        <span id="sync-dot" style="width:6px;height:6px;border-radius:99px;background:#30D158;margin-left:2px;"></span>
+      </button>
 
       <div id="horizontal-track">
         <!-- ============================================================== -->
-        <!-- PAGE 0 (左): QEH AED DUTY SYSTEM (更表)                         -->
+        <!-- PAGE 0 (左): QEH AED 21人更表                                   -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-duty">
-          <div id="vertical-snap" class="v-snap-container no-scrollbar">
-
-            <!-- SLIDE 1: 當更同事 -->
-            <div class="v-section" id="slide-current">
-              <div class="flex items-center justify-between mb-1 px-0.5">
+          <div id="vertical-snap" class="v-snap no-scrollbar">
+            <!-- 當更同事 -->
+            <div class="v-sec">
+              <div class="duty-header">
                 <div>
-                  <div class="flex items-center gap-1">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#30D158]">QEH AED</span>
-                    <button onclick="shiftTargetDate(-1)" class="watch-btn px-1 text-[10px] text-white/60">◀</button>
-                    <span class="text-[10px] font-bold text-white/90" id="current-date-str">11/26</span>
-                    <button onclick="shiftTargetDate(1)" class="watch-btn px-1 text-[10px] text-white/60">▶</button>
+                  <div style="display:flex;align-items:center;gap:4px;font-size:14px;font-weight:900;">
+                    <span class="btn" onclick="shiftTargetDate(-1)" style="color:#9ca3af;padding:0 4px;">◀</span>
+                    <span id="current-date-str">11/26</span>
+                    <span class="btn" onclick="shiftTargetDate(1)" style="color:#9ca3af;padding:0 4px;">▶</span>
+                    <span id="current-shift-badge" style="font-size:13px;padding:1px 6px;border-radius:6px;border:1px solid #30D158;">P更</span>
                   </div>
-                  <h1 class="text-[15px] font-black leading-tight text-white flex items-center gap-1.5">
-                    當更同事
-                    <span id="current-shift-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#30D158]/20 text-[#30D158] border border-[#30D158]/30">P更</span>
-                  </h1>
                 </div>
-
-                <button onclick="openSettingsModal()" aria-label="設定更表" class="watch-btn w-7 h-7 rounded-full bg-[#1C1C1E] border border-white/10 flex items-center justify-center text-white/80">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </button>
+                <button onclick="openSettingsModal()" class="btn" style="width:32px;height:32px;border-radius:99px;background:#1C1C1E;border:1px solid rgba(255,255,255,0.16);color:#fff;font-size:16px;">⚙</button>
               </div>
 
-              <div class="flex items-center justify-between text-[10px] text-white/60 bg-[#1C1C1E]/70 rounded-lg px-2 py-1 mb-1.5">
-                <span id="current-shift-time">13:45 - 23:03</span>
-                <span id="current-headcount" class="font-bold text-white/80">0 人當值</span>
+              <div class="duty-subbar">
+                <span id="current-shift-time">13:45-23:03</span>
+                <span id="current-headcount" style="color:#30D158;">0 人</span>
               </div>
 
-              <div id="current-staff-list" class="flex-1 overflow-y-auto no-scrollbar space-y-1.5 pr-2"></div>
+              <div id="current-staff-list" class="staff-list no-scrollbar"></div>
 
-              <div class="pt-1.5 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-semibold text-white/60">
-                <button onclick="scrollToShift(1)" class="watch-btn flex items-center gap-0.5 text-[#0A84FF]">
-                  <span>↓ 下更同事</span>
-                </button>
-                <button onclick="goToPage(1)" class="watch-btn flex items-center gap-0.5 text-[#30D158]">
-                  <span>主頁 →</span>
-                </button>
+              <div class="footer-bar">
+                <span onclick="scrollToShift(1)" class="btn" style="color:#0A84FF;">↓ 下更同事</span>
+                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁 →</span>
               </div>
             </div>
 
-            <!-- SLIDE 2: 下更同事 -->
-            <div class="v-section" id="slide-next">
-              <div class="flex items-center justify-between mb-1 px-0.5">
+            <!-- 下更同事 -->
+            <div class="v-sec">
+              <div class="duty-header">
                 <div>
-                  <div class="flex items-center gap-1">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#0A84FF]">QEH AED</span>
-                    <span class="text-[9px] text-white/50" id="next-date-hint">接更預覽</span>
+                  <div style="display:flex;align-items:center;gap:5px;font-size:15px;font-weight:900;">
+                    <span>下更</span>
+                    <span id="next-shift-badge" style="font-size:13px;padding:1px 6px;border-radius:6px;border:1px solid #0A84FF;">N更</span>
+                    <span id="next-date-hint" style="color:#9ca3af;font-size:12px;">接更</span>
                   </div>
-                  <h1 class="text-[15px] font-black leading-tight text-white flex items-center gap-1.5">
-                    下更同事
-                    <span id="next-shift-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#0A84FF]/20 text-[#0A84FF] border border-[#0A84FF]/30">N更</span>
-                  </h1>
                 </div>
-
-                <button onclick="scrollToShift(0)" aria-label="返回當更" class="watch-btn w-7 h-7 rounded-full bg-[#1C1C1E] border border-white/10 flex items-center justify-center text-[#30D158]">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                  </svg>
-                </button>
+                <button onclick="scrollToShift(0)" class="btn" style="width:32px;height:32px;border-radius:99px;background:#1C1C1E;border:1px solid rgba(255,255,255,0.16);color:#30D158;font-size:16px;">↑</button>
               </div>
 
-              <div class="flex items-center justify-between text-[10px] text-white/60 bg-[#1C1C1E]/70 rounded-lg px-2 py-1 mb-1.5">
-                <span id="next-shift-time">22:30 - 07:18</span>
-                <span id="next-headcount" class="font-bold text-white/80">0 人接更</span>
+              <div class="duty-subbar">
+                <span id="next-shift-time">22:30-07:18</span>
+                <span id="next-headcount" style="color:#38bdf8;">0 人</span>
               </div>
 
-              <div id="next-staff-list" class="flex-1 overflow-y-auto no-scrollbar space-y-1.5 pr-2"></div>
+              <div id="next-staff-list" class="staff-list no-scrollbar"></div>
 
-              <div class="pt-1.5 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-semibold text-white/60">
-                <button onclick="scrollToShift(0)" class="watch-btn flex items-center gap-0.5 text-[#30D158]">
-                  <span>↑ 返回當更</span>
-                </button>
-                <button onclick="goToPage(1)" class="watch-btn flex items-center gap-0.5 text-[#30D158]">
-                  <span>主頁 →</span>
-                </button>
+              <div class="footer-bar">
+                <span onclick="scrollToShift(0)" class="btn" style="color:#30D158;">↑ 返回當更</span>
+                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁 →</span>
               </div>
             </div>
           </div>
 
-          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1.5 pointer-events-none">
-            <span id="v-dot-0" class="w-1 h-3 rounded-full bg-white transition-all duration-200"></span>
-            <span id="v-dot-1" class="w-1 h-1.5 rounded-full bg-white/30 transition-all duration-200"></span>
+          <div class="v-dots">
+            <span id="v-dot-0" class="v-dot on"></span>
+            <span id="v-dot-1" class="v-dot"></span>
           </div>
         </section>
 
         <!-- ============================================================== -->
-        <!-- PAGE 1 (中 - 中控主頁):                                        -->
-        <!-- 上層(Slide 0): 兩張登入 QR Code (Mail & CMS)                    -->
-        <!-- 中層(Slide 1 - 預設): 電量+時間 / 農曆生肖節日 / 天氣+警告        -->
-        <!-- 下層(Slide 2): 行事曆 + iOS 日曆匯入當日行程                     -->
+        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:電量時鐘氣象 / 下:行事曆)   -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-hub">
-          <div id="hub-vertical-snap" class="v-snap-container no-scrollbar">
+          <div id="hub-vertical-snap" class="v-snap no-scrollbar">
 
-            <!-- HUB TOP SLIDE (Index 0 - 向上滑動進入): 兩張登入 QR Code 圖片 (Mail & CMS) -->
-            <div class="v-section" id="hub-slide-qr">
-              <div class="flex items-center justify-between mb-1 px-0.5">
-                <span class="text-[11px] font-black text-amber-300">🔐 快捷登入 QR Code</span>
-                <button onclick="scrollHubSlide(1)" class="watch-btn text-[10px] font-bold text-[#0A84FF] bg-[#1C1C1E] px-2 py-0.5 rounded-full">↓ 返回主頁</button>
+            <!-- Slide 0 (向上滑動): 兩張登入 QR Code (Mail & CMS) -->
+            <div class="v-sec">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                <span style="font-size:15px;font-weight:900;color:#fcd34d;">🔐 登入 QR</span>
+                <button onclick="scrollHubSlide(1)" class="btn" style="font-size:13px;font-weight:800;color:#0A84FF;background:#1C1C1E;border:none;padding:3px 9px;border-radius:99px;">↓ 主頁</button>
               </div>
-
-              <div class="flex-1 grid grid-cols-2 gap-1.5 items-center">
-                <div onclick="openQrZoom('MAIL')" class="watch-btn bg-white text-black rounded-2xl p-1.5 flex flex-col items-center justify-between h-full max-h-[235px] shadow-lg cursor-pointer">
-                  <div class="text-[15px] font-black tracking-tight leading-none pt-0.5">Mail</div>
-                  <div id="qr-card-mail" class="qr-box my-auto"></div>
-                  <div class="text-[9px] font-bold text-zinc-500">點擊放大</div>
+              <div class="qr-grid">
+                <div onclick="openQrZoom('MAIL')" class="qr-card btn">
+                  <div style="font-size:20px;font-weight:900;">Mail</div>
+                  <img id="qr-img-mail" alt="Mail QR" />
+                  <div style="font-size:12px;font-weight:800;color:#52525b;">點擊放大</div>
                 </div>
-
-                <div onclick="openQrZoom('CMS')" class="watch-btn bg-white text-black rounded-2xl p-1.5 flex flex-col items-center justify-between h-full max-h-[235px] shadow-lg cursor-pointer">
-                  <div class="text-[15px] font-black tracking-tight leading-none pt-0.5">CMS</div>
-                  <div id="qr-card-cms" class="qr-box my-auto"></div>
-                  <div class="text-[9px] font-bold text-zinc-500">點擊放大</div>
+                <div onclick="openQrZoom('CMS')" class="qr-card btn">
+                  <div style="font-size:20px;font-weight:900;">CMS</div>
+                  <img id="qr-img-cms" alt="CMS QR" />
+                  <div style="font-size:12px;font-weight:800;color:#52525b;">點擊放大</div>
                 </div>
               </div>
-
-              <div class="pt-1 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-bold text-white/60">
-                <span>點擊卡片全螢幕掃描</span>
-                <button onclick="scrollHubSlide(1)" class="watch-btn text-emerald-400">↓ 返回主頁</button>
+              <div class="footer-bar" style="color:#a1a1aa;">
+                <span>點擊放大掃描</span>
+                <span onclick="scrollHubSlide(1)" class="btn" style="color:#34d399;">↓ 主頁</span>
               </div>
             </div>
 
-            <!-- HUB CENTER SLIDE (Index 1 - 預設主畫面): 電量置頂 + 時間 + 農曆生肖節日 + 天氣警告 -->
-            <div class="v-section justify-between" id="hub-slide-main">
-              <div class="space-y-1.5 flex-1 flex flex-col justify-center">
-
-                <!-- 頂部電量列 + 年月日星期 + 24小時制時間與秒數 -->
-                <div class="bg-[#1C1C1E] border border-white/10 rounded-2xl px-2.5 py-1.5">
-                  <!-- 電量置於時間上方 -->
-                  <div onclick="promptManualBattery()" class="watch-btn flex items-center justify-between bg-black/50 rounded-xl px-2 py-0.5 mb-1 cursor-pointer border border-white/5">
-                    <span class="text-[10px] font-extrabold text-emerald-400 tabular-nums">
-                      📱 <span id="hub-phone-bat">--%</span>
-                    </span>
-                    <span class="text-[9px] text-white/35">電量同步</span>
-                    <span class="text-[10px] font-extrabold text-sky-400 tabular-nums">
-                      ⌚ <span id="hub-watch-bat">--%</span>
-                    </span>
+            <!-- Slide 1 (預設主畫面): 電量置頂 + 特大時鐘 + 農曆生肖節日 + 氣象警告 -->
+            <div class="v-sec" style="justify-content:space-between;">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px;">
+                <div class="card" style="padding:6px 8px;">
+                  <div class="bat-strip btn" onclick="promptManualBattery()">
+                    <span style="color:#34d399;" class="tabular">📱<span id="hub-phone-bat">--%</span></span>
+                    <span style="font-size:12px;color:#9ca3af;">電量</span>
+                    <span style="color:#38bdf8;" class="tabular">⌚<span id="hub-watch-bat">--%</span></span>
                   </div>
-
-                  <!-- 年月日星期 -->
-                  <div class="flex items-center justify-between text-[11px] font-bold text-sky-300">
-                    <button onclick="shiftHubDate(-1)" class="watch-btn px-1 text-white/50">◀</button>
-                    <span id="hub-gregorian-date">2026年11月26日 星期四</span>
-                    <button onclick="shiftHubDate(1)" class="watch-btn px-1 text-white/50">▶</button>
+                  <div class="date-strip">
+                    <span onclick="shiftHubDate(-1)" class="btn" style="color:#9ca3af;padding:0 4px;">◀</span>
+                    <span id="hub-gregorian-date">11月26日 星期四</span>
+                    <span onclick="shiftHubDate(1)" class="btn" style="color:#9ca3af;padding:0 4px;">▶</span>
                   </div>
-
-                  <!-- 24小時制時分秒 -->
-                  <div id="hub-live-time" class="text-center text-[27px] font-black tracking-tight text-white leading-none mt-0.5 tabular-nums">
-                    --:--<span class="text-[16px] text-[#30D158] font-extrabold ml-0.5">:--</span>
-                  </div>
+                  <div id="hub-live-time" class="clock-big tabular">--:--<span class="clock-sec">:--</span></div>
                 </div>
 
-                <!-- 農曆 丙午年（馬年）十月十八日 與節日 -->
-                <div class="bg-[#1C1C1E] border border-amber-500/25 rounded-2xl px-2.5 py-1.5 flex items-center justify-between gap-1">
-                  <div class="min-w-0">
-                    <div id="hub-lunar-date" class="text-[11.5px] font-extrabold text-amber-200 truncate">農曆 丙午年（馬年）十月十八日</div>
-                  </div>
-                  <span id="hub-festival-badge" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 flex-shrink-0">
-                    平日
-                  </span>
+                <div class="card lunar-box">
+                  <span id="hub-lunar-date" style="font-size:15px;font-weight:900;color:#fde68a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">丙午(馬)十月十八</span>
+                  <span id="hub-festival-badge" class="fest-pill" style="background:rgba(255,255,255,0.12);color:#e4e4e7;">平日</span>
                 </div>
 
-                <!-- 定位氣溫、雨量、風力 + 天氣警告 -->
-                <div onclick="fetchLocationWeather(true)" class="watch-btn bg-[#1C1C1E] border border-sky-500/25 rounded-2xl px-2.5 py-1.5 cursor-pointer">
-                  <div class="flex items-center justify-between gap-1 text-[9px] font-bold mb-1">
-                    <span id="hub-weather-loc" class="text-sky-300/90 truncate">📍 定位氣象中...</span>
-                    <span id="hub-weather-warning" class="px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 truncate max-w-[135px]">
-                      無天氣警告
-                    </span>
+                <div class="card weather-box btn" onclick="fetchLocationWeather(true)">
+                  <div class="weather-top">
+                    <span id="hub-weather-loc" style="color:#7dd3fc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍 定位中</span>
+                    <span id="hub-weather-warning" class="warn-pill">無警告</span>
                   </div>
-                  <div class="grid grid-cols-3 gap-1 text-center">
-                    <div class="bg-black/40 rounded-lg py-0.5">
-                      <div class="text-[9px] text-white/50">氣溫</div>
-                      <div id="hub-weather-temp" class="text-[12.5px] font-black text-white">--°C</div>
-                    </div>
-                    <div class="bg-black/40 rounded-lg py-0.5">
-                      <div class="text-[9px] text-white/50">雨量</div>
-                      <div id="hub-weather-rain" class="text-[12.5px] font-black text-sky-400">--mm</div>
-                    </div>
-                    <div class="bg-black/40 rounded-lg py-0.5">
-                      <div class="text-[9px] text-white/50">風力</div>
-                      <div id="hub-weather-wind" class="text-[12px] font-black text-emerald-300">--級</div>
-                    </div>
+                  <div class="w-grid">
+                    <div class="w-cell"><div class="w-label">氣溫</div><div id="hub-weather-temp" class="w-val">--°C</div></div>
+                    <div class="w-cell"><div class="w-label">雨量</div><div id="hub-weather-rain" class="w-val" style="color:#38bdf8;">--mm</div></div>
+                    <div class="w-cell"><div class="w-label">風力</div><div id="hub-weather-wind" class="w-val" style="color:#6ee7b7;">--級</div></div>
                   </div>
                 </div>
               </div>
 
-              <!-- 底部四向導航提示列 -->
-              <div class="pt-1 mt-1 border-t border-white/10 flex items-center justify-between text-[9.5px] font-bold">
-                <button onclick="goToPage(0)" class="watch-btn text-[#30D158]">← 更表</button>
-                <button onclick="scrollHubSlide(0)" class="watch-btn text-amber-300">↑ QR碼</button>
-                <button onclick="scrollHubSlide(2)" class="watch-btn text-sky-300">↓ 行事曆</button>
-                <button onclick="goToPage(2)" class="watch-btn text-[#FF9F0A]">巴士 →</button>
+              <div class="footer-bar">
+                <span onclick="goToPage(0)" class="btn" style="color:#30D158;">←更表</span>
+                <span onclick="scrollHubSlide(0)" class="btn" style="color:#fcd34d;">↑QR</span>
+                <span onclick="scrollHubSlide(2)" class="btn" style="color:#7dd3fc;">↓日曆</span>
+                <span onclick="goToPage(2)" class="btn" style="color:#FF9F0A;">巴士→</span>
               </div>
             </div>
 
-            <!-- HUB BOTTOM SLIDE (Index 2 - 向下滑動進入): 行事曆 + iOS 日曆匯入當日行程 -->
-            <div class="v-section" id="hub-slide-calendar">
-              <div class="flex items-center justify-between mb-1 px-0.5">
-                <div class="flex items-center gap-0.5">
-                  <button onclick="changeCalendarMonth(-1)" class="watch-btn px-1.5 py-0.5 rounded bg-[#1C1C1E] text-[10px] font-bold text-white/80">◀</button>
-                  <span id="cal-month-title" class="text-[11px] font-black text-white px-1">2026年11月</span>
-                  <button onclick="changeCalendarMonth(1)" class="watch-btn px-1.5 py-0.5 rounded bg-[#1C1C1E] text-[10px] font-bold text-white/80">▶</button>
+            <!-- Slide 2 (向下滑動): 行事曆 + iOS 日曆匯入當日行程 -->
+            <div class="v-sec">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <button onclick="changeCalendarMonth(-1)" class="btn" style="background:#1C1C1E;color:#fff;border:none;border-radius:7px;padding:2px 7px;font-size:14px;font-weight:900;">◀</button>
+                  <span id="cal-month-title" style="font-size:15px;font-weight:900;">2026年11月</span>
+                  <button onclick="changeCalendarMonth(1)" class="btn" style="background:#1C1C1E;color:#fff;border:none;border-radius:7px;padding:2px 7px;font-size:14px;font-weight:900;">▶</button>
                 </div>
-
-                <div class="flex items-center gap-1">
-                  <label for="ios-ics-input" class="watch-btn cursor-pointer text-[9.5px] font-extrabold text-amber-300 bg-amber-500/20 border border-amber-500/35 px-1.5 py-0.5 rounded-full">
-                    +iOS日曆
-                  </label>
-                  <input type="file" id="ios-ics-input" accept=".ics,text/calendar" class="hidden" onchange="handleIcsFileImport(event)" />
-                  <button onclick="resetCalendarToToday()" class="watch-btn text-[9.5px] font-bold text-[#30D158] bg-[#30D158]/15 px-1.5 py-0.5 rounded-full">今日</button>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <label for="ios-ics-input" class="btn" style="font-size:12px;font-weight:900;color:#fcd34d;background:rgba(245,158,11,0.22);border:1px solid rgba(245,158,11,0.4);padding:2px 7px;border-radius:99px;">+日曆</label>
+                  <input type="file" id="ios-ics-input" accept=".ics,text/calendar" style="display:none;" onchange="handleIcsFileImport(event)" />
+                  <button onclick="resetCalendarToToday()" class="btn" style="font-size:12px;font-weight:800;color:#30D158;background:rgba(48,209,88,0.18);border:none;padding:2px 7px;border-radius:99px;">今日</button>
                 </div>
               </div>
 
-              <!-- 星期標題列 -->
-              <div class="grid grid-cols-7 text-center text-[8.5px] font-bold text-white/50 mb-0.5">
-                <span class="text-red-400">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span class="text-sky-400">六</span>
+              <div class="cal-weekdays">
+                <span style="color:#f87171;">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span style="color:#38bdf8;">六</span>
               </div>
+              <div id="hub-calendar-grid" class="cal-grid"></div>
 
-              <!-- 月曆格網（含個人更期 + iOS 行程小圓點） -->
-              <div id="hub-calendar-grid" class="grid grid-cols-7 gap-0.5 text-center content-start shrink-0"></div>
-
-              <!-- 當日更期與 iOS 日曆行程清單 -->
-              <div class="flex-1 mt-1 bg-[#1C1C1E]/90 border border-white/10 rounded-xl px-2 py-1 overflow-y-auto no-scrollbar">
-                <div class="flex items-center justify-between text-[9.5px] font-extrabold text-emerald-400 mb-0.5">
+              <div class="card no-scrollbar" style="flex:1;margin-top:5px;padding:5px 8px;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900;color:#34d399;margin-bottom:3px;">
                   <span id="cal-selected-duty">11/26 更期：--</span>
-                  <button onclick="scrollHubSlide(1)" class="watch-btn text-[#0A84FF]">↑ 主頁</button>
+                  <span onclick="scrollHubSlide(1)" class="btn" style="color:#0A84FF;">↑ 主頁</span>
                 </div>
-                <div id="cal-day-events" class="space-y-1 text-[10px] text-white/85">
-                  <div class="text-white/45 text-[9.5px]">暫無 iOS 日曆行程（可點右上「+iOS日曆」匯入 .ics）</div>
-                </div>
+                <div id="cal-day-events" style="display:flex;flex-direction:column;gap:4px;font-size:14px;"></div>
               </div>
             </div>
 
           </div>
 
-          <!-- 中控頁垂直進度點 (0=QR碼, 1=主頁, 2=行事曆) -->
-          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1.5 pointer-events-none">
-            <span id="hub-v-dot-0" class="w-1 h-1.5 rounded-full bg-white/30 transition-all duration-200"></span>
-            <span id="hub-v-dot-1" class="w-1 h-3 rounded-full bg-[#0A84FF] transition-all duration-200"></span>
-            <span id="hub-v-dot-2" class="w-1 h-1.5 rounded-full bg-white/30 transition-all duration-200"></span>
+          <div class="v-dots">
+            <span id="hub-v-dot-0" class="v-dot"></span>
+            <span id="hub-v-dot-1" class="v-dot on-blue"></span>
+            <span id="hub-v-dot-2" class="v-dot"></span>
           </div>
         </section>
 
         <!-- ============================================================== -->
-        <!-- PAGE 2 (右): KMB BUS ETA (完全對齊 watch_4.html 設計、功能與版面)  -->
+        <!-- PAGE 2 (右): 九巴即時到站 ETA 與月票計算                        -->
         <!-- ============================================================== -->
-        <section class="h-page flex flex-col pt-8 pb-1.5 px-0.5 bg-black" id="page-bus">
-          <div class="flex items-center justify-between gap-1 px-1 py-1 border-b border-zinc-800 mb-1 shrink-0">
-            <button onclick="cycleWatchGroup(1)" id="watch-group-btn"
-              class="bg-zinc-800 active:bg-zinc-700 text-sky-300 text-[13px] font-extrabold px-2 py-0.5 rounded-full truncate max-w-[120px]">
-              ‹ 📍自動 ›
-            </button>
-
-            <div class="flex items-center gap-1 text-[13px] tabular-nums flex-shrink-0">
-              <span id="watch-month-total" class="text-emerald-400 font-extrabold">$0</span>
-              <button onclick="refreshWatchEtas(true)" class="flex items-center gap-1 bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-300 active:bg-zinc-700 text-[12px]">
-                <span id="live-indicator" class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
+        <section class="h-page bus-page" id="page-bus">
+          <div class="bus-topbar">
+            <button onclick="cycleWatchGroup(1)" id="watch-group-btn" class="bus-group-btn btn">‹ 📍自動 ›</button>
+            <div class="tabular" style="display:flex;align-items:center;gap:4px;font-size:15px;">
+              <span id="watch-month-total" style="color:#34d399;font-weight:900;">$0</span>
+              <button onclick="refreshWatchEtas(true)" class="btn" style="display:flex;align-items:center;gap:4px;background:#18181b;border:none;color:#e4e4e7;padding:3px 6px;border-radius:7px;font-size:13px;font-weight:800;">
+                <span id="live-indicator" class="live-dot"></span>
                 <span id="last-update-time">--:--</span>
               </button>
             </div>
           </div>
 
-          <div id="bus-watch-toast" class="hidden mx-0.5 mb-1 bg-emerald-900/95 border border-emerald-400 rounded-lg px-2 py-1 flex items-center justify-between text-[13px] shrink-0">
-            <span id="bus-watch-toast-text" class="font-bold text-white truncate">✅ 已記錄</span>
-            <button onclick="undoLastWatchTrip()" id="watch-undo-btn" class="bg-black/60 text-amber-300 font-extrabold px-2 py-0.5 rounded ml-1 flex-shrink-0">
-              撤銷
-            </button>
+          <div id="bus-watch-toast" style="display:none;margin-bottom:4px;background:rgba(6,78,59,0.95);border:1px solid #34d399;border-radius:9px;padding:5px 8px;align-items:center;justify-content:space-between;font-size:14px;">
+            <span id="bus-watch-toast-text" style="font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">✅ 已記錄</span>
+            <button onclick="undoLastWatchTrip()" id="watch-undo-btn" style="background:rgba(0,0,0,0.65);color:#fcd34d;font-weight:900;padding:3px 8px;border:none;border-radius:6px;margin-left:4px;font-size:13px;">撤銷</button>
           </div>
 
-          <div id="watch-route-list" class="flex-1 overflow-y-auto no-scrollbar space-y-1 transition-transform duration-150">
-            <div class="text-center text-zinc-400 text-base py-6">載入路線中...</div>
+          <div id="watch-route-list" class="bus-list no-scrollbar">
+            <div style="text-align:center;color:#9ca3af;font-size:16px;padding:24px 0;">載入路線中...</div>
           </div>
 
-          <div class="pt-1 mt-1 border-t border-zinc-800 flex items-center justify-between text-[11px] font-bold px-1 shrink-0">
-            <button onclick="goToPage(1)" class="watch-btn text-sky-400">← 主頁</button>
-            <button onclick="cycleWatchGroup(1)" class="watch-btn text-sky-300">切換組別 ›</button>
+          <div class="footer-bar" style="padding:5px 4px 0 4px;">
+            <span onclick="goToPage(1)" class="btn" style="color:#38bdf8;">← 主頁</span>
+            <span onclick="cycleWatchGroup(1)" class="btn" style="color:#7dd3fc;">切換組別 ›</span>
           </div>
         </section>
       </div>
 
       <!-- QR CODE 全螢幕放大掃描視窗 -->
-      <div id="qr-zoom-modal" onclick="closeQrZoom()" class="hidden absolute inset-0 z-50 bg-white text-black flex flex-col items-center justify-center p-4 cursor-pointer">
-        <div id="qr-zoom-title" class="text-[22px] font-black mb-2 tracking-wide">Mail</div>
-        <div id="qr-zoom-canvas" class="qr-box p-2 bg-white rounded-xl"></div>
-        <div class="text-[11px] font-bold text-zinc-500 mt-3">點擊畫面任何位置關閉</div>
+      <div id="qr-zoom-modal" onclick="closeQrZoom()" class="qr-zoom">
+        <div id="qr-zoom-title" style="font-size:26px;font-weight:900;margin-bottom:8px;">Mail</div>
+        <img id="qr-zoom-img" alt="Zoom QR" style="width:195px;height:195px;image-rendering:pixelated;" />
+        <div style="font-size:14px;font-weight:800;color:#52525b;margin-top:10px;">點擊畫面任何位置關閉</div>
       </div>
 
-      <!-- SETTINGS MODAL (更表設定) -->
-      <div id="settings-modal" class="hidden absolute inset-0 z-40 bg-black/95 backdrop-blur-md flex flex-col p-3 pt-8">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-[13px] font-black text-white">QEH AED 更表控制</h3>
-          <button onclick="closeSettingsModal()" class="watch-btn px-2 py-0.5 rounded-full bg-[#2C2C2E] text-[10px] font-bold text-white">完成</button>
+      <!-- 更表設定視窗 -->
+      <div id="settings-modal" class="modal-overlay">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:16px;font-weight:900;">更表控制</span>
+          <button onclick="closeSettingsModal()" class="btn" style="background:#2C2C2E;color:#fff;border:none;border-radius:99px;padding:4px 12px;font-size:14px;font-weight:800;">完成</button>
         </div>
-
-        <div class="flex-1 overflow-y-auto no-scrollbar space-y-2 text-[11px]">
-          <div class="bg-[#1C1C1E] rounded-2xl p-2">
-            <div class="text-[10px] text-white/60 mb-1 font-semibold">切換檢視更次</div>
-            <div class="grid grid-cols-4 gap-1">
-              <button onclick="setManualShift('AUTO')" id="btn-shift-AUTO" class="watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#30D158] text-black">自動</button>
-              <button onclick="setManualShift('A')" id="btn-shift-A" class="watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#2C2C2E] text-white">A更</button>
-              <button onclick="setManualShift('P')" id="btn-shift-P" class="watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#2C2C2E] text-white">P更</button>
-              <button onclick="setManualShift('N')" id="btn-shift-N" class="watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#2C2C2E] text-white">N更</button>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+          <div class="card" style="padding:8px;">
+            <div style="font-size:13px;color:#a1a1aa;margin-bottom:6px;font-weight:800;">切換檢視更次</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
+              <button onclick="setManualShift('AUTO')" id="btn-shift-AUTO" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#30D158;color:#000;">自動</button>
+              <button onclick="setManualShift('A')" id="btn-shift-A" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">A更</button>
+              <button onclick="setManualShift('P')" id="btn-shift-P" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">P更</button>
+              <button onclick="setManualShift('N')" id="btn-shift-N" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">N更</button>
             </div>
           </div>
-
-          <div class="bg-[#1C1C1E] rounded-2xl p-2 space-y-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] text-white/60 font-semibold">選擇日期 / 同步資料</span>
-              <button onclick="resetToToday()" class="text-[10px] text-[#30D158] font-bold">回今日</button>
+          <div class="card" style="padding:8px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;color:#a1a1aa;font-weight:800;">選擇日期 / 同步</span>
+              <span onclick="resetToToday()" class="btn" style="font-size:14px;color:#30D158;font-weight:900;">回今日</span>
             </div>
-            <input type="date" id="watch-date-input" onchange="onDatePickerChange(this.value)" class="w-full bg-black/80 border border-white/15 rounded-xl px-2 py-1 text-[11px] text-white" />
-            <button onclick="syncFromMainDutySystem(true)" class="watch-btn w-full py-1.5 rounded-xl bg-[#0A84FF] text-white font-bold text-[10px]">
-              ☁ 立即從主更表 / 雲端同步
-            </button>
-            <div id="duty-source-info" class="text-[9px] text-white/50 text-center">來源：內置 21 人循環更表引擎</div>
+            <input type="date" id="watch-date-input" onchange="onDatePickerChange(this.value)" style="width:100%;background:#000;border:1px solid #3f3f46;border-radius:10px;padding:6px 8px;color:#fff;font-size:15px;" />
+            <button onclick="syncFromMainDutySystem(true)" class="btn" style="width:100%;padding:8px;border-radius:10px;border:none;background:#0A84FF;color:#fff;font-weight:900;font-size:14px;">☁ 同步最新更表</button>
+            <div id="duty-source-info" style="font-size:12px;color:#a1a1aa;text-align:center;">來源：內置 21 人循環更表</div>
           </div>
         </div>
       </div>
 
-      <div id="watch-toast" class="pointer-events-none opacity-0 transition-opacity duration-200 absolute bottom-9 left-1/2 -translate-x-1/2 z-50 bg-[#2C2C2E]/95 border border-white/15 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap">
-        已更新
-      </div>
+      <div id="watch-toast">已更新</div>
     </div>
   </div>
 
-  <!-- 桌面測試控制列 -->
-  <div id="desktop-helper" class="hidden mt-4 items-center gap-2 text-xs text-white/60">
-    <button onclick="goToPage(0)" class="px-3 py-1.5 rounded-full bg-[#30D158]/80 hover:bg-[#30D158] text-black font-bold transition">← 更表頁面</button>
-    <button onclick="goToPage(1)" class="px-3 py-1.5 rounded-full bg-[#0A84FF]/80 hover:bg-[#0A84FF] text-white font-bold transition">● 中控主頁</button>
-    <button onclick="goToPage(2)" class="px-3 py-1.5 rounded-full bg-[#E3001B]/80 hover:bg-[#E3001B] text-white font-bold transition">九巴 Watch →</button>
+  <div id="desktop-helper" style="display:none;">
+    <button onclick="goToPage(0)" style="padding:6px 12px;border-radius:99px;border:none;background:#30D158;color:#000;font-weight:800;cursor:pointer;">← 更表</button>
+    <button onclick="goToPage(1)" style="padding:6px 12px;border-radius:99px;border:none;background:#0A84FF;color:#fff;font-weight:800;cursor:pointer;">● 中控主頁</button>
+    <button onclick="goToPage(2)" style="padding:6px 12px;border-radius:99px;border:none;background:#E3001B;color:#fff;font-weight:800;cursor:pointer;">九巴 Watch →</button>
   </div>
 
-  <!-- Firebase SDK & 巴士 ETA 模組（直接採用 watch_4.html 程式碼） -->
+  <!-- Firebase & 九巴即時到站 ETA 模組 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -513,58 +457,40 @@
       const parts = new Intl.DateTimeFormat('en-US', {
         timeZone: 'Asia/Hong_Kong',
         year: 'numeric', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
+        hour: '2-digit', minute: '2-digit', hour12: false
       }).formatToParts(dateObj);
       const map = {};
       parts.forEach(p => { map[p.type] = p.value; });
       const hh = String(parseInt(map.hour, 10) % 24).padStart(2, '0');
       const mm = String(parseInt(map.minute, 10)).padStart(2, '0');
-      return {
-        monthStr: `${map.year}-${map.month}`,
-        timeStr: `${hh}:${mm}`
-      };
+      return { monthStr: `${map.year}-${map.month}`, timeStr: `${hh}:${mm}` };
     }
 
     const CURRENT_MONTH = getHKInfo().monthStr;
 
     function escapeHtml(str) {
-      return String(str || '').replace(/[&<>"']/g, m => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[m]));
+      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
-
     function escapeJs(str) {
       return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
     }
-
     function simplifyStopName(name) {
-      return String(name || '')
-        .replace(/\s*[\(（][A-Z]{1,3}\d{2,4}[\)）]\s*$/i, '')
-        .trim();
+      return String(name || '').replace(/\s*[\(（][A-Z]{1,3}\d{2,4}[\)）]\s*$/i, '').trim();
     }
-
     function shortDestName(dest) {
-      return String(dest || '')
-        .replace(/[\(（].*?[\)）]/g, '')
-        .replace(/總站|巴士總站|鐵路站/g, '')
-        .trim();
+      return String(dest || '').replace(/[\(（].*?[\)）]/g, '').replace(/總站|巴士總站|鐵路站/g, '').trim();
     }
-
     function getRouteKey(r) {
       return r.id || `${r.route}_${r.stopId}_${r.dir}`;
     }
-
     function getDistanceMeters(lat1, lon1, lat2, lon2) {
       const R = 6371000;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    // 1. 即時監聽雲端路線與組別
     onSnapshot(doc(db, "settings", "user_routes"), (snap) => {
       const data = snap.exists() ? snap.data() : {};
       savedRoutes = Array.isArray(data.list) ? data.list : [];
@@ -574,7 +500,6 @@
       window.refreshWatchEtas(false);
     });
 
-    // 2. 即時監聽本月累積金額
     const tripsQuery = query(collection(db, "trips"), where("month", "==", CURRENT_MONTH));
     onSnapshot(tripsQuery, (snapshot) => {
       let total = 0;
@@ -582,14 +507,13 @@
       const el = document.getElementById('watch-month-total');
       if (total >= PASS_COST) {
         el.innerText = `回本$${Math.round(total)}`;
-        el.className = "text-emerald-400 font-black";
+        el.style.color = '#34d399';
       } else {
         el.innerText = `$${Math.round(total)}/${PASS_COST}`;
-        el.className = "text-amber-300 font-extrabold";
+        el.style.color = '#fcd34d';
       }
     });
 
-    // 3. 自動取得定位套用組別
     function detectWatchAutoGroup() {
       const geoGroups = customGroups.filter(g => g.lat && g.lng);
       if (geoGroups.length === 0 || !navigator.geolocation) {
@@ -602,9 +526,7 @@
         geoGroups.forEach(g => {
           const d = getDistanceMeters(latitude, longitude, parseFloat(g.lat), parseFloat(g.lng));
           const radius = Math.min(1000, Math.max(200, Number(g.radius || 400)));
-          if (d <= radius && (!best || d < best.d)) {
-            best = { group: g, d };
-          }
+          if (d <= radius && (!best || d < best.d)) best = { group: g, d };
         });
         autoMatchedGroup = best ? best.group : null;
         renderWatchUI();
@@ -625,15 +547,11 @@
     window.cycleWatchGroup = (step = 1) => {
       const modes = getWatchFilterModes();
       if (modes.length <= 1) return;
-
       const idx = modes.indexOf(activeFilter);
-      const nextIdx = (idx + step + modes.length) % modes.length;
-      activeFilter = modes[nextIdx];
-
+      activeFilter = modes[(idx + step + modes.length) % modes.length];
       const listEl = document.getElementById('watch-route-list');
       listEl.style.transform = `translateX(${step > 0 ? '-10px' : '10px'})`;
       setTimeout(() => { listEl.style.transform = 'translateX(0)'; }, 120);
-
       if (activeFilter === 'auto') detectWatchAutoGroup();
       renderWatchUI();
       window.refreshWatchEtas(false);
@@ -642,43 +560,32 @@
     function getFilteredRoutes() {
       if (customGroups.length === 0) return savedRoutes;
       let targetGroup = null;
-      if (activeFilter === 'auto') {
-        targetGroup = autoMatchedGroup;
-      } else if (activeFilter !== 'all') {
-        targetGroup = customGroups.find(g => g.id === activeFilter) || null;
-      }
+      if (activeFilter === 'auto') targetGroup = autoMatchedGroup;
+      else if (activeFilter !== 'all') targetGroup = customGroups.find(g => g.id === activeFilter) || null;
       if (!targetGroup) return savedRoutes;
 
       const routeMap = {};
       savedRoutes.forEach(r => { routeMap[getRouteKey(r)] = r; });
       const ordered = [];
-      (targetGroup.routeKeys || []).forEach(k => {
-        if (routeMap[k]) ordered.push(routeMap[k]);
-      });
+      (targetGroup.routeKeys || []).forEach(k => { if (routeMap[k]) ordered.push(routeMap[k]); });
       return ordered;
     }
 
-    // 4. 渲染卡片
     function renderWatchUI() {
       const groupBtn = document.getElementById('watch-group-btn');
       const hasGeo = customGroups.some(g => g.lat && g.lng);
-
-      if (customGroups.length === 0) {
-        groupBtn.innerText = `全部(${savedRoutes.length})`;
-      } else if (activeFilter === 'auto' && hasGeo) {
-        groupBtn.innerText = autoMatchedGroup ? `‹ 📍${autoMatchedGroup.name} ›` : `‹ 📍全部 ›`;
-      } else if (activeFilter === 'all') {
-        groupBtn.innerText = `‹ 全部(${savedRoutes.length}) ›`;
-      } else {
+      if (customGroups.length === 0) groupBtn.innerText = `全部(${savedRoutes.length})`;
+      else if (activeFilter === 'auto' && hasGeo) groupBtn.innerText = autoMatchedGroup ? `‹ 📍${autoMatchedGroup.name} ›` : `‹ 📍全部 ›`;
+      else if (activeFilter === 'all') groupBtn.innerText = `‹ 全部(${savedRoutes.length}) ›`;
+      else {
         const g = customGroups.find(x => x.id === activeFilter);
         groupBtn.innerText = g ? `‹ ${g.name} ›` : '‹ 全部 ›';
       }
 
       const listEl = document.getElementById('watch-route-list');
       const routes = getFilteredRoutes();
-
       if (routes.length === 0) {
-        listEl.innerHTML = `<div class="text-center text-zinc-400 text-base py-6">此組別暫無路線</div>`;
+        listEl.innerHTML = `<div style="text-align:center;color:#9ca3af;font-size:16px;padding:24px 0;">此組別暫無路線</div>`;
         return;
       }
 
@@ -689,36 +596,25 @@
         const destShort = shortDestName(rawDest);
         const cleanStop = simplifyStopName(r.stopName);
 
-        let etaHtml = `<span class="text-zinc-500 w-eta-nobus">...</span>`;
+        let etaHtml = `<span style="color:#71717a;font-size:16px;">...</span>`;
         if (info) {
-          const colorCls = info.isNoBus
-            ? 'text-zinc-400 w-eta-nobus'
-            : (info.urgent ? 'text-emerald-400 w-eta-text' : 'text-amber-300 w-eta-text');
-          etaHtml = `<span class="${colorCls} font-black leading-none tabular-nums tracking-tight">${escapeHtml(info.text)}</span>`;
+          const color = info.isNoBus ? '#a1a1aa' : (info.urgent ? '#34d399' : '#fcd34d');
+          const size = info.isNoBus ? '16px' : '22px';
+          etaHtml = `<span class="tabular" style="color:${color};font-size:${size};font-weight:900;">${escapeHtml(info.text)}</span>`;
         }
 
         return `
-          <div class="flex items-center justify-between gap-0.5 px-1 py-1 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
-            <div onclick="refreshWatchEtas(true)" class="flex items-center gap-1 min-w-0 flex-1 cursor-pointer active:opacity-70">
-              <span class="kmb-red w-route-badge text-white font-black px-1 py-1 rounded-lg text-center leading-none flex-shrink-0">
-                ${escapeHtml(r.route)}
-              </span>
-              <div class="min-w-0 flex-1 leading-tight">
-                <div class="w-dest-text text-white font-black truncate">
-                  往${escapeHtml(destShort)}
-                </div>
-                <div class="w-stop-text text-zinc-200 font-medium truncate mt-0.5">
-                  ${escapeHtml(cleanStop)}
-                </div>
+          <div class="bus-row">
+            <div onclick="refreshWatchEtas(true)" style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;cursor:pointer;">
+              <span class="kmb-badge">${escapeHtml(r.route)}</span>
+              <div style="min-width:0;flex:1;line-height:1.15;">
+                <div style="font-size:18px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">往${escapeHtml(destShort)}</div>
+                <div style="font-size:14px;color:#e4e4e7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${escapeHtml(cleanStop)}</div>
               </div>
             </div>
-
-            <div class="flex items-center gap-1 flex-shrink-0">
-              <div onclick="refreshWatchEtas(true)" class="text-right cursor-pointer active:opacity-70">
-                ${etaHtml}
-              </div>
-              <button onclick="logTripFromWatch('${escapeJs(r.route)}', ${Number(r.fare)}, '${escapeJs(cleanStop)}')"
-                class="w-fare-btn bg-emerald-600 active:bg-emerald-500 text-white font-black px-1.5 py-2 rounded-lg leading-none tabular-nums shadow">
+            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+              <div onclick="refreshWatchEtas(true)" style="text-align:right;cursor:pointer;">${etaHtml}</div>
+              <button onclick="logTripFromWatch('${escapeJs(r.route)}', ${Number(r.fare)}, '${escapeJs(cleanStop)}')" class="fare-btn btn tabular">
                 $${Number(r.fare).toFixed(1)}
               </button>
             </div>
@@ -727,13 +623,11 @@
       }).join('');
     }
 
-    // 5. 即時向九巴 API 更新到站時間
     window.refreshWatchEtas = async (manual = false) => {
       if (isFetchingEta || savedRoutes.length === 0) return;
       isFetchingEta = true;
-
       const indicator = document.getElementById('live-indicator');
-      if (indicator) indicator.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
+      if (indicator) indicator.style.background = '#fbbf24';
 
       const targetRoutes = getFilteredRoutes();
       await Promise.all(targetRoutes.map(async (r) => {
@@ -745,42 +639,28 @@
           const now = new Date();
           const dirRows = (json.data || []).filter(d => d.dir === r.dir);
           const foundDest = dirRows.find(d => d.dest_tc)?.dest_tc || '';
-
-          const minsList = dirRows
-            .filter(d => d.eta)
-            .slice(0, 2)
-            .map(d => Math.max(0, Math.round((new Date(d.eta) - now) / 60000)));
+          const minsList = dirRows.filter(d => d.eta).slice(0, 2).map(d => Math.max(0, Math.round((new Date(d.eta) - now) / 60000)));
 
           if (minsList.length === 0) {
             etaMap[cacheKey] = { text: '暫無', isNoBus: true, urgent: false, dest: foundDest };
           } else {
             const first = minsList[0];
             const labels = minsList.map(m => m === 0 ? '即到' : `${m}`);
-            const text = minsList.length === 1
-              ? (first === 0 ? '即到' : `${first}分`)
-              : `${labels.join('·')}分`;
-            etaMap[cacheKey] = {
-              text,
-              isNoBus: false,
-              urgent: first <= 3,
-              dest: foundDest
-            };
+            const text = minsList.length === 1 ? (first === 0 ? '即到' : `${first}分`) : `${labels.join('·')}分`;
+            etaMap[cacheKey] = { text, isNoBus: false, urgent: first <= 3, dest: foundDest };
           }
         } catch {
-          if (!etaMap[cacheKey]) {
-            etaMap[cacheKey] = { text: '重試', isNoBus: true, urgent: false, dest: '' };
-          }
+          if (!etaMap[cacheKey]) etaMap[cacheKey] = { text: '重試', isNoBus: true, urgent: false, dest: '' };
         }
       }));
 
       const timeEl = document.getElementById('last-update-time');
       if (timeEl) timeEl.innerText = getHKInfo().timeStr;
-      if (indicator) indicator.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot";
+      if (indicator) indicator.style.background = '#34d399';
       isFetchingEta = false;
       renderWatchUI();
     };
 
-    // 6. Watch 一鍵互動拍卡記錄
     window.logTripFromWatch = async (route, fare, stopName) => {
       try {
         const docRef = await addDoc(collection(db, "trips"), {
@@ -803,24 +683,20 @@
       lastLoggedDocId = null;
       try {
         await deleteDoc(doc(db, "trips", targetId));
-        document.getElementById('bus-watch-toast').classList.add('hidden');
-      } catch { /* 忽略 */ }
+        document.getElementById('bus-watch-toast').style.display = 'none';
+      } catch {}
     };
 
     function showBusWatchToast(msg, allowUndo = true) {
       const box = document.getElementById('bus-watch-toast');
       document.getElementById('bus-watch-toast-text').innerText = msg;
       document.getElementById('watch-undo-btn').style.display = allowUndo ? 'inline-block' : 'none';
-      box.classList.remove('hidden');
+      box.style.display = 'flex';
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        box.classList.add('hidden');
-        lastLoggedDocId = null;
-      }, 4500);
+      toastTimer = setTimeout(() => { box.style.display = 'none'; lastLoggedDocId = null; }, 4500);
     }
 
     setInterval(() => window.refreshWatchEtas(false), 15000);
-
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         if (activeFilter === 'auto') detectWatchAutoGroup();
@@ -829,29 +705,22 @@
     });
   </script>
 
-  <!-- QEH AED 21-PERSON ROTATION ENGINE, HUB DASHBOARD & 2D NAVIGATION -->
+  <!-- 完整 21 人更表引擎 + 中控主頁 + 行事曆 -->
   <script>
     const ANCHOR_BASE_MONDAY = '2026-11-16';
     const MAIN_STORAGE_KEY = 'qeh_aed_duty_v26';
     const CLOUD_DB_ENDPOINT = '/api/duty-db';
     const IOS_CAL_STORAGE_KEY = 'qeh_watch_ios_cal_events_v1';
 
-    // 你上傳的兩張登入 QR Code 內容（Mail 與 CMS）
     const QR_PAYLOADS = {
-      MAIL: {
-        title: 'Mail',
-        text: 'https://mail.ha.org.hk'
-      },
-      CMS: {
-        title: 'CMS',
-        text: 'https://cms.ha.org.hk'
-      }
+      MAIL: { title: 'Mail', text: 'https://mail.ha.org.hk' },
+      CMS: { title: 'CMS', text: 'https://cms.ha.org.hk' }
     };
 
     const SHIFT_META = {
-      A: { code: 'A', label: 'A更 (早更)', time: '07:00 - 15:48', next: 'P', color: '#FF9F0A' },
-      P: { code: 'P', label: 'P更 (午更)', time: '13:45 - 23:03', next: 'N', color: '#30D158' },
-      N: { code: 'N', label: 'N更 (夜更)', time: '22:30 - 07:18', next: 'A', color: '#0A84FF' }
+      A: { code: 'A', label: 'A更', time: '07:00-15:48', next: 'P', color: '#FF9F0A' },
+      P: { code: 'P', label: 'P更', time: '13:45-23:03', next: 'N', color: '#30D158' },
+      N: { code: 'N', label: 'N更', time: '22:30-07:18', next: 'A', color: '#0A84FF' }
     };
 
     const POST_DETAILS = {
@@ -861,8 +730,8 @@
       'Ae': { post: 'E區/G1 · 07:00-15:03', order: 4 },
       '11-8': { post: '中更 · 11:15-20:03', order: 5 },
       '11/8': { post: '中更 · 11:15-20:03', order: 5 },
-      '9-6':  { post: '中更 · 09:00-17:48', order: 6 },
-      '9/5':  { post: '中更 · 09:00-17:48', order: 6 },
+      '9-6': { post: '中更 · 09:00-17:48', order: 6 },
+      '9/5': { post: '中更 · 09:00-17:48', order: 6 },
       'Pa': { post: 'P區主崗 · 13:45-22:33', order: 1 },
       'Ec': { post: 'C區 · 14:15-23:03', order: 2 },
       'Pe': { post: 'E區 · 13:45-22:33', order: 3 },
@@ -879,167 +748,167 @@
     ];
 
     const PATTERN_21_ROWS = [
-      ['SH/替', 'Ec',   'Pu',   'O',    'WO',    'Ad',    'Ae/N'],
-      ['Na',    'O',    'Ec',   '11-8', 'Ad',    'WO',    'Ac'],
-      ['Aa',    'Ne',   'O',    'SH/替','Pe',    'Ec',    'WO'],
-      ['Ad',    'Aa',   'Ne',   'WO',   'O',     'SH/替', 'Pa'],
-      ['11-8',  'WO',   'Aa',   'Ne',   'O',     'Ac',    'Pe'],
-      ['Ed',    'SH/替','O',    'Aa',   'Ne',   'WO',    'Ad'],
-      ['Pa',    'Ed',   'SH/替','WO',   'Aa',   'Ne',    'O'],
-      ['WO',    'O',    'Ad',   'Ed',   '11-8',  'Aa',    'Ne'],
-      ['O',     'Pa',   '11-8', 'Ad',   'SH/Ac', 'WO',    'Aa/N'],
-      ['Ne',    'O',    'WO',   'Pe',   'Pa',    'Ed',    'SH/11-8'],
-      ['Ae',    'Na',   'O',    'Pa',   'Ec',    '11-8',  'WO'],
-      ['WO',    'Ae',   'Na',   'O',    'Ed',    'Pe',    'Pu'],
-      ['SH/替', '11-8', 'Ae',   'Na',   'O',     'WO',    'Ec'],
-      ['Pe',    'Pu',   'SH/替','Ae',   'Na',   'O',     'WO'],
-      ['Pu',    'Pe',   'Pe',   'WO',   'Ae',   'Na',    'O'],
-      ['Ac',    'Ad',   'Ed',   'WO',   'O',     'Ae',    'Na'],
-      ['O',     'SH/替','Pa',   'Pu',   'Pu',    'WO',    'Ed'],
-      ['O',     'Ed',   'Ac',   'Ad',   'Ac',    'WO',    'Aa'],
-      ['Ec',    'Pe',   'Pe',   'WO',   'Ae',   'Na',    'O'],
-      ['Pa',    'Ec',   'Pu',   'O',    'WO',    'Ad',    'Ae'],
-      ['11-8',  'WO',   'Aa',   'Ne',   'O',     'Ac',    'Pe']
+      ['SH/替','Ec','Pu','O','WO','Ad','Ae/N'],
+      ['Na','O','Ec','11-8','Ad','WO','Ac'],
+      ['Aa','Ne','O','SH/替','Pe','Ec','WO'],
+      ['Ad','Aa','Ne','WO','O','SH/替','Pa'],
+      ['11-8','WO','Aa','Ne','O','Ac','Pe'],
+      ['Ed','SH/替','O','Aa','Ne','WO','Ad'],
+      ['Pa','Ed','SH/替','WO','Aa','Ne','O'],
+      ['WO','O','Ad','Ed','11-8','Aa','Ne'],
+      ['O','Pa','11-8','Ad','SH/Ac','WO','Aa/N'],
+      ['Ne','O','WO','Pe','Pa','Ed','SH/11-8'],
+      ['Ae','Na','O','Pa','Ec','11-8','WO'],
+      ['WO','Ae','Na','O','Ed','Pe','Pu'],
+      ['SH/替','11-8','Ae','Na','O','WO','Ec'],
+      ['Pe','Pu','SH/替','Ae','Na','O','WO'],
+      ['Pu','Pe','Pe','WO','Ae','Na','O'],
+      ['Ac','Ad','Ed','WO','O','Ae','Na'],
+      ['O','SH/替','Pa','Pu','Pu','WO','Ed'],
+      ['O','Ed','Ac','Ad','Ac','WO','Aa'],
+      ['Ec','Pe','Pe','WO','Ae','Na','O'],
+      ['Pa','Ec','Pu','O','WO','Ad','Ae'],
+      ['11-8','WO','Aa','Ne','O','Ac','Pe']
     ];
 
     const BUILTIN_WEEKS = {
       '2026-11-16': [
-        { name: '黃詩琪', duties: ['9-6',  'Ec',   'Ec',   '11-8', 'WO',   'O',    'Aa'] },
-        { name: '李嘉琪', duties: ['Na',   'OW',   'OW',   'OW',   'OW',   'WO',   'O'] },
-        { name: '梅潔瑜', duties: ['Aa',   'Ne',   'O',    'Ae',   'Na',   'Ac',   'WO'] },
-        { name: '陳曦彥', duties: ['Ad',   'Aa',   'Ne',   'WO',   'Aa',   'Pa',   'O'] },
-        { name: '關鉦',   duties: ['11-8', 'WO',   'Aa',   'Ne',   'O',    'Ec',   'Pe'] },
-        { name: '吳愷欣', duties: ['Ed',   'Pe',   '9-6',  'Aa',   'Ne',   'WO',   'O'] },
-        { name: '吳媛',   duties: ['Ae',   'Na',   'O',    'Pa',   'WO',   'Ne',   'Pa'] },
-        { name: '吳珈翹', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '黃愛萍', duties: ['O',    'Pa',   '11-8', 'Ad',   'Pu',   'WO',   'Ed'] },
-        { name: '王曉雯', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '丘飛鵬', duties: ['Pa',   'Ed',   'Pe',   'O',    'Ec',   '11-8', 'WO'] },
-        { name: '謝玉連', duties: ['AL',   'Ae',   'Na',   '9-6',  'O',    'Ae',   'Na'] },
-        { name: '朱翠君', duties: ['WO',   '11-8', 'Ae',   'Na',   'O',    'Ad',   'Ec'] },
-        { name: '張麗',   duties: ['Pe',   'Pu',   'WO',   'O',    'Pa',   'Pe',   'Ac'] },
-        { name: '謝小曼', duties: ['',     '',     '',     '',     '',     '',     ''] },
-        { name: '侯嘉敏', duties: ['O',    'Ad',   'Ed',   'Ed',   'Ed',   'Ed',   'WO'] },
-        { name: '馮玉琼', duties: ['O',    'Ac',   'Ac',   'Pu',   'Ad',   'WO',   'Aa'] },
-        { name: '馮嘉錂', duties: ['O',    '9-6',  'Pa',   'Ec',   '11-8', 'WO',   'Ad'] },
-        { name: '蘇靖珊', duties: ['Ec',   'WO',   'SH',   'SH',   'Ac',   'Aa',   'Ne'] },
-        { name: '葉曉彤', duties: ['Ac',   'WO',   'SH',   'Ac',   'Ae',   'Na',   'O'] },
-        { name: '黃雅倩', duties: ['Ne',   'O',    'Ad',   'Pe',   'Pa',   'WO',   '11-8'] }
+        { name: '黃詩琪', duties: ['9-6','Ec','Ec','11-8','WO','O','Aa'] },
+        { name: '李嘉琪', duties: ['Na','OW','OW','OW','OW','WO','O'] },
+        { name: '梅潔瑜', duties: ['Aa','Ne','O','Ae','Na','Ac','WO'] },
+        { name: '陳曦彥', duties: ['Ad','Aa','Ne','WO','Aa','Pa','O'] },
+        { name: '關鉦', duties: ['11-8','WO','Aa','Ne','O','Ec','Pe'] },
+        { name: '吳愷欣', duties: ['Ed','Pe','9-6','Aa','Ne','WO','O'] },
+        { name: '吳媛', duties: ['Ae','Na','O','Pa','WO','Ne','Pa'] },
+        { name: '吳珈翹', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '黃愛萍', duties: ['O','Pa','11-8','Ad','Pu','WO','Ed'] },
+        { name: '王曉雯', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '丘飛鵬', duties: ['Pa','Ed','Pe','O','Ec','11-8','WO'] },
+        { name: '謝玉連', duties: ['AL','Ae','Na','9-6','O','Ae','Na'] },
+        { name: '朱翠君', duties: ['WO','11-8','Ae','Na','O','Ad','Ec'] },
+        { name: '張麗', duties: ['Pe','Pu','WO','O','Pa','Pe','Ac'] },
+        { name: '謝小曼', duties: ['','','','','','',''] },
+        { name: '侯嘉敏', duties: ['O','Ad','Ed','Ed','Ed','Ed','WO'] },
+        { name: '馮玉琼', duties: ['O','Ac','Ac','Pu','Ad','WO','Aa'] },
+        { name: '馮嘉錂', duties: ['O','9-6','Pa','Ec','11-8','WO','Ad'] },
+        { name: '蘇靖珊', duties: ['Ec','WO','SH','SH','Ac','Aa','Ne'] },
+        { name: '葉曉彤', duties: ['Ac','WO','SH','Ac','Ae','Na','O'] },
+        { name: '黃雅倩', duties: ['Ne','O','Ad','Pe','Pa','WO','11-8'] }
       ],
       '2026-11-23': [
-        { name: '黃雅倩', duties: ['11-8', 'Ec',   'Pu',   'O',    'WO',   'Ad',   'Ec'] },
-        { name: '黃詩琪', duties: ['Na',   'O',    'Ec',   '11-8', 'Ad',   'WO',   'SH'] },
-        { name: '李嘉琪', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '梅潔瑜', duties: ['Ad',   'Aa',   'Ne',   'WO',   'O',    'SH',   'Ac'] },
-        { name: '陳曦彥', duties: ['Ec',   'WO',   'Aa',   'Ne',   'O',    'Ac',   'Pe'] },
-        { name: '關鉦',   duties: ['Ed',   'SH',   'O',    'Aa',   'Ne',   'WO',   'Ad'] },
-        { name: '吳愷欣', duties: ['Pa',   'Ed',   'WO',   'Ad',   'Aa',   'Ne',   'O'] },
-        { name: '吳媛',   duties: ['WO',   'Ac',   'O',    'Pe',   'Pa',   '11-8', 'SH'] },
-        { name: '吳珈翹', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '黃愛萍', duties: ['WO',   'O',    'Ad',   'Ed',   '11-8', 'Aa',   'Ne'] },
-        { name: '王曉雯', duties: ['Ae',   'Na',   'O',    'Pa',   'Ec',   'Ed',   'WO'] },
-        { name: '丘飛鵬', duties: ['WO',   'Ae',   'Na',   'O',    'Ed',   'Pe',   'Pa'] },
-        { name: '謝玉連', duties: ['9-6',  'Ad',   'Ae',   'Na',   'O',    'WO',   'Ae'] },
-        { name: '朱翠君', duties: ['Pe',   'Pu',   'OW',   'Ae',   'Na',   'O',    'WO'] },
-        { name: '張麗',   duties: ['Pu',   'Pe',   'Pe',   'WO',   'O',    'Pa',   'Ed'] },
-        { name: '謝小曼', duties: ['',     '',     '',     '',     '',     '',     ''] },
-        { name: '侯嘉敏', duties: ['O',    'Pa',   'Pa',   'Pu',   'Ae',   'Na',   'WO'] },
-        { name: '馮玉琼', duties: ['Ne',   'O',    '11-8', 'Ac',   'Ac',   'WO',   'Aa'] },
-        { name: '馮嘉錂', duties: ['Aa',   'Ne',   'WO',   'O',    'Pe',   'Ec',   '11-8'] },
-        { name: '蘇靖珊', duties: ['O',    '11-8', 'Ed',   'Ec',   'Pu',   '9-6',  'WO'] },
-        { name: '葉曉彤', duties: ['Ac',   '9-6',  'Ac',   'O',    'WO',   'Ae',   'Na'] }
+        { name: '黃雅倩', duties: ['11-8','Ec','Pu','O','WO','Ad','Ec'] },
+        { name: '黃詩琪', duties: ['Na','O','Ec','11-8','Ad','WO','SH'] },
+        { name: '李嘉琪', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '梅潔瑜', duties: ['Ad','Aa','Ne','WO','O','SH','Ac'] },
+        { name: '陳曦彥', duties: ['Ec','WO','Aa','Ne','O','Ac','Pe'] },
+        { name: '關鉦', duties: ['Ed','SH','O','Aa','Ne','WO','Ad'] },
+        { name: '吳愷欣', duties: ['Pa','Ed','WO','Ad','Aa','Ne','O'] },
+        { name: '吳媛', duties: ['WO','Ac','O','Pe','Pa','11-8','SH'] },
+        { name: '吳珈翹', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '黃愛萍', duties: ['WO','O','Ad','Ed','11-8','Aa','Ne'] },
+        { name: '王曉雯', duties: ['Ae','Na','O','Pa','Ec','Ed','WO'] },
+        { name: '丘飛鵬', duties: ['WO','Ae','Na','O','Ed','Pe','Pa'] },
+        { name: '謝玉連', duties: ['9-6','Ad','Ae','Na','O','WO','Ae'] },
+        { name: '朱翠君', duties: ['Pe','Pu','OW','Ae','Na','O','WO'] },
+        { name: '張麗', duties: ['Pu','Pe','Pe','WO','O','Pa','Ed'] },
+        { name: '謝小曼', duties: ['','','','','','',''] },
+        { name: '侯嘉敏', duties: ['O','Pa','Pa','Pu','Ae','Na','WO'] },
+        { name: '馮玉琼', duties: ['Ne','O','11-8','Ac','Ac','WO','Aa'] },
+        { name: '馮嘉錂', duties: ['Aa','Ne','WO','O','Pe','Ec','11-8'] },
+        { name: '蘇靖珊', duties: ['O','11-8','Ed','Ec','Pu','9-6','WO'] },
+        { name: '葉曉彤', duties: ['Ac','9-6','Ac','O','WO','Ae','Na'] }
       ],
       '2026-11-30': [
-        { name: '葉曉彤', duties: ['SH',   'Ec',   'Pa',   'O',    'WO',   'Ad',   'Ae'] },
-        { name: '黃雅倩', duties: ['Na',   'O',    'Ec',   '11-8', 'Ad',   'WO',   'Ac'] },
-        { name: '黃詩琪', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '李嘉琪', duties: ['SH',   'Aa',   'Ne',   'WO',   'O',    'Ec',   'Pa'] },
-        { name: '梅潔瑜', duties: ['11-8', 'WO',   'Aa',   'Ne',   'O',    'Ac',   'Pe'] },
-        { name: '陳曦彥', duties: ['Ed',   'Pu',   'O',    'Aa',   'Ne',   'WO',   'Ad'] },
-        { name: '關鉦',   duties: ['Pa',   'Ed',   '9-6',  'WO',   'Aa',   'Ne',   'O'] },
-        { name: '吳愷欣', duties: ['WO',   'O',    'Ad',   'Ed',   '11-8', 'Aa',   'Ne'] },
-        { name: '吳媛',   duties: ['O',    'Pa',   '11-8', 'Ad',   'Ac',   'WO',   'Aa'] },
-        { name: '吳珈翹', duties: ['SH',   'O',    'WO',   'Pe',   'Pa',   'Ed',   '11-8'] },
-        { name: '黃愛萍', duties: ['Ae',   'Na',   'O',    'Pa',   'Ec',   '11-8', 'WO'] },
-        { name: '王曉雯', duties: ['Ad',   'Ae',   'Na',   'O',    'WO',   'Pe',   'Pu'] },
-        { name: '丘飛鵬', duties: ['Pe',   '11-8', 'Ae',   'Na',   'O',    'WO',   'Ec'] },
-        { name: '謝玉連', duties: ['Pe',   '9-6',  'Ac',   'Ae',   'Na',   'O',    'SH'] },
-        { name: '朱翠君', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '張麗',   duties: ['Ac',   'Ad',   'Ed',   'WO',   'O',    'Ae',   'Na'] },
-        { name: '謝小曼', duties: ['',     '',     '',     '',     '',     '',     ''] },
-        { name: '侯嘉敏', duties: ['O',    'Pe',   'Pe',   '9-6',  'Ae',   'Na',   'WO'] },
-        { name: '馮玉琼', duties: ['Ne',   'Ac',   'SH',   'O',    'WO',   'Pa',   '9-6'] },
-        { name: '馮嘉錂', duties: ['Ec',   'O',    'WO',   'Ac',   'Pe',   'Pu',   'Ed'] },
-        { name: '蘇靖珊', duties: ['Aa',   'Ne',   'O',    'Ec',   'Ed',   'WO',   'O'] }
+        { name: '葉曉彤', duties: ['SH','Ec','Pa','O','WO','Ad','Ae'] },
+        { name: '黃雅倩', duties: ['Na','O','Ec','11-8','Ad','WO','Ac'] },
+        { name: '黃詩琪', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '李嘉琪', duties: ['SH','Aa','Ne','WO','O','Ec','Pa'] },
+        { name: '梅潔瑜', duties: ['11-8','WO','Aa','Ne','O','Ac','Pe'] },
+        { name: '陳曦彥', duties: ['Ed','Pu','O','Aa','Ne','WO','Ad'] },
+        { name: '關鉦', duties: ['Pa','Ed','9-6','WO','Aa','Ne','O'] },
+        { name: '吳愷欣', duties: ['WO','O','Ad','Ed','11-8','Aa','Ne'] },
+        { name: '吳媛', duties: ['O','Pa','11-8','Ad','Ac','WO','Aa'] },
+        { name: '吳珈翹', duties: ['SH','O','WO','Pe','Pa','Ed','11-8'] },
+        { name: '黃愛萍', duties: ['Ae','Na','O','Pa','Ec','11-8','WO'] },
+        { name: '王曉雯', duties: ['Ad','Ae','Na','O','WO','Pe','Pu'] },
+        { name: '丘飛鵬', duties: ['Pe','11-8','Ae','Na','O','WO','Ec'] },
+        { name: '謝玉連', duties: ['Pe','9-6','Ac','Ae','Na','O','SH'] },
+        { name: '朱翠君', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '張麗', duties: ['Ac','Ad','Ed','WO','O','Ae','Na'] },
+        { name: '謝小曼', duties: ['','','','','','',''] },
+        { name: '侯嘉敏', duties: ['O','Pe','Pe','9-6','Ae','Na','WO'] },
+        { name: '馮玉琼', duties: ['Ne','Ac','SH','O','WO','Pa','9-6'] },
+        { name: '馮嘉錂', duties: ['Ec','O','WO','Ac','Pe','Pu','Ed'] },
+        { name: '蘇靖珊', duties: ['Aa','Ne','O','Ec','Ed','WO','O'] }
       ],
       '2026-12-07': [
-        { name: '蘇靖珊', duties: ['Ed',   'Ec',   'Pa',   'O',    'WO',   'Ad',   'Ae'] },
-        { name: '葉曉彤', duties: ['Na',   'O',    'Ec',   '11-8', 'Ad',   'WO',   'Ac'] },
-        { name: '黃雅倩', duties: ['Aa',   'Ne',   'O',    'Ac',   'Pe',   'Ec',   'WO'] },
-        { name: '黃詩琪', duties: ['WO',   'Aa',   'Ne',   'O',    '9-6',  'Pu',   'Pa'] },
-        { name: '李嘉琪', duties: ['11-8', 'WO',   'Aa',   'Ne',   'O',    'OW',   'Pe'] },
-        { name: '梅潔瑜', duties: ['9-6',  'Ac',   'O',    'Aa',   'Ne',   'WO',   'Ad'] },
-        { name: '陳曦彥', duties: ['Pa',   'Ed',   'SH',   'WO',   'Aa',   'Ne',   'O'] },
-        { name: '關鉦',   duties: ['WO',   'O',    'Ad',   'Ed',   '11-8', 'Aa',   'Ne'] },
-        { name: '吳愷欣', duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '吳媛',   duties: ['Ne',   'O',    'WO',   'Pe',   'Pa',   'Ed',   '11-8'] },
-        { name: '吳珈翹', duties: ['Ae',   'Na',   'O',    'Pa',   'Ec',   '11-8', 'WO'] },
-        { name: '黃愛萍', duties: ['WO',   'Ae',   'Na',   'O',    'Ed',   'Pe',   'Ec'] },
-        { name: '王曉雯', duties: ['Pe',   '11-8', 'Ae',   'Na',   'O',    'WO',   'Aa'] },
-        { name: '丘飛鵬', duties: ['Pe',   'Pu',   '11-8', 'Ae',   'Na',   'O',    'WO'] },
-        { name: '謝玉連', duties: ['Ac',   '9-6',  'Pe',   'WO',   'Ae',   'Na',   'O'] },
-        { name: '朱翠君', duties: ['SH',   'Ad',   'Ed',   'WO',   'O',    'Ae',   'Na'] },
-        { name: '張麗',   duties: ['AL',   'AL',   'AL',   'AL',   'AL',   'WO',   'O'] },
-        { name: '謝小曼', duties: ['',     '',     '',     '',     '',     '',     ''] },
-        { name: '侯嘉敏', duties: ['Ec',   'Pa',   'WO',   'O',    'Ac',   'Ac',   'SH'] },
-        { name: '馮玉琼', duties: ['Ad',   'SH',   'Ac',   'Ec',   'Pe',   'O',    'WO'] },
-        { name: '馮嘉錂', duties: ['O',    'Pe',   '9-6',  'Ad',   'SH',   'Pa',   'Ed'] }
+        { name: '蘇靖珊', duties: ['Ed','Ec','Pa','O','WO','Ad','Ae'] },
+        { name: '葉曉彤', duties: ['Na','O','Ec','11-8','Ad','WO','Ac'] },
+        { name: '黃雅倩', duties: ['Aa','Ne','O','Ac','Pe','Ec','WO'] },
+        { name: '黃詩琪', duties: ['WO','Aa','Ne','O','9-6','Pu','Pa'] },
+        { name: '李嘉琪', duties: ['11-8','WO','Aa','Ne','O','OW','Pe'] },
+        { name: '梅潔瑜', duties: ['9-6','Ac','O','Aa','Ne','WO','Ad'] },
+        { name: '陳曦彥', duties: ['Pa','Ed','SH','WO','Aa','Ne','O'] },
+        { name: '關鉦', duties: ['WO','O','Ad','Ed','11-8','Aa','Ne'] },
+        { name: '吳愷欣', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '吳媛', duties: ['Ne','O','WO','Pe','Pa','Ed','11-8'] },
+        { name: '吳珈翹', duties: ['Ae','Na','O','Pa','Ec','11-8','WO'] },
+        { name: '黃愛萍', duties: ['WO','Ae','Na','O','Ed','Pe','Ec'] },
+        { name: '王曉雯', duties: ['Pe','11-8','Ae','Na','O','WO','Aa'] },
+        { name: '丘飛鵬', duties: ['Pe','Pu','11-8','Ae','Na','O','WO'] },
+        { name: '謝玉連', duties: ['Ac','9-6','Pe','WO','Ae','Na','O'] },
+        { name: '朱翠君', duties: ['SH','Ad','Ed','WO','O','Ae','Na'] },
+        { name: '張麗', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '謝小曼', duties: ['','','','','','',''] },
+        { name: '侯嘉敏', duties: ['Ec','Pa','WO','O','Ac','Ac','SH'] },
+        { name: '馮玉琼', duties: ['Ad','SH','Ac','Ec','Pe','O','WO'] },
+        { name: '馮嘉錂', duties: ['O','Pe','9-6','Ad','SH','Pa','Ed'] }
       ],
       '2026-12-14': [
-        { name: '馮嘉錂', duties: ['SH',     'Ec',     'Pa',     'O',      'WO',   'Ad',   'Ae'] },
-        { name: '蘇靖珊', duties: ['Na',     'O',      'Ec',     '11-8',   'Ad',   'WO',   'Ac'] },
-        { name: '葉曉彤', duties: ['Aa',     'Ne',     'O',      'Ac',     'Pe',   'Ec',   'WO'] },
-        { name: '黃雅倩', duties: ['Ad',     'Aa',     'Ne',     'WO',     'O',    'SH',   'Pa'] },
-        { name: '黃詩琪', duties: ['11-8',   'WO',     'Aa',     'Ne',   'O',    'Ac',   'Pe'] },
-        { name: '李嘉琪', duties: ['Ed',     'SH',     'O',      'Aa',     'Ne',   'WO',   'Ad'] },
-        { name: '梅潔瑜', duties: ['WO',     'Ed',     'Ed',     '9-6',    'Aa',   'Ne',   'O'] },
-        { name: '陳曦彥', duties: ['WO',     'O',      'Ad',     'Ed',     '11-8', 'Aa',   'Ne'] },
-        { name: '關鉦',   duties: ['O',      'Pa',     '11-8',   'Ad',     'Ac',   'WO',   'Aa'] },
-        { name: '吳愷欣', duties: ['Ne',     'O',      'WO',     'Pe',     'Pa',   'Ed',   '11-8'] },
-        { name: '吳媛',   duties: ['Ae',     'Na',     'O',      'Pa',     'Ec',   '11-8', 'WO'] },
-        { name: '吳珈翹', duties: ['WO',     'Ae',     'Na',     'O',      'Ed',   'Pe',   'Pu'] },
-        { name: '黃愛萍', duties: ['Pa',     '11-8',   'Ae',     'Na',     'O',    'WO',   'Ec'] },
-        { name: '王曉雯', duties: ['Pe',     'Pu',     'SH',     'Ae',     'Na',   'O',    'WO'] },
-        { name: '丘飛鵬', duties: ['Pu',     'Pe',     'Pe',     'WO',     'Ae',   'Na',   'O'] },
-        { name: '謝玉連', duties: ['Ac',     'Ad',     '9-6',    'WO',     'O',    'Ae',   'Na'] },
-        { name: '朱翠君', duties: ['AL',     'AL',     'AL',     'AL',     'AL',   'WO',   'O'] },
-        { name: '張麗',   duties: ['9-6',    'Ae',     'WO',     'Ec',     'Pe',   'Pa',   'O'] },
-        { name: '謝小曼', duties: ['[Pa]',   '[11-8]', '[Ae]',   '[Na]',   'O',    'WO',   '[Ec]'] },
-        { name: '侯嘉敏', duties: ['Ec',     '9-6',    'Ac',     'Pu',     'O',    'WO',   'Ed'] },
-        { name: '馮玉琼', duties: ['AL',     'AL',     'AL',     'AL',     'AL',   'WO',   'O'] }
+        { name: '馮嘉錂', duties: ['SH','Ec','Pa','O','WO','Ad','Ae'] },
+        { name: '蘇靖珊', duties: ['Na','O','Ec','11-8','Ad','WO','Ac'] },
+        { name: '葉曉彤', duties: ['Aa','Ne','O','Ac','Pe','Ec','WO'] },
+        { name: '黃雅倩', duties: ['Ad','Aa','Ne','WO','O','SH','Pa'] },
+        { name: '黃詩琪', duties: ['11-8','WO','Aa','Ne','O','Ac','Pe'] },
+        { name: '李嘉琪', duties: ['Ed','SH','O','Aa','Ne','WO','Ad'] },
+        { name: '梅潔瑜', duties: ['WO','Ed','Ed','9-6','Aa','Ne','O'] },
+        { name: '陳曦彥', duties: ['WO','O','Ad','Ed','11-8','Aa','Ne'] },
+        { name: '關鉦', duties: ['O','Pa','11-8','Ad','Ac','WO','Aa'] },
+        { name: '吳愷欣', duties: ['Ne','O','WO','Pe','Pa','Ed','11-8'] },
+        { name: '吳媛', duties: ['Ae','Na','O','Pa','Ec','11-8','WO'] },
+        { name: '吳珈翹', duties: ['WO','Ae','Na','O','Ed','Pe','Pu'] },
+        { name: '黃愛萍', duties: ['Pa','11-8','Ae','Na','O','WO','Ec'] },
+        { name: '王曉雯', duties: ['Pe','Pu','SH','Ae','Na','O','WO'] },
+        { name: '丘飛鵬', duties: ['Pu','Pe','Pe','WO','Ae','Na','O'] },
+        { name: '謝玉連', duties: ['Ac','Ad','9-6','WO','O','Ae','Na'] },
+        { name: '朱翠君', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '張麗', duties: ['9-6','Ae','WO','Ec','Pe','Pa','O'] },
+        { name: '謝小曼', duties: ['[Pa]','[11-8]','[Ae]','[Na]','O','WO','[Ec]'] },
+        { name: '侯嘉敏', duties: ['Ec','9-6','Ac','Pu','O','WO','Ed'] },
+        { name: '馮玉琼', duties: ['AL','AL','AL','AL','AL','WO','O'] }
       ],
       '2026-12-21': [
-        { name: '馮玉琼', duties: ['AL',     'Ec',     'Ed',     'O',      'WO',   'Ad',   'Ae'] },
-        { name: '馮嘉錂', duties: ['Na',     'O',      'Ec',     '11-8',   'Ad',   'WO',   'Ac'] },
-        { name: '蘇靖珊', duties: ['AL',     'AL',     'AL',     'AL',     'AL',   'WO',   'O'] },
-        { name: '葉曉彤', duties: ['Ad',     'Aa',     'Ne',     'WO',     'O',    'Pu',   'Pa'] },
-        { name: '黃雅倩', duties: ['11-8',   'WO',     'Aa',     'Ne',     'O',    'Ac',   'Pe'] },
-        { name: '黃詩琪', duties: ['Ed',     'SH',     'O',      'Aa',     'Ne',   'WO',   'Ad'] },
-        { name: '李嘉琪', duties: ['Pa',     'Ed',     '9-6',    'WO',     'Aa',   'Ne',   'O'] },
-        { name: '梅潔瑜', duties: ['WO',     'Ac',     'Ad',     'Ed',     'O',    'Aa',   'Ne'] },
-        { name: '陳曦彥', duties: ['O',      'Pa',     '11-8',   'Ad',     'Ed',   'WO',   'Aa'] },
-        { name: '關鉦',   duties: ['Ne',     'O',      'WO',     'Pe',     'Pa',   'Ed',   'SH'] },
-        { name: '吳愷欣', duties: ['Ae',     'Na',     'O',      'Pa',     'Ec',   '11-8', 'WO'] },
-        { name: '吳媛',   duties: ['WO',     'Ae',     'Na',     'O',      'SH',   'Pe',   'Ed'] },
-        { name: '吳珈翹', duties: ['9-6',    'SH',     'Ae',     'Na',     'O',    'WO',   'Ec'] },
-        { name: '黃愛萍', duties: ['Pe',     'Pu',     'SH',     'Ae',     'Na',   'O',    'WO'] },
-        { name: '王曉雯', duties: ['Pu',     'Pe',     'Pe',     'WO',     'Ae',   'Na',   'O'] },
-        { name: '丘飛鵬', duties: ['AL',     'AL',     'AL',     'AL',     'AL',   'WO',   'O'] },
-        { name: '謝玉連', duties: ['Ac',     'Ad',     'SH',     'WO',     'O',    'Ae',   'Na'] },
-        { name: '朱翠君', duties: ['O',      '11-8',   'Ac',     'Ec',     '11-8', 'WO',   '11-8'] },
-        { name: '張麗',   duties: ['Aa',     'Ne',     'WO',     'Ac',     'Ac',   'Pa',   'O'] },
-        { name: '謝小曼', duties: ['[Pe]',   '[Pu]',   'SH',     '[Ae]',   '[Na]', 'O',    'WO'] },
-        { name: '侯嘉敏', duties: ['Ec',     'WO',     'Pa',     'Pu',     'Pe',   'Ec',   'O'] }
+        { name: '馮玉琼', duties: ['AL','Ec','Ed','O','WO','Ad','Ae'] },
+        { name: '馮嘉錂', duties: ['Na','O','Ec','11-8','Ad','WO','Ac'] },
+        { name: '蘇靖珊', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '葉曉彤', duties: ['Ad','Aa','Ne','WO','O','Pu','Pa'] },
+        { name: '黃雅倩', duties: ['11-8','WO','Aa','Ne','O','Ac','Pe'] },
+        { name: '黃詩琪', duties: ['Ed','SH','O','Aa','Ne','WO','Ad'] },
+        { name: '李嘉琪', duties: ['Pa','Ed','9-6','WO','Aa','Ne','O'] },
+        { name: '梅潔瑜', duties: ['WO','Ac','Ad','Ed','O','Aa','Ne'] },
+        { name: '陳曦彥', duties: ['O','Pa','11-8','Ad','Ed','WO','Aa'] },
+        { name: '關鉦', duties: ['Ne','O','WO','Pe','Pa','Ed','SH'] },
+        { name: '吳愷欣', duties: ['Ae','Na','O','Pa','Ec','11-8','WO'] },
+        { name: '吳媛', duties: ['WO','Ae','Na','O','SH','Pe','Ed'] },
+        { name: '吳珈翹', duties: ['9-6','SH','Ae','Na','O','WO','Ec'] },
+        { name: '黃愛萍', duties: ['Pe','Pu','SH','Ae','Na','O','WO'] },
+        { name: '王曉雯', duties: ['Pu','Pe','Pe','WO','Ae','Na','O'] },
+        { name: '丘飛鵬', duties: ['AL','AL','AL','AL','AL','WO','O'] },
+        { name: '謝玉連', duties: ['Ac','Ad','SH','WO','O','Ae','Na'] },
+        { name: '朱翠君', duties: ['O','11-8','Ac','Ec','11-8','WO','11-8'] },
+        { name: '張麗', duties: ['Aa','Ne','WO','Ac','Ac','Pa','O'] },
+        { name: '謝小曼', duties: ['[Pe]','[Pu]','SH','[Ae]','[Na]','O','WO'] },
+        { name: '侯嘉敏', duties: ['Ec','WO','Pa','Pu','Pe','Ec','O'] }
       ]
     };
 
@@ -1047,10 +916,10 @@
     let manualShiftOverride = 'AUTO';
     let targetDateStr = formatLocalDate(new Date());
     let calendarViewDate = new Date();
-    let currentHorizontalPage = 1; // 預設顯示中間的主控資訊頁 (0=更表, 1=主頁, 2=九巴ETA)
+    let currentHorizontalPage = 1;
     let currentVerticalSlide = 0;
-    let currentHubSlide = 1; // 0=QR碼(上), 1=主頁(中), 2=行事曆+iOS行程(下)
-    let iosCalendarEvents = {}; // { 'YYYY-MM-DD': [ { time: '09:30', title: '...' } ] }
+    let currentHubSlide = 1;
+    let iosCalendarEvents = {};
 
     function parseLocalDate(dateStr) {
       const [y, m, d] = dateStr.split('-').map(Number);
@@ -1071,34 +940,19 @@
       return formatLocalDate(d);
     }
 
-    // ==========================================
-    // 1. 中控主頁：農曆生肖、節日、天氣警告、電量、iOS日曆、QR碼
-    // ==========================================
     function getLunarAndFestival(dateObj) {
-      let lunarText = '';
-      let lunarMonthNum = 0;
-      let lunarDayNum = 0;
-
-      const STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-      const BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-      const ZODIACS = ['鼠', '牛', '虎', '兔', '龍', '蛇', '馬', '羊', '猴', '雞', '狗', '豬'];
-      const CN_DAYS = [
-        '', '初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
-        '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
-        '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'
-      ];
+      let lunarText = '', lunarMonthNum = 0, lunarDayNum = 0;
+      const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+      const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+      const ZODIACS = ['鼠','牛','虎','兔','龍','蛇','馬','羊','猴','雞','狗','豬'];
+      const CN_DAYS = ['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
 
       try {
-        const fmt = new Intl.DateTimeFormat('zh-HK-u-ca-chinese', {
-          year: 'numeric', month: 'long', day: 'numeric'
-        });
-        const parts = fmt.formatToParts(dateObj);
+        const parts = new Intl.DateTimeFormat('zh-HK-u-ca-chinese', { year: 'numeric', month: 'long', day: 'numeric' }).formatToParts(dateObj);
         const map = {};
         parts.forEach(p => { map[p.type] = p.value; });
 
-        const numParts = new Intl.DateTimeFormat('en-US-u-ca-chinese', {
-          year: 'numeric', month: 'numeric', day: 'numeric'
-        }).formatToParts(dateObj);
+        const numParts = new Intl.DateTimeFormat('en-US-u-ca-chinese', { year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(dateObj);
         let cycleYear = 0;
         numParts.forEach(p => {
           if (p.type === 'year') cycleYear = parseInt(p.value, 10) || 0;
@@ -1106,43 +960,26 @@
           if (p.type === 'day') lunarDayNum = parseInt(p.value, 10) || 0;
         });
 
-        let ganzhi = map.yearName || '';
-        let zodiac = '';
+        let ganzhi = map.yearName || '', zodiac = '';
         if (cycleYear > 0) {
           const idx = (cycleYear - 1) % 60;
           ganzhi = STEMS[idx % 10] + BRANCHES[idx % 12];
           zodiac = ZODIACS[idx % 12];
-        } else if (ganzhi && ganzhi.length >= 2) {
+        } else if (ganzhi.length >= 2) {
           const bIdx = BRANCHES.indexOf(ganzhi[1]);
           if (bIdx >= 0) zodiac = ZODIACS[bIdx];
         }
-
         const mo = map.month || '';
         const dy = CN_DAYS[lunarDayNum] || (map.day ? `${map.day}日` : '');
-        const zodiacSuffix = zodiac ? `（${zodiac}年）` : '';
-        lunarText = `農曆 ${ganzhi}年${zodiacSuffix}${mo}${dy}`;
+        lunarText = `${ganzhi}${zodiac ? `(${zodiac})` : ''}${mo}${dy}`;
       } catch {
-        lunarText = '農曆 丙午年（馬年）十月十八日';
+        lunarText = '丙午(馬)十月十八';
       }
 
-      const gMonth = dateObj.getMonth() + 1;
-      const gDay = dateObj.getDate();
-
-      const GREGORIAN_FESTIVALS = {
-        '1-1': '元旦', '2-14': '情人節', '4-4': '兒童節', '4-5': '清明節',
-        '5-1': '勞動節', '7-1': '特區成立日', '10-1': '國慶日', '10-31': '萬聖節',
-        '12-21': '冬至', '12-24': '平安夜', '12-25': '聖誕節', '12-31': '除夕'
-      };
-      const LUNAR_FESTIVALS = {
-        '1-1': '農曆年初一', '1-2': '年初二', '1-3': '年初三', '1-15': '元宵節',
-        '5-5': '端午節', '7-7': '七夕', '7-15': '盂蘭節', '8-15': '中秋節',
-        '8-16': '中秋翌日', '9-9': '重陽節', '12-8': '臘八節', '12-30': '年三十'
-      };
-
-      const fest = LUNAR_FESTIVALS[`${lunarMonthNum}-${lunarDayNum}`]
-        || GREGORIAN_FESTIVALS[`${gMonth}-${gDay}`]
-        || (lunarDayNum === 1 ? '初一' : (lunarDayNum === 15 ? '十五' : '平日'));
-
+      const gMonth = dateObj.getMonth() + 1, gDay = dateObj.getDate();
+      const G_FEST = { '1-1': '元旦', '2-14': '情人節', '4-4': '兒童節', '4-5': '清明節', '5-1': '勞動節', '7-1': '特區日', '10-1': '國慶日', '10-31': '萬聖節', '12-21': '冬至', '12-24': '平安夜', '12-25': '聖誕節', '12-31': '除夕' };
+      const L_FEST = { '1-1': '年初一', '1-2': '年初二', '1-3': '年初三', '1-15': '元宵節', '5-5': '端午節', '7-7': '七夕', '7-15': '盂蘭節', '8-15': '中秋節', '8-16': '中秋翌', '9-9': '重陽節', '12-8': '臘八節', '12-30': '年三十' };
+      const fest = L_FEST[`${lunarMonthNum}-${lunarDayNum}`] || G_FEST[`${gMonth}-${gDay}`] || (lunarDayNum === 1 ? '初一' : (lunarDayNum === 15 ? '十五' : '平日'));
       return { lunarText, fest };
     }
 
@@ -1151,30 +988,22 @@
       const hh = String(now.getHours()).padStart(2, '0');
       const mm = String(now.getMinutes()).padStart(2, '0');
       const ss = String(now.getSeconds()).padStart(2, '0');
-
-      const topClock = document.getElementById('watch-clock');
-      if (topClock) topClock.textContent = `${hh}:${mm}`;
-
-      const liveTimeEl = document.getElementById('hub-live-time');
-      if (liveTimeEl) {
-        liveTimeEl.innerHTML = `${hh}:${mm}<span class="text-[16px] text-[#30D158] font-extrabold ml-0.5">:${ss}</span>`;
-      }
+      document.getElementById('hub-live-time').innerHTML = `${hh}:${mm}<span class="clock-sec">:${ss}</span>`;
 
       const dObj = parseLocalDate(targetDateStr);
       const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-      const dateLabel = `${dObj.getFullYear()}年${dObj.getMonth() + 1}月${dObj.getDate()}日 ${weekdays[dObj.getDay()]}`;
-      const dateEl = document.getElementById('hub-gregorian-date');
-      if (dateEl) dateEl.textContent = dateLabel;
+      document.getElementById('hub-gregorian-date').textContent = `${dObj.getMonth() + 1}月${dObj.getDate()}日 ${weekdays[dObj.getDay()]}`;
 
       const { lunarText, fest } = getLunarAndFestival(dObj);
-      const lunarEl = document.getElementById('hub-lunar-date');
+      document.getElementById('hub-lunar-date').textContent = lunarText;
       const festEl = document.getElementById('hub-festival-badge');
-      if (lunarEl) lunarEl.textContent = lunarText;
-      if (festEl) {
-        festEl.textContent = fest;
-        festEl.className = fest === '平日'
-          ? 'text-[10px] font-bold px-2 py-0.5 rounded-lg bg-white/10 text-white/70 flex-shrink-0'
-          : 'text-[10px] font-black px-2 py-0.5 rounded-lg bg-red-500/25 text-red-300 border border-red-500/40 flex-shrink-0';
+      festEl.textContent = fest;
+      if (fest === '平日') {
+        festEl.style.background = 'rgba(255,255,255,0.12)';
+        festEl.style.color = '#e4e4e7';
+      } else {
+        festEl.style.background = 'rgba(239,68,68,0.32)';
+        festEl.style.color = '#fca5a5';
       }
     }
 
@@ -1184,10 +1013,9 @@
       updateHubClockAndDate();
       renderDutyViews();
       renderHubCalendar();
-      showToast(`${targetDateStr}`);
+      showToast(targetDateStr);
     }
 
-    // 定位氣象 + 香港天文台天氣警告
     function getBeaufortScale(kmh) {
       if (kmh < 1) return '0級';
       if (kmh <= 5) return '1級';
@@ -1208,24 +1036,21 @@
         const res = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc', { cache: 'no-store' });
         const data = await res.json();
         const activeList = Object.values(data || {}).filter(w => w && w.actionCode !== 'CANCEL' && w.name);
-
         if (activeList.length === 0) {
-          warnEl.textContent = '無天氣警告';
-          warnEl.className = 'px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 truncate max-w-[135px]';
+          warnEl.textContent = '無警告';
+          warnEl.className = 'warn-pill';
         } else {
-          const names = activeList.map(w => w.name.replace(/警告信號|警告/g, '')).join('·');
-          warnEl.textContent = `⚠️ ${names}`;
-          warnEl.className = 'px-1.5 py-0.5 rounded bg-red-600/90 text-white font-black border border-red-400 animate-pulse truncate max-w-[145px]';
+          warnEl.textContent = `⚠️${activeList.map(w => w.name.replace(/警告信號|警告/g, '')).join('·')}`;
+          warnEl.className = 'warn-pill alert';
         }
       } catch {
-        warnEl.textContent = '天文台警告連線中';
+        warnEl.textContent = '警告連線中';
       }
     }
 
     function fetchLocationWeather(manual = false) {
       const locEl = document.getElementById('hub-weather-loc');
-      if (manual && locEl) locEl.textContent = '📍 更新氣象中...';
-
+      if (manual && locEl) locEl.textContent = '📍 更新中';
       fetchHkoWeatherWarnings();
 
       const loadByCoords = async (lat, lng, label) => {
@@ -1237,14 +1062,13 @@
           const temp = cur.temperature_2m !== undefined ? `${Math.round(cur.temperature_2m)}°C` : '--°C';
           const rain = cur.precipitation !== undefined ? `${Number(cur.precipitation).toFixed(1)}mm` : '0.0mm';
           const windKmh = Number(cur.wind_speed_10m || 0);
-
           document.getElementById('hub-weather-loc').textContent = `📍 ${label}`;
           document.getElementById('hub-weather-temp').textContent = temp;
           document.getElementById('hub-weather-rain').textContent = rain;
           document.getElementById('hub-weather-wind').textContent = getBeaufortScale(windKmh);
-          if (manual) showToast(`氣象已更新：${temp} · ${rain}`);
+          if (manual) showToast(`${temp} · ${rain}`);
         } catch {
-          if (locEl) locEl.textContent = '⚠️ 氣象連線失敗';
+          if (locEl) locEl.textContent = '⚠️ 氣象失敗';
         }
       };
 
@@ -1252,7 +1076,6 @@
         loadByCoords(22.3119, 114.1746, '九龍');
         return;
       }
-
       navigator.geolocation.getCurrentPosition(
         (pos) => loadByCoords(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4), '目前定位'),
         () => loadByCoords(22.3119, 114.1746, '香港'),
@@ -1260,40 +1083,17 @@
       );
     }
 
-    // 電話與 Apple Watch 即時電量顯示（置於時間上方）
     function initBatteryMonitor() {
       const params = new URLSearchParams(window.location.search);
       const pUrl = params.get('phoneBat') || params.get('phone');
       const wUrl = params.get('watchBat') || params.get('watch');
-
-      if (pUrl) localStorage.setItem('hub_phone_bat', pUrl);
-      if (wUrl) localStorage.setItem('hub_watch_bat', wUrl);
+      if (pUrl) localStorage.setItem('hub_phone_bat', pUrl.trim());
+      if (wUrl) localStorage.setItem('hub_watch_bat', wUrl.trim());
 
       const savedPhone = localStorage.getItem('hub_phone_bat');
       const savedWatch = localStorage.getItem('hub_watch_bat');
-
       if (savedPhone) document.getElementById('hub-phone-bat').textContent = `${savedPhone}%`;
       if (savedWatch) document.getElementById('hub-watch-bat').textContent = `${savedWatch}%`;
-
-      if (navigator.getBattery) {
-        navigator.getBattery().then(bat => {
-          const updateLocalBat = () => {
-            const pct = Math.round(bat.level * 100);
-            const charging = bat.charging ? '⚡' : '';
-            const isSmallWatch = window.innerWidth < 360;
-            if (isSmallWatch) {
-              document.getElementById('hub-watch-bat').textContent = `${charging}${pct}%`;
-              localStorage.setItem('hub_watch_bat', String(pct));
-            } else {
-              document.getElementById('hub-phone-bat').textContent = `${charging}${pct}%`;
-              localStorage.setItem('hub_phone_bat', String(pct));
-            }
-          };
-          updateLocalBat();
-          bat.addEventListener('levelchange', updateLocalBat);
-          bat.addEventListener('chargingchange', updateLocalBat);
-        }).catch(() => {});
-      }
     }
 
     function promptManualBattery() {
@@ -1302,73 +1102,33 @@
       const input = prompt('輸入「電話電量,Watch電量」(例如 85,92)：', `${curP},${curW}`);
       if (!input) return;
       const [p, w] = input.split(',').map(s => s.trim().replace('%', ''));
-      if (p && !isNaN(Number(p))) {
-        localStorage.setItem('hub_phone_bat', p);
-        document.getElementById('hub-phone-bat').textContent = `${p}%`;
-      }
-      if (w && !isNaN(Number(w))) {
-        localStorage.setItem('hub_watch_bat', w);
-        document.getElementById('hub-watch-bat').textContent = `${w}%`;
-      }
-      showToast('已更新電量顯示');
+      if (p && !isNaN(Number(p))) { localStorage.setItem('hub_phone_bat', p); document.getElementById('hub-phone-bat').textContent = `${p}%`; }
+      if (w && !isNaN(Number(w))) { localStorage.setItem('hub_watch_bat', w); document.getElementById('hub-watch-bat').textContent = `${w}%`; }
+      showToast('已更新電量');
     }
 
-    // 生成兩張登入 QR Code（Mail & CMS）
     function renderLoginQrCodes() {
-      if (typeof QRCode === 'undefined') return;
-      const mailBox = document.getElementById('qr-card-mail');
-      const cmsBox = document.getElementById('qr-card-cms');
-      if (mailBox && mailBox.innerHTML === '') {
-        new QRCode(mailBox, {
-          text: QR_PAYLOADS.MAIL.text,
-          width: 96, height: 96,
-          colorDark: '#000000', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
-      if (cmsBox && cmsBox.innerHTML === '') {
-        new QRCode(cmsBox, {
-          text: QR_PAYLOADS.CMS.text,
-          width: 96, height: 96,
-          colorDark: '#000000', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
+      const mailImg = document.getElementById('qr-img-mail');
+      const cmsImg = document.getElementById('qr-img-cms');
+      if (mailImg) mailImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(QR_PAYLOADS.MAIL.text)}`;
+      if (cmsImg) cmsImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(QR_PAYLOADS.CMS.text)}`;
     }
 
     function openQrZoom(type) {
       const item = QR_PAYLOADS[type];
       if (!item) return;
       document.getElementById('qr-zoom-title').textContent = item.title;
-      const canvasBox = document.getElementById('qr-zoom-canvas');
-      canvasBox.innerHTML = '';
-      if (typeof QRCode !== 'undefined') {
-        new QRCode(canvasBox, {
-          text: item.text,
-          width: 190, height: 190,
-          colorDark: '#000000', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
-      document.getElementById('qr-zoom-modal').classList.remove('hidden');
+      document.getElementById('qr-zoom-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(item.text)}`;
+      document.getElementById('qr-zoom-modal').classList.add('show');
     }
+    function closeQrZoom() { document.getElementById('qr-zoom-modal').classList.remove('show'); }
 
-    function closeQrZoom() {
-      document.getElementById('qr-zoom-modal').classList.add('hidden');
-    }
-
-    // ==========================================
-    // iOS 日曆 (.ics / 捷徑參數) 匯入與當日行程解析
-    // ==========================================
     function loadSavedIosEvents() {
       try {
         const raw = localStorage.getItem(IOS_CAL_STORAGE_KEY);
         if (raw) iosCalendarEvents = JSON.parse(raw) || {};
-      } catch {
-        iosCalendarEvents = {};
-      }
+      } catch { iosCalendarEvents = {}; }
 
-      // 支援透過 iOS 捷徑 URL 參數傳入當日行程，例如 ?calDate=2026-11-26&calEvents=09:00 牙科覆診|14:30 接仔放學
       const params = new URLSearchParams(window.location.search);
       const urlEvents = params.get('calEvents') || params.get('events');
       const urlDate = params.get('calDate') || formatLocalDate(new Date());
@@ -1389,18 +1149,11 @@
       const unfolded = icsText.replace(/\r?\n[ \t]/g, '');
       const lines = unfolded.split(/\r?\n/);
       const map = {};
-      let inEvent = false;
-      let curDate = '';
-      let curTime = '全日';
-      let curSummary = '';
+      let inEvent = false, curDate = '', curTime = '全日', curSummary = '';
 
       for (const line of lines) {
-        if (line === 'BEGIN:VEVENT') {
-          inEvent = true;
-          curDate = '';
-          curTime = '全日';
-          curSummary = '';
-        } else if (line === 'END:VEVENT') {
+        if (line === 'BEGIN:VEVENT') { inEvent = true; curDate = ''; curTime = '全日'; curSummary = ''; }
+        else if (line === 'END:VEVENT') {
           if (inEvent && curDate && curSummary) {
             if (!map[curDate]) map[curDate] = [];
             map[curDate].push({ time: curTime, title: curSummary });
@@ -1419,10 +1172,7 @@
           }
         }
       }
-
-      Object.keys(map).forEach(d => {
-        map[d].sort((a, b) => a.time.localeCompare(b.time));
-      });
+      Object.keys(map).forEach(d => map[d].sort((a, b) => a.time.localeCompare(b.time)));
       return map;
     }
 
@@ -1431,17 +1181,13 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
-        const text = String(ev.target.result || '');
-        const imported = parseIcsContent(text);
+        const imported = parseIcsContent(String(ev.target.result || ''));
         const daysCount = Object.keys(imported).length;
-        if (daysCount === 0) {
-          showToast('未讀取到日曆事件');
-          return;
-        }
+        if (daysCount === 0) { showToast('未讀取到日曆'); return; }
         iosCalendarEvents = { ...iosCalendarEvents, ...imported };
         localStorage.setItem(IOS_CAL_STORAGE_KEY, JSON.stringify(iosCalendarEvents));
         renderHubCalendar();
-        showToast(`✅ 已匯入 ${daysCount} 天 iOS 行程`);
+        showToast(`✅ 匯入 ${daysCount} 天行程`);
       };
       reader.readAsText(file);
       e.target.value = '';
@@ -1463,9 +1209,7 @@
       const todayStr = formatLocalDate(new Date());
 
       const cells = [];
-      for (let i = 0; i < firstDayWeek; i++) {
-        cells.push(`<div></div>`);
-      }
+      for (let i = 0; i < firstDayWeek; i++) cells.push(`<div></div>`);
 
       for (let d = 1; d <= daysInMonth; d++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -1475,35 +1219,34 @@
         const hasEvent = Array.isArray(iosCalendarEvents[dStr]) && iosCalendarEvents[dStr].length > 0;
         const isOff = duty === 'O' || duty === 'WO' || duty === 'AL' || duty === 'SH';
 
-        let bgCls = 'bg-[#1C1C1E]/85 text-white';
-        if (isToday) bgCls = 'bg-[#0A84FF] text-white font-black';
-        else if (isSelected) bgCls = 'bg-[#30D158]/25 border border-[#30D158] text-white';
+        let cls = 'cal-cell btn';
+        if (isToday) cls += ' today';
+        else if (isSelected) cls += ' selected';
 
-        const dutyColor = isOff ? 'text-amber-300' : 'text-emerald-400';
-        const dotHtml = hasEvent ? `<span class="w-1 h-1 rounded-full bg-amber-400 inline-block ml-0.5"></span>` : '';
+        const dutyColor = isToday ? '#fff' : (isOff ? '#fcd34d' : '#34d399');
+        const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#fbbf24;display:inline-block;margin-left:1px;"></span>` : '';
 
         cells.push(`
-          <button onclick="selectCalendarDate('${dStr}')" class="watch-btn rounded-md py-0.5 flex flex-col items-center justify-center ${bgCls}">
-            <span class="text-[9.5px] leading-tight font-bold flex items-center">${d}${dotHtml}</span>
-            <span class="text-[7.5px] leading-none ${isToday ? 'text-white/90' : dutyColor} font-extrabold">${duty || '-'}</span>
+          <button onclick="selectCalendarDate('${dStr}')" class="${cls}">
+            <span style="font-size:13px;line-height:1.1;font-weight:900;display:flex;align-items:center;">${d}${dotHtml}</span>
+            <span style="font-size:10.5px;line-height:1.05;color:${dutyColor};font-weight:900;">${duty || '-'}</span>
           </button>
         `);
       }
 
       document.getElementById('hub-calendar-grid').innerHTML = cells.join('');
-
       const selDuty = getMyDutyCodeForDate(targetDateStr);
       document.getElementById('cal-selected-duty').textContent = `${targetDateStr.slice(5)} 更期：${selDuty || '無資料'}`;
 
       const eventsBox = document.getElementById('cal-day-events');
       const dayEvents = iosCalendarEvents[targetDateStr] || [];
       if (dayEvents.length === 0) {
-        eventsBox.innerHTML = `<div class="text-white/45 text-[9.5px]">當日無 iOS 行程（點右上「+iOS日曆」匯入 .ics）</div>`;
+        eventsBox.innerHTML = `<div style="color:#a1a1aa;font-size:13px;">當日無行程</div>`;
       } else {
         eventsBox.innerHTML = dayEvents.map(ev => `
-          <div class="flex items-center gap-1.5 bg-black/45 rounded-lg px-1.5 py-0.5 border-l-2 border-amber-400">
-            <span class="text-[9px] font-black text-amber-300 tabular-nums shrink-0">${escapeHtmlDuty(ev.time)}</span>
-            <span class="text-[10px] font-bold text-white truncate">${escapeHtmlDuty(ev.title)}</span>
+          <div style="display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.5);border-radius:7px;padding:3px 6px;border-left:3px solid #fbbf24;">
+            <span class="tabular" style="font-size:13px;font-weight:900;color:#fcd34d;flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
+            <span style="font-size:14px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
           </div>
         `).join('');
       }
@@ -1513,7 +1256,6 @@
       calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
       renderHubCalendar();
     }
-
     function resetCalendarToToday() {
       const now = new Date();
       targetDateStr = formatLocalDate(now);
@@ -1522,7 +1264,6 @@
       renderDutyViews();
       renderHubCalendar();
     }
-
     function selectCalendarDate(dateStr) {
       targetDateStr = dateStr;
       updateHubClockAndDate();
@@ -1530,21 +1271,15 @@
       renderHubCalendar();
     }
 
-    // ==========================================
-    // 2. 21人更表引擎
-    // ==========================================
     async function syncFromMainDutySystem(showFeedback = false) {
       let sourceLabel = '內置 21 人循環更表';
       try {
         const localRaw = localStorage.getItem(MAIN_STORAGE_KEY);
         if (localRaw) {
           const parsed = JSON.parse(localRaw);
-          if (parsed && parsed.weeks) {
-            syncedWeeks = parsed.weeks;
-            sourceLabel = '本機主更表 (已同步)';
-          }
+          if (parsed && parsed.weeks) { syncedWeeks = parsed.weeks; sourceLabel = '本機主更表 (已同步)'; }
         }
-      } catch (e) {}
+      } catch {}
 
       try {
         const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-store' });
@@ -1553,18 +1288,18 @@
           if (remote && remote.weeks) {
             syncedWeeks = { ...syncedWeeks, ...remote.weeks };
             sourceLabel = '☁ 雲端資料庫 (最新)';
-            document.getElementById('sync-dot').className = 'w-1.5 h-1.5 rounded-full bg-[#30D158]';
+            document.getElementById('sync-dot').style.background = '#30D158';
           }
         }
-      } catch (e) {
-        document.getElementById('sync-dot').className = 'w-1.5 h-1.5 rounded-full bg-[#FF9F0A]';
+      } catch {
+        document.getElementById('sync-dot').style.background = '#FF9F0A';
       }
 
       const infoEl = document.getElementById('duty-source-info');
       if (infoEl) infoEl.textContent = `來源：${sourceLabel}`;
       renderDutyViews();
       renderHubCalendar();
-      if (showFeedback) showToast('已同步最新更表資料');
+      if (showFeedback) showToast('已同步最新更表');
     }
 
     function getRosterForDate(dateStr) {
@@ -1599,39 +1334,20 @@
           if (parts[1] === 'N') rawCode = parts[0] === 'Ae' ? 'Ne' : 'Na';
           else if (parts[0] === 'SH' && parts[1] !== '替') rawCode = parts[1];
         }
-        return {
-          name: MASTER_21_ROTATION[staffIdx],
-          code: rawCode
-        };
+        return { name: MASTER_21_ROTATION[staffIdx], code: rawCode };
       }).filter(x => x.name && x.code);
     }
 
     function classifyStaffByShift(dateStr, shiftCode) {
       const list = getRosterForDate(dateStr);
       const result = [];
-
       for (const item of list) {
         const raw = item.code;
         if (raw.startsWith('[') && raw.endsWith(']')) continue;
-
-        if (shiftCode === 'A') {
-          if (['Aa', 'Ac', 'Ad', 'Ae', '9-6', '9/5', '11-8', '11/8'].includes(raw)) {
-            result.push({
-              name: item.name,
-              code: raw,
-              post: POST_DETAILS[raw]?.post || 'AED Duty',
-              order: POST_DETAILS[raw]?.order || 99
-            });
-          }
-        } else if (shiftCode === 'P') {
-          if (['Pa', 'Ec', 'Pe', 'Ed', 'Pu', '11-8', '11/8'].includes(raw)) {
-            result.push({
-              name: item.name,
-              code: raw,
-              post: POST_DETAILS[raw]?.post || 'AED Duty',
-              order: POST_DETAILS[raw]?.order || 99
-            });
-          }
+        if (shiftCode === 'A' && ['Aa','Ac','Ad','Ae','9-6','9/5','11-8','11/8'].includes(raw)) {
+          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED Duty', order: POST_DETAILS[raw]?.order || 99 });
+        } else if (shiftCode === 'P' && ['Pa','Ec','Pe','Ed','Pu','11-8','11/8'].includes(raw)) {
+          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED Duty', order: POST_DETAILS[raw]?.order || 99 });
         }
       }
       return result.sort((a, b) => a.order - b.order);
@@ -1640,15 +1356,9 @@
     function getShiftRosterSmart(dateStr, shiftCode) {
       if (shiftCode === 'N') {
         const nextDay = addDays(dateStr, 1);
-        const nextList = getRosterForDate(nextDay);
-        return nextList
+        return getRosterForDate(nextDay)
           .filter(x => !x.code.startsWith('[') && (x.code === 'Na' || x.code === 'Ne'))
-          .map(x => ({
-            name: x.name,
-            code: x.code,
-            post: POST_DETAILS[x.code]?.post || '夜更當值',
-            order: POST_DETAILS[x.code]?.order || 99
-          }))
+          .map(x => ({ name: x.name, code: x.code, post: POST_DETAILS[x.code]?.post || '夜更當值', order: POST_DETAILS[x.code]?.order || 99 }))
           .sort((a, b) => a.order - b.order);
       }
       return classifyStaffByShift(dateStr, shiftCode);
@@ -1671,31 +1381,31 @@
       const nextShiftDate = (currCode === 'N') ? addDays(targetDateStr, 1) : targetDateStr;
 
       const dObj = parseLocalDate(targetDateStr);
-      const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+      const weekdays = ['日','一','二','三','四','五','六'];
       document.getElementById('current-date-str').textContent = `${String(dObj.getMonth() + 1).padStart(2, '0')}/${String(dObj.getDate()).padStart(2, '0')}(${weekdays[dObj.getDay()]})`;
       document.getElementById('watch-date-input').value = targetDateStr;
 
       const currBadge = document.getElementById('current-shift-badge');
       currBadge.textContent = currMeta.label;
       currBadge.style.color = currMeta.color;
-      currBadge.style.borderColor = currMeta.color + '55';
-      currBadge.style.backgroundColor = currMeta.color + '22';
+      currBadge.style.borderColor = currMeta.color + '88';
+      currBadge.style.backgroundColor = currMeta.color + '26';
       document.getElementById('current-shift-time').textContent = currMeta.time;
 
       const currList = getShiftRosterSmart(targetDateStr, currCode);
-      document.getElementById('current-headcount').textContent = `${currList.length} 人當值`;
+      document.getElementById('current-headcount').textContent = `${currList.length} 人`;
       renderStaffCards('current-staff-list', currList);
 
       const nextBadge = document.getElementById('next-shift-badge');
       nextBadge.textContent = nextMeta.label;
       nextBadge.style.color = nextMeta.color;
-      nextBadge.style.borderColor = nextMeta.color + '55';
-      nextBadge.style.backgroundColor = nextMeta.color + '22';
+      nextBadge.style.borderColor = nextMeta.color + '88';
+      nextBadge.style.backgroundColor = nextMeta.color + '26';
       document.getElementById('next-shift-time').textContent = nextMeta.time;
-      document.getElementById('next-date-hint').textContent = currCode === 'N' ? `明早 (${nextShiftDate.slice(5)})` : '接更預覽';
+      document.getElementById('next-date-hint').textContent = currCode === 'N' ? `明早(${nextShiftDate.slice(5)})` : '接更';
 
       const nextList = getShiftRosterSmart(nextShiftDate, nextCode);
-      document.getElementById('next-headcount').textContent = `${nextList.length} 人接更`;
+      document.getElementById('next-headcount').textContent = `${nextList.length} 人`;
       renderStaffCards('next-staff-list', nextList);
     }
 
@@ -1706,31 +1416,22 @@
     function renderStaffCards(containerId, staffArray) {
       const container = document.getElementById(containerId);
       if (!staffArray.length) {
-        container.innerHTML = `<div class="text-center text-white/40 text-[11px] py-6">暫無當更資料</div>`;
+        container.innerHTML = `<div style="text-align:center;color:#71717a;font-size:15px;padding:24px 0;">暫無當更資料</div>`;
         return;
       }
-
       container.innerHTML = staffArray.map(person => {
         const isMe = person.name.includes('陳曦彥');
         const isMid = person.code === '11-8' || person.code === '9-6';
-
-        let cardBorder = 'border-white/5';
-        let badgeHtml = `<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-white/10 text-white/90">${escapeHtmlDuty(person.code)}</span>`;
-
-        if (isMe) {
-          cardBorder = 'border-[#30D158]/60 bg-[#30D158]/15';
-          badgeHtml = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#30D158] text-black">我 · ${escapeHtmlDuty(person.code)}</span>`;
-        } else if (isMid) {
-          badgeHtml = `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">${escapeHtmlDuty(person.code)}</span>`;
-        }
-
+        const cardCls = isMe ? 'staff-card me' : 'staff-card';
+        const badgeCls = isMe ? 'post-badge me' : (isMid ? 'post-badge mid' : 'post-badge');
+        const badgeTxt = isMe ? `我·${escapeHtmlDuty(person.code)}` : escapeHtmlDuty(person.code);
         return `
-          <div class="bg-[#1C1C1E] border ${cardBorder} rounded-2xl px-2.5 py-1.5 flex items-center justify-between">
-            <div class="min-w-0">
-              <div class="text-[13px] font-extrabold text-white truncate">${escapeHtmlDuty(person.name)}</div>
-              <div class="text-[9.5px] text-white/50 truncate">${escapeHtmlDuty(person.post)}</div>
+          <div class="${cardCls}">
+            <div style="min-width:0;">
+              <div style="font-size:20px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.15;">${escapeHtmlDuty(person.name)}</div>
+              <div style="font-size:13px;color:#a1a1aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${escapeHtmlDuty(person.post)}</div>
             </div>
-            <div class="shrink-0 ml-1.5">${badgeHtml}</div>
+            <div style="flex-shrink:0;margin-left:6px;"><span class="${badgeCls}">${badgeTxt}</span></div>
           </div>
         `;
       }).join('');
@@ -1742,16 +1443,9 @@
       renderDutyViews();
       renderHubCalendar();
     }
-
     function onDatePickerChange(val) {
-      if (val) {
-        targetDateStr = val;
-        updateHubClockAndDate();
-        renderDutyViews();
-        renderHubCalendar();
-      }
+      if (val) { targetDateStr = val; updateHubClockAndDate(); renderDutyViews(); renderHubCalendar(); }
     }
-
     function resetToToday() {
       targetDateStr = formatLocalDate(new Date());
       manualShiftOverride = 'AUTO';
@@ -1760,12 +1454,9 @@
       renderDutyViews();
       renderHubCalendar();
       closeSettingsModal();
-      showToast('已返回今日實時更次');
+      showToast('已返回今日');
     }
 
-    // ==========================================
-    // 3. 三頁 2D 導航與全向滑動手勢控制
-    // ==========================================
     const horizontalTrack = document.getElementById('horizontal-track');
     const verticalSnap = document.getElementById('vertical-snap');
     const hubVerticalSnap = document.getElementById('hub-vertical-snap');
@@ -1778,113 +1469,89 @@
       const dotBus = document.getElementById('dot-bus');
       const topLabel = document.getElementById('top-page-label');
 
-      dotDuty.className = pageIndex === 0 ? 'w-2.5 h-1.5 rounded-full bg-[#30D158] transition-all' : 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all';
-      dotHub.className = pageIndex === 1 ? 'w-2.5 h-1.5 rounded-full bg-[#0A84FF] transition-all' : 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all';
-      dotBus.className = pageIndex === 2 ? 'w-2.5 h-1.5 rounded-full bg-[#E3001B] transition-all' : 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all';
+      dotDuty.className = pageIndex === 0 ? 'dot active-duty' : 'dot';
+      dotHub.className = pageIndex === 1 ? 'dot active-hub' : 'dot';
+      dotBus.className = pageIndex === 2 ? 'dot active-bus' : 'dot';
 
       if (pageIndex === 0) topLabel.textContent = '更表';
       else if (pageIndex === 1) topLabel.textContent = '主頁';
       else {
-        topLabel.textContent = '九巴 Watch';
+        topLabel.textContent = '巴士';
         if (window.detectWatchAutoGroup) window.detectWatchAutoGroup();
         if (window.refreshWatchEtas) window.refreshWatchEtas(false);
       }
     }
 
-    function cycleHorizontalPage() {
-      goToPage((currentHorizontalPage + 1) % 3);
-    }
+    function cycleHorizontalPage() { goToPage((currentHorizontalPage + 1) % 3); }
 
     function scrollToShift(slideIdx) {
       currentVerticalSlide = slideIdx;
       verticalSnap.scrollTo({ top: slideIdx * verticalSnap.clientHeight, behavior: 'smooth' });
-      updateVerticalDots(slideIdx);
+      document.getElementById('v-dot-0').className = slideIdx === 0 ? 'v-dot on' : 'v-dot';
+      document.getElementById('v-dot-1').className = slideIdx === 1 ? 'v-dot on-blue' : 'v-dot';
     }
-
-    function updateVerticalDots(idx) {
-      const d0 = document.getElementById('v-dot-0');
-      const d1 = document.getElementById('v-dot-1');
-      d0.className = idx === 0 ? 'w-1 h-3 rounded-full bg-white transition-all' : 'w-1 h-1.5 rounded-full bg-white/30 transition-all';
-      d1.className = idx === 1 ? 'w-1 h-3 rounded-full bg-[#0A84FF] transition-all' : 'w-1 h-1.5 rounded-full bg-white/30 transition-all';
-    }
-
     verticalSnap.addEventListener('scroll', () => {
       const idx = Math.round(verticalSnap.scrollTop / verticalSnap.clientHeight);
-      if (idx !== currentVerticalSlide) { currentVerticalSlide = idx; updateVerticalDots(idx); }
+      if (idx !== currentVerticalSlide) {
+        currentVerticalSlide = idx;
+        document.getElementById('v-dot-0').className = idx === 0 ? 'v-dot on' : 'v-dot';
+        document.getElementById('v-dot-1').className = idx === 1 ? 'v-dot on-blue' : 'v-dot';
+      }
     }, { passive: true });
 
-    // 中控頁垂直切換：0 = QR碼(上), 1 = 主頁(中), 2 = 行事曆+iOS行程(下)
     function scrollHubSlide(slideIdx, smooth = true) {
       currentHubSlide = slideIdx;
-      hubVerticalSnap.scrollTo({
-        top: slideIdx * hubVerticalSnap.clientHeight,
-        behavior: smooth ? 'smooth' : 'auto'
-      });
-      updateHubVerticalDots(slideIdx);
-    }
-
-    function updateHubVerticalDots(idx) {
+      hubVerticalSnap.scrollTo({ top: slideIdx * hubVerticalSnap.clientHeight, behavior: smooth ? 'smooth' : 'auto' });
       [0, 1, 2].forEach(i => {
         const el = document.getElementById(`hub-v-dot-${i}`);
-        if (!el) return;
-        el.className = i === idx
-          ? 'w-1 h-3 rounded-full bg-[#0A84FF] transition-all'
-          : 'w-1 h-1.5 rounded-full bg-white/30 transition-all';
+        if (el) el.className = i === slideIdx ? 'v-dot on-blue' : 'v-dot';
       });
     }
-
     hubVerticalSnap.addEventListener('scroll', () => {
       const idx = Math.round(hubVerticalSnap.scrollTop / hubVerticalSnap.clientHeight);
       if (idx !== currentHubSlide) {
         currentHubSlide = idx;
-        updateHubVerticalDots(idx);
+        [0, 1, 2].forEach(i => {
+          const el = document.getElementById(`hub-v-dot-${i}`);
+          if (el) el.className = i === idx ? 'v-dot on-blue' : 'v-dot';
+        });
       }
     }, { passive: true });
 
-    // 左右滑動邏輯：
-    // 在中控主頁(Page 1)左右滑動切換日期；在更表(Page 0)與巴士(Page 2)左右滑動切換頁面
     let touchStartX = 0, touchStartY = 0, isSwiping = false;
     const watchScreen = document.getElementById('watch-screen');
     watchScreen.addEventListener('touchstart', (e) => {
       if (e.touches.length !== 1) return;
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isSwiping = true;
+      touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; isSwiping = true;
     }, { passive: true });
-
     watchScreen.addEventListener('touchend', (e) => {
       if (!isSwiping || e.changedTouches.length !== 1) return;
       isSwiping = false;
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
-
       if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-        if (currentHorizontalPage === 1) {
-          shiftHubDate(dx < 0 ? 1 : -1);
-        } else if (currentHorizontalPage === 0 && dx < 0) {
-          goToPage(1);
-        } else if (currentHorizontalPage === 2 && dx > 0) {
-          goToPage(1);
-        }
+        if (currentHorizontalPage === 1) shiftHubDate(dx < 0 ? 1 : -1);
+        else if (currentHorizontalPage === 0 && dx < 0) goToPage(1);
+        else if (currentHorizontalPage === 2 && dx > 0) goToPage(1);
       }
     }, { passive: true });
 
-    function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); updateShiftOverrideButtons(); }
-    function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
-    function setManualShift(code) { manualShiftOverride = code; updateShiftOverrideButtons(); renderDutyViews(); showToast(code === 'AUTO' ? '已切換自動更次' : `已顯示 ${code}更`); }
+    function openSettingsModal() { document.getElementById('settings-modal').classList.add('show'); updateShiftOverrideButtons(); }
+    function closeSettingsModal() { document.getElementById('settings-modal').classList.remove('show'); }
+    function setManualShift(code) { manualShiftOverride = code; updateShiftOverrideButtons(); renderDutyViews(); showToast(code === 'AUTO' ? '自動更次' : `${code}更`); }
     function updateShiftOverrideButtons() {
-      ['AUTO', 'A', 'P', 'N'].forEach(c => {
-        document.getElementById(`btn-shift-${c}`).className = c === manualShiftOverride
-          ? 'watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#30D158] text-black'
-          : 'watch-btn py-1.5 rounded-xl text-[10px] font-bold bg-[#2C2C2E] text-white';
+      ['AUTO','A','P','N'].forEach(c => {
+        const btn = document.getElementById(`btn-shift-${c}`);
+        btn.style.background = c === manualShiftOverride ? '#30D158' : '#2C2C2E';
+        btn.style.color = c === manualShiftOverride ? '#000' : '#fff';
       });
     }
 
     function showToast(msg) {
       const toast = document.getElementById('watch-toast');
-      toast.textContent = msg; toast.classList.remove('opacity-0');
+      toast.textContent = msg; toast.style.opacity = '1';
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.add('opacity-0'), 1800);
+      window.__toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 1800);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1897,8 +1564,6 @@
       initBatteryMonitor();
       renderLoginQrCodes();
       renderHubCalendar();
-
-      // 定位中控頁至中間主畫面 (Slide 1)：往上滑見 QR 碼 (Slide 0)，往下滑見行事曆 (Slide 2)
       requestAnimationFrame(() => scrollHubSlide(1, false));
     });
   </script>
