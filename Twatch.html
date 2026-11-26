@@ -10,15 +10,16 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation; }
     html, body {
       width: 100%; height: 100%;
-      background-color: #000000; color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang HK", "Noto Sans TC", sans-serif;
+      background-color: #000000; color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang HK", "Noto Sans TC", sans-serif;
       overflow: hidden;
+      -webkit-text-size-adjust: 100%;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .tabular { font-variant-numeric: tabular-nums; }
-    .btn { transition: transform 0.12s ease, opacity 0.12s ease; cursor: pointer; }
-    .btn:active { transform: scale(0.95); opacity: 0.85; }
+    .btn { transition: transform 0.1s ease, opacity 0.1s ease; cursor: pointer; }
+    .btn:active { transform: scale(0.95); opacity: 0.8; }
 
     /* 桌面預覽外框 */
     @media (min-width: 460px) {
@@ -48,117 +49,163 @@
       #watch-screen { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; }
     }
 
-    /* 精簡迷你頁面指示膠囊（不佔高度、不遮擋內容） */
+    /* 超薄頂部導航膠囊：僅佔 18px 高度 */
     .mini-nav {
-      position: absolute; top: 2px; left: 50%; transform: translateX(-50%); z-index: 30;
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(28, 28, 30, 0.82); border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 99px; padding: 2px 10px; font-size: 12px; font-weight: 900; color: #fff;
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 30;
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(20, 20, 22, 0.92); border: 1px solid rgba(255,255,255,0.18);
+      border-top: none; border-radius: 0 0 10px 10px;
+      padding: 1px 10px; font-size: 13px; font-weight: 900; color: #FFFFFF; line-height: 1.1;
     }
-    .dot { width: 7px; height: 7px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
-    .dot.active-duty { width: 13px; background: #30D158; }
-    .dot.active-hub { width: 13px; background: #0A84FF; }
-    .dot.active-bus { width: 13px; background: #E3001B; }
+    .dot { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.35); transition: all 0.2s; }
+    .dot.active-duty { width: 12px; background: #30D158; }
+    .dot.active-hub { width: 12px; background: #64D2FF; }
+    .dot.active-bus { width: 12px; background: #FF453A; }
 
     /* 水平三頁軌道 */
     #horizontal-track {
       display: flex; width: 300%; height: 100%;
       transform: translateX(-33.3333%);
-      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform;
     }
-    .h-page { width: 33.3333%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; }
+    .h-page { width: 33.3333%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; background: #000000; }
 
-    /* 垂直滑動容器（頂部只留 22px 給迷你膠囊，最大化可視空間） */
+    /* 垂直滑動容器：極限收縮邊距，讓出最大可視寬高 */
     .v-snap { width: 100%; height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     .v-sec {
       width: 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always;
-      display: flex; flex-direction: column; padding: 24px 6px 6px 6px;
+      display: flex; flex-direction: column; padding: 19px 2px 2px 2px;
     }
-    .v-dots { position: absolute; right: 3px; top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
-    .v-dot { width: 4px; height: 7px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
-    .v-dot.on { height: 14px; background: #fff; }
-    .v-dot.on-blue { height: 14px; background: #0A84FF; }
+    .v-dots { position: absolute; right: 1px; top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 5px; pointer-events: none; }
+    .v-dot { width: 3px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
+    .v-dot.on { height: 13px; background: #FFFFFF; }
+    .v-dot.on-blue { height: 13px; background: #64D2FF; }
 
-    /* 通用卡片與大字體頁尾 */
-    .card { background: #1C1C1E; border: 1px solid rgba(255,255,255,0.11); border-radius: 16px; }
+    /* OLED 純黑高對比區塊（移除多餘圓角外邊距，改用緊湊分割） */
+    .oled-box {
+      background: #0D0D0F; border: 1px solid #262629; border-radius: 11px;
+      padding: 3px 5px;
+    }
     .footer-bar {
-      padding-top: 4px; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.12);
-      display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 900;
-      flex-shrink: 0;
+      padding-top: 2px; margin-top: 2px; border-top: 1px solid #262629;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: clamp(14px, 8vw, 17px); font-weight: 900; line-height: 1.1; flex-shrink: 0;
     }
 
-    /* 中控主頁大字體樣式 */
+    /* ================= 中控主頁：極限大字體 ================= */
     .bat-strip {
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px; padding: 3px 8px; margin-bottom: 4px; font-size: 15px; font-weight: 900;
+      padding: 1px 4px; font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; line-height: 1.05;
     }
-    .date-strip { display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 800; color: #7dd3fc; }
-    .clock-big { text-align: center; font-size: 42px; font-weight: 900; line-height: 1.02; margin-top: 2px; letter-spacing: -1px; }
-    .clock-sec { font-size: 24px; color: #30D158; font-weight: 900; margin-left: 2px; }
+    .date-strip {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; color: #64D2FF; line-height: 1.08;
+      margin-top: 1px;
+    }
+    .clock-big {
+      text-align: center; font-size: clamp(46px, 26vw, 58px); font-weight: 900;
+      line-height: 0.94; letter-spacing: -1.5px; color: #FFFFFF; margin: 2px 0 1px 0;
+    }
+    .clock-sec { font-size: clamp(24px, 13.5vw, 32px); color: #30D158; font-weight: 900; margin-left: 1px; }
+
     .lunar-box {
-      padding: 6px 8px; border-color: rgba(245,158,11,0.35);
-      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      display: flex; align-items: center; justify-content: space-between; gap: 3px;
+      padding: 3px 5px; border-color: rgba(255, 214, 10, 0.45);
     }
-    .fest-pill { font-size: 14px; font-weight: 900; padding: 2px 8px; border-radius: 8px; flex-shrink: 0; }
-    .weather-box { padding: 6px 8px; border-color: rgba(14,165,233,0.35); }
-    .weather-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 14px; font-weight: 800; margin-bottom: 5px; }
-    .warn-pill { padding: 2px 7px; border-radius: 7px; background: rgba(16,185,129,0.18); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-    .warn-pill.alert { background: #dc2626; color: #fff; border-color: #f87171; font-weight: 900; }
-    .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; text-align: center; }
-    .w-cell { background: rgba(0,0,0,0.5); border-radius: 10px; padding: 4px 2px; }
-    .w-label { font-size: 13px; color: #a1a1aa; font-weight: 700; line-height: 1.1; }
-    .w-val { font-size: 21px; font-weight: 900; line-height: 1.15; margin-top: 1px; }
+    .lunar-txt {
+      font-size: clamp(16px, 9vw, 19px); font-weight: 900; color: #FFD60A;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1;
+    }
+    .fest-pill {
+      font-size: clamp(14px, 8vw, 17px); font-weight: 900; padding: 1px 6px;
+      border-radius: 6px; flex-shrink: 0; line-height: 1.1;
+    }
 
-    /* QR Code 卡片 */
-    .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: center; }
+    .weather-box { padding: 3px 5px; border-color: rgba(100, 210, 255, 0.45); }
+    .weather-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 3px;
+      font-size: clamp(14px, 8vw, 17px); font-weight: 900; margin-bottom: 2px; line-height: 1.05;
+    }
+    .warn-pill {
+      padding: 1px 5px; border-radius: 5px; background: rgba(48, 209, 88, 0.18);
+      color: #30D158; border: 1px solid rgba(48, 209, 88, 0.45);
+      max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: clamp(13px, 7.5vw, 16px); font-weight: 900;
+    }
+    .warn-pill.alert { background: #FF3B30; color: #FFFFFF; border-color: #FF6961; }
+    .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; text-align: center; }
+    .w-cell { background: #000000; border: 1px solid #262629; border-radius: 8px; padding: 2px 1px; }
+    .w-val { font-size: clamp(22px, 12.5vw, 28px); font-weight: 900; line-height: 1.05; }
+    .w-unit { font-size: clamp(12px, 7vw, 15px); font-weight: 800; color: #A1A1AA; line-height: 1; }
+
+    /* QR Code 卡片：最大化QR尺寸 */
+    .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
     .qr-card {
-      background: #fff; color: #000; border-radius: 16px; padding: 8px 4px;
+      background: #FFFFFF; color: #000000; border-radius: 12px; padding: 4px 2px;
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      height: 100%; max-height: 240px;
+      height: 100%; max-height: 250px;
     }
-    .qr-card img { width: 104px; height: 104px; image-rendering: pixelated; }
+    .qr-card img { width: 92%; max-width: 118px; aspect-ratio: 1/1; image-rendering: pixelated; }
 
-    /* 行事曆網格（大字體） */
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; flex-shrink: 0; }
-    .cal-cell { background: rgba(28,28,30,0.95); border-radius: 7px; padding: 2px 0; display: flex; flex-direction: column; align-items: center; color: #fff; border: 1px solid transparent; }
+    /* 行事曆網格：零多餘留白 */
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.05; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center; flex-shrink: 0; }
+    .cal-cell { background: #141416; border-radius: 5px; padding: 1px 0; display: flex; flex-direction: column; align-items: center; color: #FFFFFF; border: 1px solid transparent; }
     .cal-cell.today { background: #0A84FF; font-weight: 900; }
-    .cal-cell.selected { background: rgba(48,209,88,0.25); border-color: #30D158; }
+    .cal-cell.selected { background: rgba(48,209,88,0.28); border-color: #30D158; }
 
-    /* 更表名單大字體樣式 */
-    .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .duty-subbar { display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #e4e4e7; background: rgba(28,28,30,0.85); border-radius: 10px; padding: 4px 8px; margin-bottom: 5px; }
-    .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
-    .staff-card { background: #1C1C1E; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; }
-    .staff-card.me { border-color: rgba(48,209,88,0.75); background: rgba(48,209,88,0.18); }
-    .post-badge { font-size: 15px; font-weight: 900; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.14); color: #fff; }
-    .post-badge.me { background: #30D158; color: #000; font-weight: 900; }
-    .post-badge.mid { background: rgba(6,182,212,0.25); color: #67e8f9; border: 1px solid rgba(6,182,212,0.4); }
+    /* ================= 更表名單：大字人名 + 精簡崗位 ================= */
+    .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+    .duty-subbar {
+      display: flex; justify-content: space-between; font-size: clamp(14px, 8vw, 17px); font-weight: 900;
+      color: #FFFFFF; background: #141416; border-radius: 8px; padding: 2px 6px; margin-bottom: 3px; line-height: 1.1;
+    }
+    .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding-right: 2px; }
+    .staff-card {
+      background: #121214; border: 1px solid #27272A; border-radius: 10px;
+      padding: 4px 6px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .staff-card.me { border-color: #30D158; background: rgba(48, 209, 88, 0.2); }
+    .staff-name {
+      font-size: clamp(22px, 12.5vw, 27px); font-weight: 900; color: #FFFFFF;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05;
+    }
+    .staff-post {
+      font-size: clamp(14px, 7.8vw, 16px); font-weight: 800; color: #FFD60A;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05; margin-top: 1px;
+    }
+    .post-badge {
+      font-size: clamp(16px, 9vw, 20px); font-weight: 900; padding: 3px 6px;
+      border-radius: 7px; background: #27272A; color: #FFFFFF; line-height: 1;
+    }
+    .post-badge.me { background: #30D158; color: #000000; }
+    .post-badge.mid { background: rgba(100, 210, 255, 0.25); color: #64D2FF; border: 1px solid #64D2FF; }
 
-    /* 九巴 Watch 大字體樣式 */
-    .bus-page { display: flex; flex-direction: column; padding: 24px 4px 6px 4px; background: #000; }
-    .bus-topbar { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 4px; border-bottom: 1px solid #27272a; margin-bottom: 4px; flex-shrink: 0; }
-    .bus-group-btn { background: #27272a; color: #7dd3fc; font-size: 15px; font-weight: 900; padding: 4px 9px; border-radius: 99px; border: none; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .bus-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; transition: transform 0.15s; }
-    .bus-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 6px 6px; border-radius: 13px; background: #18181b; border: 1px solid #27272a; }
-    .kmb-badge { background: #E3001B; color: #fff; font-size: 20px; font-weight: 900; min-width: 50px; padding: 5px 4px; border-radius: 9px; text-align: center; line-height: 1; flex-shrink: 0; }
-    .fare-btn { background: #059669; color: #fff; font-size: 16px; font-weight: 900; padding: 8px 7px; border-radius: 9px; border: none; line-height: 1; flex-shrink: 0; }
+    /* ================= 九巴 Watch：大路線號 + 大分鐘 ================= */
+    .bus-page { display: flex; flex-direction: column; padding: 19px 2px 2px 2px; background: #000000; }
+    .bus-topbar { display: flex; align-items: center; justify-content: space-between; gap: 2px; padding: 2px; border-bottom: 1px solid #27272A; margin-bottom: 3px; flex-shrink: 0; }
+    .bus-group-btn { background: #1C1C1E; color: #64D2FF; font-size: clamp(15px, 8.5vw, 18px); font-weight: 900; padding: 2px 7px; border-radius: 99px; border: 1px solid #3F3F46; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bus-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; transition: transform 0.15s; }
+    .bus-row { display: flex; align-items: center; justify-content: space-between; gap: 3px; padding: 4px 4px; border-radius: 10px; background: #121214; border: 1px solid #27272A; }
+    .kmb-badge { background: #E3001B; color: #FFFFFF; font-size: clamp(21px, 12vw, 26px); font-weight: 900; min-width: 52px; padding: 4px 3px; border-radius: 8px; text-align: center; line-height: 1; flex-shrink: 0; }
+    .bus-dest { font-size: clamp(18px, 10vw, 22px); font-weight: 900; color: #FFFFFF; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05; }
+    .bus-stop { font-size: clamp(14px, 7.8vw, 16px); font-weight: 800; color: #A1A1AA; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.05; margin-top: 1px; }
+    .fare-btn { background: #30D158; color: #000000; font-size: clamp(16px, 9vw, 19px); font-weight: 900; padding: 7px 5px; border-radius: 8px; border: none; line-height: 1; flex-shrink: 0; }
 
     /* 彈窗與提示 */
-    .modal-overlay { position: absolute; inset: 0; z-index: 40; background: rgba(0,0,0,0.96); display: none; flex-direction: column; padding: 26px 10px 10px 10px; }
+    .modal-overlay { position: absolute; inset: 0; z-index: 40; background: #000000; display: none; flex-direction: column; padding: 22px 6px 6px 6px; }
     .modal-overlay.show { display: flex; }
-    .qr-zoom { position: absolute; inset: 0; z-index: 50; background: #fff; color: #000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 14px; }
+    .qr-zoom { position: absolute; inset: 0; z-index: 50; background: #FFFFFF; color: #000000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 8px; }
     .qr-zoom.show { display: flex; }
     #watch-toast {
-      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); z-index: 60;
-      background: rgba(44,44,46,0.96); border: 1px solid rgba(255,255,255,0.2);
-      color: #fff; font-size: 14px; font-weight: 800; padding: 6px 14px; border-radius: 99px;
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 60;
+      background: #2C2C2E; border: 1px solid #FFD60A;
+      color: #FFFFFF; font-size: 16px; font-weight: 900; padding: 4px 12px; border-radius: 99px;
       opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap;
     }
     @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .live-dot { width: 7px; height: 7px; border-radius: 99px; background: #34d399; animation: pulseDot 2s infinite; display: inline-block; }
+    .live-dot { width: 7px; height: 7px; border-radius: 99px; background: #30D158; animation: pulseDot 2s infinite; display: inline-block; }
   </style>
 </head>
 <body>
@@ -167,13 +214,13 @@
     <div id="side-button" title="按此切換頁面" onclick="cycleHorizontalPage()"></div>
 
     <div id="watch-screen">
-      <!-- 精簡迷你分頁膠囊（不佔高度、不遮擋畫面） -->
+      <!-- 超薄頂部導航膠囊 -->
       <button onclick="cycleHorizontalPage()" class="mini-nav btn">
         <span id="dot-duty" class="dot"></span>
         <span id="dot-hub" class="dot active-hub"></span>
         <span id="dot-bus" class="dot"></span>
         <span id="top-page-label">主頁</span>
-        <span id="sync-dot" style="width:6px;height:6px;border-radius:99px;background:#30D158;margin-left:2px;"></span>
+        <span id="sync-dot" style="width:6px;height:6px;border-radius:99px;background:#30D158;"></span>
       </button>
 
       <div id="horizontal-track">
@@ -185,53 +232,49 @@
             <!-- 當更同事 -->
             <div class="v-sec">
               <div class="duty-header">
-                <div>
-                  <div style="display:flex;align-items:center;gap:4px;font-size:14px;font-weight:900;">
-                    <span class="btn" onclick="shiftTargetDate(-1)" style="color:#9ca3af;padding:0 4px;">◀</span>
-                    <span id="current-date-str">11/26</span>
-                    <span class="btn" onclick="shiftTargetDate(1)" style="color:#9ca3af;padding:0 4px;">▶</span>
-                    <span id="current-shift-badge" style="font-size:13px;padding:1px 6px;border-radius:6px;border:1px solid #30D158;">P更</span>
-                  </div>
+                <div style="display:flex;align-items:center;gap:3px;font-size:clamp(16px,9vw,19px);font-weight:900;">
+                  <span class="btn" onclick="shiftTargetDate(-1)" style="color:#A1A1AA;padding:0 3px;">◀</span>
+                  <span id="current-date-str">11/26</span>
+                  <span class="btn" onclick="shiftTargetDate(1)" style="color:#A1A1AA;padding:0 3px;">▶</span>
+                  <span id="current-shift-badge" style="font-size:15px;padding:1px 5px;border-radius:6px;border:1px solid #30D158;">P更</span>
                 </div>
-                <button onclick="openSettingsModal()" class="btn" style="width:32px;height:32px;border-radius:99px;background:#1C1C1E;border:1px solid rgba(255,255,255,0.16);color:#fff;font-size:16px;">⚙</button>
+                <button onclick="openSettingsModal()" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#FFF;font-size:16px;">⚙</button>
               </div>
 
-              <div class="duty-subbar">
+              <div class="duty-subbar tabular">
                 <span id="current-shift-time">13:45-23:03</span>
-                <span id="current-headcount" style="color:#30D158;">0 人</span>
+                <span id="current-headcount" style="color:#30D158;">0人</span>
               </div>
 
               <div id="current-staff-list" class="staff-list no-scrollbar"></div>
 
               <div class="footer-bar">
-                <span onclick="scrollToShift(1)" class="btn" style="color:#0A84FF;">↓ 下更同事</span>
-                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁 →</span>
+                <span onclick="scrollToShift(1)" class="btn" style="color:#64D2FF;">↓下更</span>
+                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁→</span>
               </div>
             </div>
 
             <!-- 下更同事 -->
             <div class="v-sec">
               <div class="duty-header">
-                <div>
-                  <div style="display:flex;align-items:center;gap:5px;font-size:15px;font-weight:900;">
-                    <span>下更</span>
-                    <span id="next-shift-badge" style="font-size:13px;padding:1px 6px;border-radius:6px;border:1px solid #0A84FF;">N更</span>
-                    <span id="next-date-hint" style="color:#9ca3af;font-size:12px;">接更</span>
-                  </div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:clamp(16px,9vw,19px);font-weight:900;">
+                  <span>下更</span>
+                  <span id="next-shift-badge" style="font-size:15px;padding:1px 5px;border-radius:6px;border:1px solid #64D2FF;">N更</span>
+                  <span id="next-date-hint" style="color:#A1A1AA;font-size:14px;">接更</span>
                 </div>
-                <button onclick="scrollToShift(0)" class="btn" style="width:32px;height:32px;border-radius:99px;background:#1C1C1E;border:1px solid rgba(255,255,255,0.16);color:#30D158;font-size:16px;">↑</button>
+                <button onclick="scrollToShift(0)" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#30D158;font-size:17px;font-weight:900;">↑</button>
               </div>
 
-              <div class="duty-subbar">
+              <div class="duty-subbar tabular">
                 <span id="next-shift-time">22:30-07:18</span>
-                <span id="next-headcount" style="color:#38bdf8;">0 人</span>
+                <span id="next-headcount" style="color:#64D2FF;">0人</span>
               </div>
 
               <div id="next-staff-list" class="staff-list no-scrollbar"></div>
 
               <div class="footer-bar">
-                <span onclick="scrollToShift(0)" class="btn" style="color:#30D158;">↑ 返回當更</span>
-                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁 →</span>
+                <span onclick="scrollToShift(0)" class="btn" style="color:#30D158;">↑當更</span>
+                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁→</span>
               </div>
             </div>
           </div>
@@ -250,97 +293,96 @@
 
             <!-- Slide 0 (向上滑動): 兩張登入 QR Code (Mail & CMS) -->
             <div class="v-sec">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                <span style="font-size:15px;font-weight:900;color:#fcd34d;">🔐 登入 QR</span>
-                <button onclick="scrollHubSlide(1)" class="btn" style="font-size:13px;font-weight:800;color:#0A84FF;background:#1C1C1E;border:none;padding:3px 9px;border-radius:99px;">↓ 主頁</button>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:17px;font-weight:900;color:#FFD60A;">🔐登入QR</span>
+                <button onclick="scrollHubSlide(1)" class="btn" style="font-size:15px;font-weight:900;color:#64D2FF;background:#1C1C1E;border:none;padding:2px 8px;border-radius:99px;">↓主頁</button>
               </div>
               <div class="qr-grid">
                 <div onclick="openQrZoom('MAIL')" class="qr-card btn">
-                  <div style="font-size:20px;font-weight:900;">Mail</div>
+                  <div style="font-size:22px;font-weight:900;line-height:1;">Mail</div>
                   <img id="qr-img-mail" alt="Mail QR" />
-                  <div style="font-size:12px;font-weight:800;color:#52525b;">點擊放大</div>
+                  <div style="font-size:13px;font-weight:900;color:#3F3F46;line-height:1;">點擊放大</div>
                 </div>
                 <div onclick="openQrZoom('CMS')" class="qr-card btn">
-                  <div style="font-size:20px;font-weight:900;">CMS</div>
+                  <div style="font-size:22px;font-weight:900;line-height:1;">CMS</div>
                   <img id="qr-img-cms" alt="CMS QR" />
-                  <div style="font-size:12px;font-weight:800;color:#52525b;">點擊放大</div>
+                  <div style="font-size:13px;font-weight:900;color:#3F3F46;line-height:1;">點擊放大</div>
                 </div>
               </div>
-              <div class="footer-bar" style="color:#a1a1aa;">
-                <span>點擊放大掃描</span>
-                <span onclick="scrollHubSlide(1)" class="btn" style="color:#34d399;">↓ 主頁</span>
+              <div class="footer-bar" style="color:#A1A1AA;">
+                <span>點圖放大</span>
+                <span onclick="scrollHubSlide(1)" class="btn" style="color:#30D158;">↓主頁</span>
               </div>
             </div>
 
-            <!-- Slide 1 (預設主畫面): 電量置頂 + 特大時鐘 + 農曆生肖節日 + 氣象警告 -->
+            <!-- Slide 1 (預設主畫面): 零多餘留白，大字時鐘 + 精簡日期氣象 -->
             <div class="v-sec" style="justify-content:space-between;">
-              <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px;">
-                <div class="card" style="padding:6px 8px;">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:3px;">
+                <div class="oled-box">
                   <div class="bat-strip btn" onclick="promptManualBattery()">
-                    <span style="color:#34d399;" class="tabular">📱<span id="hub-phone-bat">--%</span></span>
-                    <span style="font-size:12px;color:#9ca3af;">電量</span>
-                    <span style="color:#38bdf8;" class="tabular">⌚<span id="hub-watch-bat">--%</span></span>
+                    <span style="color:#30D158;" class="tabular">📱<span id="hub-phone-bat">--%</span></span>
+                    <span style="color:#64D2FF;" class="tabular">⌚<span id="hub-watch-bat">--%</span></span>
                   </div>
                   <div class="date-strip">
-                    <span onclick="shiftHubDate(-1)" class="btn" style="color:#9ca3af;padding:0 4px;">◀</span>
-                    <span id="hub-gregorian-date">11月26日 星期四</span>
-                    <span onclick="shiftHubDate(1)" class="btn" style="color:#9ca3af;padding:0 4px;">▶</span>
+                    <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:0 4px;">◀</span>
+                    <span id="hub-gregorian-date">11/26 週四</span>
+                    <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:0 4px;">▶</span>
                   </div>
                   <div id="hub-live-time" class="clock-big tabular">--:--<span class="clock-sec">:--</span></div>
                 </div>
 
-                <div class="card lunar-box">
-                  <span id="hub-lunar-date" style="font-size:15px;font-weight:900;color:#fde68a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">丙午(馬)十月十八</span>
-                  <span id="hub-festival-badge" class="fest-pill" style="background:rgba(255,255,255,0.12);color:#e4e4e7;">平日</span>
+                <div class="oled-box lunar-box">
+                  <span id="hub-lunar-date" class="lunar-txt">丙午(馬)十月十八</span>
+                  <span id="hub-festival-badge" class="fest-pill" style="background:#27272A;color:#FFFFFF;">平日</span>
                 </div>
 
-                <div class="card weather-box btn" onclick="fetchLocationWeather(true)">
+                <div class="oled-box weather-box btn" onclick="fetchLocationWeather(true)">
                   <div class="weather-top">
-                    <span id="hub-weather-loc" style="color:#7dd3fc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍 定位中</span>
+                    <span id="hub-weather-loc" style="color:#64D2FF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍定位</span>
                     <span id="hub-weather-warning" class="warn-pill">無警告</span>
                   </div>
-                  <div class="w-grid">
-                    <div class="w-cell"><div class="w-label">氣溫</div><div id="hub-weather-temp" class="w-val">--°C</div></div>
-                    <div class="w-cell"><div class="w-label">雨量</div><div id="hub-weather-rain" class="w-val" style="color:#38bdf8;">--mm</div></div>
-                    <div class="w-cell"><div class="w-label">風力</div><div id="hub-weather-wind" class="w-val" style="color:#6ee7b7;">--級</div></div>
+                  <div class="w-grid tabular">
+                    <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div><div class="w-unit">氣溫</div></div>
+                    <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div><div class="w-unit">雨mm</div></div>
+                    <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div><div class="w-unit">風力</div></div>
                   </div>
                 </div>
               </div>
 
               <div class="footer-bar">
-                <span onclick="goToPage(0)" class="btn" style="color:#30D158;">←更表</span>
-                <span onclick="scrollHubSlide(0)" class="btn" style="color:#fcd34d;">↑QR</span>
-                <span onclick="scrollHubSlide(2)" class="btn" style="color:#7dd3fc;">↓日曆</span>
-                <span onclick="goToPage(2)" class="btn" style="color:#FF9F0A;">巴士→</span>
+                <span onclick="goToPage(0)" class="btn" style="color:#30D158;">←更</span>
+                <span onclick="scrollHubSlide(0)" class="btn" style="color:#FFD60A;">↑QR</span>
+                <span onclick="scrollHubSlide(2)" class="btn" style="color:#64D2FF;">↓曆</span>
+                <span onclick="goToPage(2)" class="btn" style="color:#FF9F0A;">巴→</span>
               </div>
             </div>
 
             <!-- Slide 2 (向下滑動): 行事曆 + iOS 日曆匯入當日行程 -->
             <div class="v-sec">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-                <div style="display:flex;align-items:center;gap:4px;">
-                  <button onclick="changeCalendarMonth(-1)" class="btn" style="background:#1C1C1E;color:#fff;border:none;border-radius:7px;padding:2px 7px;font-size:14px;font-weight:900;">◀</button>
-                  <span id="cal-month-title" style="font-size:15px;font-weight:900;">2026年11月</span>
-                  <button onclick="changeCalendarMonth(1)" class="btn" style="background:#1C1C1E;color:#fff;border:none;border-radius:7px;padding:2px 7px;font-size:14px;font-weight:900;">▶</button>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <button onclick="changeCalendarMonth(-1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">◀</button>
+                  <span id="cal-month-title" style="font-size:16px;font-weight:900;">2026/11</span>
+                  <button onclick="changeCalendarMonth(1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">▶</button>
                 </div>
-                <div style="display:flex;align-items:center;gap:4px;">
-                  <label for="ios-ics-input" class="btn" style="font-size:12px;font-weight:900;color:#fcd34d;background:rgba(245,158,11,0.22);border:1px solid rgba(245,158,11,0.4);padding:2px 7px;border-radius:99px;">+日曆</label>
+                <div style="display:flex;align-items:center;gap:3px;">
+                  <label for="ios-ics-input" class="btn" style="font-size:13px;font-weight:900;color:#FFD60A;background:rgba(255,214,10,0.2);border:1px solid #FFD60A;padding:1px 6px;border-radius:99px;">+曆</label>
                   <input type="file" id="ios-ics-input" accept=".ics,text/calendar" style="display:none;" onchange="handleIcsFileImport(event)" />
-                  <button onclick="resetCalendarToToday()" class="btn" style="font-size:12px;font-weight:800;color:#30D158;background:rgba(48,209,88,0.18);border:none;padding:2px 7px;border-radius:99px;">今日</button>
+                  <button onclick="resetCalendarToToday()" class="btn" style="font-size:13px;font-weight:900;color:#30D158;background:rgba(48,209,88,0.2);border:none;padding:1px 6px;border-radius:99px;">今</button>
                 </div>
               </div>
 
               <div class="cal-weekdays">
-                <span style="color:#f87171;">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span style="color:#38bdf8;">六</span>
+                <span style="color:#FF453A;">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span style="color:#64D2FF;">六</span>
               </div>
               <div id="hub-calendar-grid" class="cal-grid"></div>
 
-              <div class="card no-scrollbar" style="flex:1;margin-top:5px;padding:5px 8px;overflow-y:auto;">
-                <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900;color:#34d399;margin-bottom:3px;">
-                  <span id="cal-selected-duty">11/26 更期：--</span>
-                  <span onclick="scrollHubSlide(1)" class="btn" style="color:#0A84FF;">↑ 主頁</span>
+              <div class="oled-box no-scrollbar" style="flex:1;margin-top:3px;padding:3px 5px;overflow-y:auto;">
+                <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:#30D158;margin-bottom:2px;line-height:1.1;">
+                  <span id="cal-selected-duty">11/26 更：--</span>
+                  <span onclick="scrollHubSlide(1)" class="btn" style="color:#64D2FF;">↑主頁</span>
                 </div>
-                <div id="cal-day-events" style="display:flex;flex-direction:column;gap:4px;font-size:14px;"></div>
+                <div id="cal-day-events" style="display:flex;flex-direction:column;gap:3px;font-size:15px;"></div>
               </div>
             </div>
 
@@ -358,63 +400,63 @@
         <!-- ============================================================== -->
         <section class="h-page bus-page" id="page-bus">
           <div class="bus-topbar">
-            <button onclick="cycleWatchGroup(1)" id="watch-group-btn" class="bus-group-btn btn">‹ 📍自動 ›</button>
-            <div class="tabular" style="display:flex;align-items:center;gap:4px;font-size:15px;">
-              <span id="watch-month-total" style="color:#34d399;font-weight:900;">$0</span>
-              <button onclick="refreshWatchEtas(true)" class="btn" style="display:flex;align-items:center;gap:4px;background:#18181b;border:none;color:#e4e4e7;padding:3px 6px;border-radius:7px;font-size:13px;font-weight:800;">
+            <button onclick="cycleWatchGroup(1)" id="watch-group-btn" class="bus-group-btn btn">‹📍自動›</button>
+            <div class="tabular" style="display:flex;align-items:center;gap:3px;font-size:16px;">
+              <span id="watch-month-total" style="color:#30D158;font-weight:900;">$0</span>
+              <button onclick="refreshWatchEtas(true)" class="btn" style="display:flex;align-items:center;gap:3px;background:#1C1C1E;border:none;color:#FFFFFF;padding:2px 5px;border-radius:6px;font-size:14px;font-weight:900;">
                 <span id="live-indicator" class="live-dot"></span>
                 <span id="last-update-time">--:--</span>
               </button>
             </div>
           </div>
 
-          <div id="bus-watch-toast" style="display:none;margin-bottom:4px;background:rgba(6,78,59,0.95);border:1px solid #34d399;border-radius:9px;padding:5px 8px;align-items:center;justify-content:space-between;font-size:14px;">
-            <span id="bus-watch-toast-text" style="font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">✅ 已記錄</span>
-            <button onclick="undoLastWatchTrip()" id="watch-undo-btn" style="background:rgba(0,0,0,0.65);color:#fcd34d;font-weight:900;padding:3px 8px;border:none;border-radius:6px;margin-left:4px;font-size:13px;">撤銷</button>
+          <div id="bus-watch-toast" style="display:none;margin-bottom:3px;background:#064E3B;border:1px solid #30D158;border-radius:8px;padding:3px 6px;align-items:center;justify-content:space-between;font-size:15px;">
+            <span id="bus-watch-toast-text" style="font-weight:900;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">✅已記</span>
+            <button onclick="undoLastWatchTrip()" id="watch-undo-btn" style="background:#000;color:#FFD60A;font-weight:900;padding:2px 7px;border:none;border-radius:5px;margin-left:3px;font-size:14px;">撤銷</button>
           </div>
 
           <div id="watch-route-list" class="bus-list no-scrollbar">
-            <div style="text-align:center;color:#9ca3af;font-size:16px;padding:24px 0;">載入路線中...</div>
+            <div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:20px 0;">載入中...</div>
           </div>
 
-          <div class="footer-bar" style="padding:5px 4px 0 4px;">
-            <span onclick="goToPage(1)" class="btn" style="color:#38bdf8;">← 主頁</span>
-            <span onclick="cycleWatchGroup(1)" class="btn" style="color:#7dd3fc;">切換組別 ›</span>
+          <div class="footer-bar" style="padding:3px 3px 0 3px;">
+            <span onclick="goToPage(1)" class="btn" style="color:#64D2FF;">←主頁</span>
+            <span onclick="cycleWatchGroup(1)" class="btn" style="color:#FFD60A;">換組›</span>
           </div>
         </section>
       </div>
 
       <!-- QR CODE 全螢幕放大掃描視窗 -->
       <div id="qr-zoom-modal" onclick="closeQrZoom()" class="qr-zoom">
-        <div id="qr-zoom-title" style="font-size:26px;font-weight:900;margin-bottom:8px;">Mail</div>
-        <img id="qr-zoom-img" alt="Zoom QR" style="width:195px;height:195px;image-rendering:pixelated;" />
-        <div style="font-size:14px;font-weight:800;color:#52525b;margin-top:10px;">點擊畫面任何位置關閉</div>
+        <div id="qr-zoom-title" style="font-size:28px;font-weight:900;margin-bottom:4px;line-height:1;">Mail</div>
+        <img id="qr-zoom-img" alt="Zoom QR" style="width:88%;max-width:210px;aspect-ratio:1/1;image-rendering:pixelated;" />
+        <div style="font-size:15px;font-weight:900;color:#3F3F46;margin-top:6px;">點擊關閉</div>
       </div>
 
       <!-- 更表設定視窗 -->
       <div id="settings-modal" class="modal-overlay">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:16px;font-weight:900;">更表控制</span>
-          <button onclick="closeSettingsModal()" class="btn" style="background:#2C2C2E;color:#fff;border:none;border-radius:99px;padding:4px 12px;font-size:14px;font-weight:800;">完成</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:18px;font-weight:900;">更表控制</span>
+          <button onclick="closeSettingsModal()" class="btn" style="background:#2C2C2E;color:#FFF;border:none;border-radius:99px;padding:3px 12px;font-size:15px;font-weight:900;">完成</button>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
-          <div class="card" style="padding:8px;">
-            <div style="font-size:13px;color:#a1a1aa;margin-bottom:6px;font-weight:800;">切換檢視更次</div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
-              <button onclick="setManualShift('AUTO')" id="btn-shift-AUTO" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#30D158;color:#000;">自動</button>
-              <button onclick="setManualShift('A')" id="btn-shift-A" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">A更</button>
-              <button onclick="setManualShift('P')" id="btn-shift-P" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">P更</button>
-              <button onclick="setManualShift('N')" id="btn-shift-N" class="btn" style="padding:8px 0;border-radius:10px;border:none;font-size:14px;font-weight:900;background:#2C2C2E;color:#fff;">N更</button>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:15px;">
+          <div class="oled-box" style="padding:6px;">
+            <div style="font-size:14px;color:#A1A1AA;margin-bottom:4px;font-weight:900;">切換更次</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
+              <button onclick="setManualShift('AUTO')" id="btn-shift-AUTO" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#30D158;color:#000;">自動</button>
+              <button onclick="setManualShift('A')" id="btn-shift-A" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#2C2C2E;color:#FFF;">A更</button>
+              <button onclick="setManualShift('P')" id="btn-shift-P" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#2C2C2E;color:#FFF;">P更</button>
+              <button onclick="setManualShift('N')" id="btn-shift-N" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#2C2C2E;color:#FFF;">N更</button>
             </div>
           </div>
-          <div class="card" style="padding:8px;display:flex;flex-direction:column;gap:6px;">
+          <div class="oled-box" style="padding:6px;display:flex;flex-direction:column;gap:5px;">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:13px;color:#a1a1aa;font-weight:800;">選擇日期 / 同步</span>
-              <span onclick="resetToToday()" class="btn" style="font-size:14px;color:#30D158;font-weight:900;">回今日</span>
+              <span style="font-size:14px;color:#A1A1AA;font-weight:900;">日期 / 同步</span>
+              <span onclick="resetToToday()" class="btn" style="font-size:16px;color:#30D158;font-weight:900;">回今日</span>
             </div>
-            <input type="date" id="watch-date-input" onchange="onDatePickerChange(this.value)" style="width:100%;background:#000;border:1px solid #3f3f46;border-radius:10px;padding:6px 8px;color:#fff;font-size:15px;" />
-            <button onclick="syncFromMainDutySystem(true)" class="btn" style="width:100%;padding:8px;border-radius:10px;border:none;background:#0A84FF;color:#fff;font-weight:900;font-size:14px;">☁ 同步最新更表</button>
-            <div id="duty-source-info" style="font-size:12px;color:#a1a1aa;text-align:center;">來源：內置 21 人循環更表</div>
+            <input type="date" id="watch-date-input" onchange="onDatePickerChange(this.value)" style="width:100%;background:#000;border:1px solid #52525B;border-radius:8px;padding:5px 6px;color:#FFF;font-size:16px;font-weight:900;" />
+            <button onclick="syncFromMainDutySystem(true)" class="btn" style="width:100%;padding:8px;border-radius:8px;border:none;background:#0A84FF;color:#FFF;font-weight:900;font-size:16px;">☁同步更表</button>
+            <div id="duty-source-info" style="font-size:13px;color:#A1A1AA;text-align:center;">來源：內置循環</div>
           </div>
         </div>
       </div>
@@ -507,10 +549,10 @@
       const el = document.getElementById('watch-month-total');
       if (total >= PASS_COST) {
         el.innerText = `回本$${Math.round(total)}`;
-        el.style.color = '#34d399';
+        el.style.color = '#30D158';
       } else {
         el.innerText = `$${Math.round(total)}/${PASS_COST}`;
-        el.style.color = '#fcd34d';
+        el.style.color = '#FFD60A';
       }
     });
 
@@ -575,17 +617,17 @@
       const groupBtn = document.getElementById('watch-group-btn');
       const hasGeo = customGroups.some(g => g.lat && g.lng);
       if (customGroups.length === 0) groupBtn.innerText = `全部(${savedRoutes.length})`;
-      else if (activeFilter === 'auto' && hasGeo) groupBtn.innerText = autoMatchedGroup ? `‹ 📍${autoMatchedGroup.name} ›` : `‹ 📍全部 ›`;
-      else if (activeFilter === 'all') groupBtn.innerText = `‹ 全部(${savedRoutes.length}) ›`;
+      else if (activeFilter === 'auto' && hasGeo) groupBtn.innerText = autoMatchedGroup ? `‹📍${autoMatchedGroup.name}›` : `‹📍全部›`;
+      else if (activeFilter === 'all') groupBtn.innerText = `‹全部(${savedRoutes.length})›`;
       else {
         const g = customGroups.find(x => x.id === activeFilter);
-        groupBtn.innerText = g ? `‹ ${g.name} ›` : '‹ 全部 ›';
+        groupBtn.innerText = g ? `‹${g.name}›` : '‹全部›';
       }
 
       const listEl = document.getElementById('watch-route-list');
       const routes = getFilteredRoutes();
       if (routes.length === 0) {
-        listEl.innerHTML = `<div style="text-align:center;color:#9ca3af;font-size:16px;padding:24px 0;">此組別暫無路線</div>`;
+        listEl.innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:24px 0;">無路線</div>`;
         return;
       }
 
@@ -596,23 +638,23 @@
         const destShort = shortDestName(rawDest);
         const cleanStop = simplifyStopName(r.stopName);
 
-        let etaHtml = `<span style="color:#71717a;font-size:16px;">...</span>`;
+        let etaHtml = `<span style="color:#71717A;font-size:18px;font-weight:900;">...</span>`;
         if (info) {
-          const color = info.isNoBus ? '#a1a1aa' : (info.urgent ? '#34d399' : '#fcd34d');
-          const size = info.isNoBus ? '16px' : '22px';
-          etaHtml = `<span class="tabular" style="color:${color};font-size:${size};font-weight:900;">${escapeHtml(info.text)}</span>`;
+          const color = info.isNoBus ? '#A1A1AA' : (info.urgent ? '#30D158' : '#FFD60A');
+          const size = info.isNoBus ? 'clamp(16px,9vw,19px)' : 'clamp(22px,13vw,28px)';
+          etaHtml = `<span class="tabular" style="color:${color};font-size:${size};font-weight:900;line-height:1;">${escapeHtml(info.text)}</span>`;
         }
 
         return `
           <div class="bus-row">
-            <div onclick="refreshWatchEtas(true)" style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;cursor:pointer;">
+            <div onclick="refreshWatchEtas(true)" style="display:flex;align-items:center;gap:4px;min-width:0;flex:1;cursor:pointer;">
               <span class="kmb-badge">${escapeHtml(r.route)}</span>
-              <div style="min-width:0;flex:1;line-height:1.15;">
-                <div style="font-size:18px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">往${escapeHtml(destShort)}</div>
-                <div style="font-size:14px;color:#e4e4e7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${escapeHtml(cleanStop)}</div>
+              <div style="min-width:0;flex:1;">
+                <div class="bus-dest">${escapeHtml(destShort)}</div>
+                <div class="bus-stop">${escapeHtml(cleanStop)}</div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
               <div onclick="refreshWatchEtas(true)" style="text-align:right;cursor:pointer;">${etaHtml}</div>
               <button onclick="logTripFromWatch('${escapeJs(r.route)}', ${Number(r.fare)}, '${escapeJs(cleanStop)}')" class="fare-btn btn tabular">
                 $${Number(r.fare).toFixed(1)}
@@ -627,7 +669,7 @@
       if (isFetchingEta || savedRoutes.length === 0) return;
       isFetchingEta = true;
       const indicator = document.getElementById('live-indicator');
-      if (indicator) indicator.style.background = '#fbbf24';
+      if (indicator) indicator.style.background = '#FFD60A';
 
       const targetRoutes = getFilteredRoutes();
       await Promise.all(targetRoutes.map(async (r) => {
@@ -645,8 +687,8 @@
             etaMap[cacheKey] = { text: '暫無', isNoBus: true, urgent: false, dest: foundDest };
           } else {
             const first = minsList[0];
-            const labels = minsList.map(m => m === 0 ? '即到' : `${m}`);
-            const text = minsList.length === 1 ? (first === 0 ? '即到' : `${first}分`) : `${labels.join('·')}分`;
+            const labels = minsList.map(m => m === 0 ? '即' : `${m}`);
+            const text = minsList.length === 1 ? (first === 0 ? '即到' : `${first}分`) : `${labels.join('·')}`;
             etaMap[cacheKey] = { text, isNoBus: false, urgent: first <= 3, dest: foundDest };
           }
         } catch {
@@ -656,7 +698,7 @@
 
       const timeEl = document.getElementById('last-update-time');
       if (timeEl) timeEl.innerText = getHKInfo().timeStr;
-      if (indicator) indicator.style.background = '#34d399';
+      if (indicator) indicator.style.background = '#30D158';
       isFetchingEta = false;
       renderWatchUI();
     };
@@ -671,9 +713,9 @@
           createdAt: Timestamp.now()
         });
         lastLoggedDocId = docRef.id;
-        showBusWatchToast(`✅ ${route} +$${Number(fare).toFixed(1)}`);
+        showBusWatchToast(`✅${route} +$${Number(fare).toFixed(1)}`);
       } catch (e) {
-        showBusWatchToast(`❌ 失敗：${e.message}`, false);
+        showBusWatchToast(`❌失敗：${e.message}`, false);
       }
     };
 
@@ -718,27 +760,28 @@
     };
 
     const SHIFT_META = {
-      A: { code: 'A', label: 'A更', time: '07:00-15:48', next: 'P', color: '#FF9F0A' },
+      A: { code: 'A', label: 'A更', time: '07:00-15:48', next: 'P', color: '#FFD60A' },
       P: { code: 'P', label: 'P更', time: '13:45-23:03', next: 'N', color: '#30D158' },
-      N: { code: 'N', label: 'N更', time: '22:30-07:18', next: 'A', color: '#0A84FF' }
+      N: { code: 'N', label: 'N更', time: '22:30-07:18', next: 'A', color: '#64D2FF' }
     };
 
+    /* 精簡崗位標籤：字數越少，字體越能放大 */
     const POST_DETAILS = {
-      'Aa': { post: 'A區主崗 · 07:00-15:03', order: 1 },
-      'Ac': { post: 'C區 · 07:00-15:48', order: 2 },
-      'Ad': { post: 'D區 · 07:00-15:48', order: 3 },
-      'Ae': { post: 'E區/G1 · 07:00-15:03', order: 4 },
-      '11-8': { post: '中更 · 11:15-20:03', order: 5 },
-      '11/8': { post: '中更 · 11:15-20:03', order: 5 },
-      '9-6': { post: '中更 · 09:00-17:48', order: 6 },
-      '9/5': { post: '中更 · 09:00-17:48', order: 6 },
-      'Pa': { post: 'P區主崗 · 13:45-22:33', order: 1 },
-      'Ec': { post: 'C區 · 14:15-23:03', order: 2 },
-      'Pe': { post: 'E區 · 13:45-22:33', order: 3 },
-      'Ed': { post: 'D區 · 14:15-23:03', order: 4 },
-      'Pu': { post: '支援/替假 · 13:45-22:33', order: 5 },
-      'Na': { post: '夜更主區 · 22:30-07:18', order: 1 },
-      'Ne': { post: '夜更E區 · 22:30-07:18', order: 2 }
+      'Aa': { post: 'A區主崗', order: 1 },
+      'Ac': { post: 'C區 · 07:00', order: 2 },
+      'Ad': { post: 'D區 · 07:00', order: 3 },
+      'Ae': { post: 'E區/G1', order: 4 },
+      '11-8': { post: '中更 11:15', order: 5 },
+      '11/8': { post: '中更 11:15', order: 5 },
+      '9-6': { post: '中更 09:00', order: 6 },
+      '9/5': { post: '中更 09:00', order: 6 },
+      'Pa': { post: 'P區主崗', order: 1 },
+      'Ec': { post: 'C區 · 14:15', order: 2 },
+      'Pe': { post: 'E區 · 13:45', order: 3 },
+      'Ed': { post: 'D區 · 14:15', order: 4 },
+      'Pu': { post: '支援/替假', order: 5 },
+      'Na': { post: '夜更主區', order: 1 },
+      'Ne': { post: '夜更E區', order: 2 }
     };
 
     const MASTER_21_ROTATION = [
@@ -991,19 +1034,19 @@
       document.getElementById('hub-live-time').innerHTML = `${hh}:${mm}<span class="clock-sec">:${ss}</span>`;
 
       const dObj = parseLocalDate(targetDateStr);
-      const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-      document.getElementById('hub-gregorian-date').textContent = `${dObj.getMonth() + 1}月${dObj.getDate()}日 ${weekdays[dObj.getDay()]}`;
+      const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+      document.getElementById('hub-gregorian-date').textContent = `${dObj.getMonth() + 1}/${dObj.getDate()} ${weekdays[dObj.getDay()]}`;
 
       const { lunarText, fest } = getLunarAndFestival(dObj);
       document.getElementById('hub-lunar-date').textContent = lunarText;
       const festEl = document.getElementById('hub-festival-badge');
       festEl.textContent = fest;
       if (fest === '平日') {
-        festEl.style.background = 'rgba(255,255,255,0.12)';
-        festEl.style.color = '#e4e4e7';
+        festEl.style.background = '#27272A';
+        festEl.style.color = '#E4E4E7';
       } else {
-        festEl.style.background = 'rgba(239,68,68,0.32)';
-        festEl.style.color = '#fca5a5';
+        festEl.style.background = '#FF3B30';
+        festEl.style.color = '#FFFFFF';
       }
     }
 
@@ -1013,7 +1056,7 @@
       updateHubClockAndDate();
       renderDutyViews();
       renderHubCalendar();
-      showToast(targetDateStr);
+      showToast(targetDateStr.slice(5));
     }
 
     function getBeaufortScale(kmh) {
@@ -1044,13 +1087,13 @@
           warnEl.className = 'warn-pill alert';
         }
       } catch {
-        warnEl.textContent = '警告連線中';
+        warnEl.textContent = '連線中';
       }
     }
 
     function fetchLocationWeather(manual = false) {
       const locEl = document.getElementById('hub-weather-loc');
-      if (manual && locEl) locEl.textContent = '📍 更新中';
+      if (manual && locEl) locEl.textContent = '📍更新';
       fetchHkoWeatherWarnings();
 
       const loadByCoords = async (lat, lng, label) => {
@@ -1059,16 +1102,16 @@
           const res = await fetch(url, { cache: 'no-store' });
           const data = await res.json();
           const cur = data.current || {};
-          const temp = cur.temperature_2m !== undefined ? `${Math.round(cur.temperature_2m)}°C` : '--°C';
-          const rain = cur.precipitation !== undefined ? `${Number(cur.precipitation).toFixed(1)}mm` : '0.0mm';
+          const temp = cur.temperature_2m !== undefined ? `${Math.round(cur.temperature_2m)}°` : '--°';
+          const rain = cur.precipitation !== undefined ? `${Number(cur.precipitation).toFixed(1)}` : '0.0';
           const windKmh = Number(cur.wind_speed_10m || 0);
-          document.getElementById('hub-weather-loc').textContent = `📍 ${label}`;
+          document.getElementById('hub-weather-loc').textContent = `📍${label}`;
           document.getElementById('hub-weather-temp').textContent = temp;
           document.getElementById('hub-weather-rain').textContent = rain;
           document.getElementById('hub-weather-wind').textContent = getBeaufortScale(windKmh);
-          if (manual) showToast(`${temp} · ${rain}`);
+          if (manual) showToast(`${temp}C · ${rain}mm`);
         } catch {
-          if (locEl) locEl.textContent = '⚠️ 氣象失敗';
+          if (locEl) locEl.textContent = '⚠️失敗';
         }
       };
 
@@ -1077,7 +1120,7 @@
         return;
       }
       navigator.geolocation.getCurrentPosition(
-        (pos) => loadByCoords(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4), '目前定位'),
+        (pos) => loadByCoords(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4), '定位'),
         () => loadByCoords(22.3119, 114.1746, '香港'),
         { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
       );
@@ -1183,11 +1226,11 @@
       reader.onload = (ev) => {
         const imported = parseIcsContent(String(ev.target.result || ''));
         const daysCount = Object.keys(imported).length;
-        if (daysCount === 0) { showToast('未讀取到日曆'); return; }
+        if (daysCount === 0) { showToast('無日曆資料'); return; }
         iosCalendarEvents = { ...iosCalendarEvents, ...imported };
         localStorage.setItem(IOS_CAL_STORAGE_KEY, JSON.stringify(iosCalendarEvents));
         renderHubCalendar();
-        showToast(`✅ 匯入 ${daysCount} 天行程`);
+        showToast(`✅匯入${daysCount}天`);
       };
       reader.readAsText(file);
       e.target.value = '';
@@ -1202,7 +1245,7 @@
     function renderHubCalendar() {
       const year = calendarViewDate.getFullYear();
       const month = calendarViewDate.getMonth();
-      document.getElementById('cal-month-title').textContent = `${year}年${month + 1}月`;
+      document.getElementById('cal-month-title').textContent = `${year}/${month + 1}`;
 
       const firstDayWeek = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1223,30 +1266,30 @@
         if (isToday) cls += ' today';
         else if (isSelected) cls += ' selected';
 
-        const dutyColor = isToday ? '#fff' : (isOff ? '#fcd34d' : '#34d399');
-        const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#fbbf24;display:inline-block;margin-left:1px;"></span>` : '';
+        const dutyColor = isToday ? '#FFF' : (isOff ? '#FFD60A' : '#30D158');
+        const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#FFD60A;display:inline-block;margin-left:1px;"></span>` : '';
 
         cells.push(`
           <button onclick="selectCalendarDate('${dStr}')" class="${cls}">
-            <span style="font-size:13px;line-height:1.1;font-weight:900;display:flex;align-items:center;">${d}${dotHtml}</span>
-            <span style="font-size:10.5px;line-height:1.05;color:${dutyColor};font-weight:900;">${duty || '-'}</span>
+            <span style="font-size:14px;line-height:1.05;font-weight:900;display:flex;align-items:center;">${d}${dotHtml}</span>
+            <span style="font-size:11px;line-height:1;color:${dutyColor};font-weight:900;">${duty || '-'}</span>
           </button>
         `);
       }
 
       document.getElementById('hub-calendar-grid').innerHTML = cells.join('');
       const selDuty = getMyDutyCodeForDate(targetDateStr);
-      document.getElementById('cal-selected-duty').textContent = `${targetDateStr.slice(5)} 更期：${selDuty || '無資料'}`;
+      document.getElementById('cal-selected-duty').textContent = `${targetDateStr.slice(5)} 更：${selDuty || '無'}`;
 
       const eventsBox = document.getElementById('cal-day-events');
       const dayEvents = iosCalendarEvents[targetDateStr] || [];
       if (dayEvents.length === 0) {
-        eventsBox.innerHTML = `<div style="color:#a1a1aa;font-size:13px;">當日無行程</div>`;
+        eventsBox.innerHTML = `<div style="color:#A1A1AA;font-size:14px;font-weight:800;">無行程</div>`;
       } else {
         eventsBox.innerHTML = dayEvents.map(ev => `
-          <div style="display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.5);border-radius:7px;padding:3px 6px;border-left:3px solid #fbbf24;">
-            <span class="tabular" style="font-size:13px;font-weight:900;color:#fcd34d;flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
-            <span style="font-size:14px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
+          <div style="display:flex;align-items:center;gap:4px;background:#000;border-radius:6px;padding:2px 5px;border-left:3px solid #FFD60A;">
+            <span class="tabular" style="font-size:14px;font-weight:900;color:#FFD60A;flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
+            <span style="font-size:15px;font-weight:900;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
           </div>
         `).join('');
       }
@@ -1272,12 +1315,12 @@
     }
 
     async function syncFromMainDutySystem(showFeedback = false) {
-      let sourceLabel = '內置 21 人循環更表';
+      let sourceLabel = '內置循環';
       try {
         const localRaw = localStorage.getItem(MAIN_STORAGE_KEY);
         if (localRaw) {
           const parsed = JSON.parse(localRaw);
-          if (parsed && parsed.weeks) { syncedWeeks = parsed.weeks; sourceLabel = '本機主更表 (已同步)'; }
+          if (parsed && parsed.weeks) { syncedWeeks = parsed.weeks; sourceLabel = '本機主更表'; }
         }
       } catch {}
 
@@ -1287,19 +1330,19 @@
           const remote = await res.json();
           if (remote && remote.weeks) {
             syncedWeeks = { ...syncedWeeks, ...remote.weeks };
-            sourceLabel = '☁ 雲端資料庫 (最新)';
+            sourceLabel = '☁雲端最新';
             document.getElementById('sync-dot').style.background = '#30D158';
           }
         }
       } catch {
-        document.getElementById('sync-dot').style.background = '#FF9F0A';
+        document.getElementById('sync-dot').style.background = '#FFD60A';
       }
 
       const infoEl = document.getElementById('duty-source-info');
       if (infoEl) infoEl.textContent = `來源：${sourceLabel}`;
       renderDutyViews();
       renderHubCalendar();
-      if (showFeedback) showToast('已同步最新更表');
+      if (showFeedback) showToast('已同步更表');
     }
 
     function getRosterForDate(dateStr) {
@@ -1345,9 +1388,9 @@
         const raw = item.code;
         if (raw.startsWith('[') && raw.endsWith(']')) continue;
         if (shiftCode === 'A' && ['Aa','Ac','Ad','Ae','9-6','9/5','11-8','11/8'].includes(raw)) {
-          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED Duty', order: POST_DETAILS[raw]?.order || 99 });
+          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED', order: POST_DETAILS[raw]?.order || 99 });
         } else if (shiftCode === 'P' && ['Pa','Ec','Pe','Ed','Pu','11-8','11/8'].includes(raw)) {
-          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED Duty', order: POST_DETAILS[raw]?.order || 99 });
+          result.push({ name: item.name, code: raw, post: POST_DETAILS[raw]?.post || 'AED', order: POST_DETAILS[raw]?.order || 99 });
         }
       }
       return result.sort((a, b) => a.order - b.order);
@@ -1358,7 +1401,7 @@
         const nextDay = addDays(dateStr, 1);
         return getRosterForDate(nextDay)
           .filter(x => !x.code.startsWith('[') && (x.code === 'Na' || x.code === 'Ne'))
-          .map(x => ({ name: x.name, code: x.code, post: POST_DETAILS[x.code]?.post || '夜更當值', order: POST_DETAILS[x.code]?.order || 99 }))
+          .map(x => ({ name: x.name, code: x.code, post: POST_DETAILS[x.code]?.post || '夜更', order: POST_DETAILS[x.code]?.order || 99 }))
           .sort((a, b) => a.order - b.order);
       }
       return classifyStaffByShift(dateStr, shiftCode);
@@ -1382,30 +1425,30 @@
 
       const dObj = parseLocalDate(targetDateStr);
       const weekdays = ['日','一','二','三','四','五','六'];
-      document.getElementById('current-date-str').textContent = `${String(dObj.getMonth() + 1).padStart(2, '0')}/${String(dObj.getDate()).padStart(2, '0')}(${weekdays[dObj.getDay()]})`;
+      document.getElementById('current-date-str').textContent = `${dObj.getMonth() + 1}/${dObj.getDate()}(${weekdays[dObj.getDay()]})`;
       document.getElementById('watch-date-input').value = targetDateStr;
 
       const currBadge = document.getElementById('current-shift-badge');
       currBadge.textContent = currMeta.label;
       currBadge.style.color = currMeta.color;
-      currBadge.style.borderColor = currMeta.color + '88';
+      currBadge.style.borderColor = currMeta.color;
       currBadge.style.backgroundColor = currMeta.color + '26';
       document.getElementById('current-shift-time').textContent = currMeta.time;
 
       const currList = getShiftRosterSmart(targetDateStr, currCode);
-      document.getElementById('current-headcount').textContent = `${currList.length} 人`;
+      document.getElementById('current-headcount').textContent = `${currList.length}人`;
       renderStaffCards('current-staff-list', currList);
 
       const nextBadge = document.getElementById('next-shift-badge');
       nextBadge.textContent = nextMeta.label;
       nextBadge.style.color = nextMeta.color;
-      nextBadge.style.borderColor = nextMeta.color + '88';
+      nextBadge.style.borderColor = nextMeta.color;
       nextBadge.style.backgroundColor = nextMeta.color + '26';
       document.getElementById('next-shift-time').textContent = nextMeta.time;
-      document.getElementById('next-date-hint').textContent = currCode === 'N' ? `明早(${nextShiftDate.slice(5)})` : '接更';
+      document.getElementById('next-date-hint').textContent = currCode === 'N' ? `明(${nextShiftDate.slice(5)})` : '接更';
 
       const nextList = getShiftRosterSmart(nextShiftDate, nextCode);
-      document.getElementById('next-headcount').textContent = `${nextList.length} 人`;
+      document.getElementById('next-headcount').textContent = `${nextList.length}人`;
       renderStaffCards('next-staff-list', nextList);
     }
 
@@ -1416,7 +1459,7 @@
     function renderStaffCards(containerId, staffArray) {
       const container = document.getElementById(containerId);
       if (!staffArray.length) {
-        container.innerHTML = `<div style="text-align:center;color:#71717a;font-size:15px;padding:24px 0;">暫無當更資料</div>`;
+        container.innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:24px 0;">無資料</div>`;
         return;
       }
       container.innerHTML = staffArray.map(person => {
@@ -1428,10 +1471,10 @@
         return `
           <div class="${cardCls}">
             <div style="min-width:0;">
-              <div style="font-size:20px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.15;">${escapeHtmlDuty(person.name)}</div>
-              <div style="font-size:13px;color:#a1a1aa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${escapeHtmlDuty(person.post)}</div>
+              <div class="staff-name">${escapeHtmlDuty(person.name)}</div>
+              <div class="staff-post">${escapeHtmlDuty(person.post)}</div>
             </div>
-            <div style="flex-shrink:0;margin-left:6px;"><span class="${badgeCls}">${badgeTxt}</span></div>
+            <div style="flex-shrink:0;margin-left:4px;"><span class="${badgeCls}">${badgeTxt}</span></div>
           </div>
         `;
       }).join('');
@@ -1454,7 +1497,7 @@
       renderDutyViews();
       renderHubCalendar();
       closeSettingsModal();
-      showToast('已返回今日');
+      showToast('已回今日');
     }
 
     const horizontalTrack = document.getElementById('horizontal-track');
@@ -1543,7 +1586,7 @@
       ['AUTO','A','P','N'].forEach(c => {
         const btn = document.getElementById(`btn-shift-${c}`);
         btn.style.background = c === manualShiftOverride ? '#30D158' : '#2C2C2E';
-        btn.style.color = c === manualShiftOverride ? '#000' : '#fff';
+        btn.style.color = c === manualShiftOverride ? '#000' : '#FFF';
       });
     }
 
