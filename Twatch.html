@@ -49,13 +49,14 @@
       #watch-screen { width: 100%; height: 100%; background: #000; position: relative; overflow: hidden; }
     }
 
-    /* 超薄頂部導航膠囊 */
+    /* 超薄頂部狀態膠囊（僅作狀態顯示） */
     .mini-nav {
       position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 30;
       display: flex; align-items: center; gap: 5px;
       background: rgba(20, 20, 22, 0.92); border: 1px solid rgba(255,255,255,0.18);
       border-top: none; border-radius: 0 0 10px 10px;
       padding: 1px 10px; font-size: 13px; font-weight: 900; color: #FFFFFF; line-height: 1.1;
+      pointer-events: none;
     }
     .dot { width: 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.35); transition: all 0.2s; }
     .dot.active-duty { width: 12px; background: #30D158; }
@@ -75,7 +76,7 @@
     .v-snap { width: 100%; height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
     .v-sec {
       width: 100%; height: 100%; scroll-snap-align: start; scroll-snap-stop: always;
-      display: flex; flex-direction: column; padding: 19px 2px 2px 2px;
+      display: flex; flex-direction: column; padding: 19px 3px 4px 3px;
     }
     .v-dots { position: absolute; right: 1px; top: 50%; transform: translateY(-50%); z-index: 20; display: flex; flex-direction: column; gap: 5px; pointer-events: none; }
     .v-dot { width: 3px; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.3); transition: all 0.2s; }
@@ -87,21 +88,11 @@
       background: #0D0D0F; border: 1px solid #262629; border-radius: 11px;
       padding: 4px 5px;
     }
-    .footer-bar {
-      padding-top: 2px; margin-top: 2px; border-top: 1px solid #262629;
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: clamp(14px, 8vw, 17px); font-weight: 900; line-height: 1.1; flex-shrink: 0;
-    }
 
     /* ================= 中控主頁：日期・時間・星期同一行 ================= */
-    .bat-strip {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1px 4px 3px 4px; font-size: clamp(16px, 9.2vw, 20px); font-weight: 900; line-height: 1.05;
-      border-bottom: 1px solid #1E1E22;
-    }
     .date-time-row {
       display: flex; align-items: center; justify-content: space-between;
-      gap: 2px; padding: 5px 1px 2px 1px;
+      gap: 2px; padding: 10px 2px;
     }
     .side-date-box {
       display: flex; align-items: center; gap: 1px;
@@ -114,7 +105,7 @@
       line-height: 1; flex-shrink: 0;
     }
     .clock-center {
-      font-size: clamp(32px, 18vw, 44px); font-weight: 900;
+      font-size: clamp(35px, 19.5vw, 48px); font-weight: 900;
       line-height: 0.95; letter-spacing: -1.2px; color: #FFFFFF;
       text-align: center; flex-shrink: 0;
     }
@@ -122,7 +113,7 @@
 
     .lunar-box {
       display: flex; align-items: center; justify-content: space-between; gap: 3px;
-      padding: 4px 5px; border-color: rgba(255, 214, 10, 0.45);
+      padding: 6px 6px; border-color: rgba(255, 214, 10, 0.45);
     }
     .lunar-txt {
       font-size: clamp(16px, 9vw, 20px); font-weight: 900; color: #FFD60A;
@@ -133,10 +124,10 @@
       border-radius: 6px; flex-shrink: 0; line-height: 1.1;
     }
 
-    .weather-box { padding: 4px 5px; border-color: rgba(100, 210, 255, 0.45); }
+    .weather-box { padding: 6px 5px; border-color: rgba(100, 210, 255, 0.45); }
     .weather-top {
       display: flex; align-items: center; justify-content: space-between; gap: 3px;
-      font-size: clamp(15px, 8.2vw, 18px); font-weight: 900; margin-bottom: 3px; line-height: 1.05;
+      font-size: clamp(15px, 8.2vw, 18px); font-weight: 900; margin-bottom: 5px; line-height: 1.05;
     }
     .warn-pill {
       padding: 1px 5px; border-radius: 5px; background: rgba(48, 209, 88, 0.18);
@@ -148,18 +139,18 @@
     .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; text-align: center; }
     .w-cell {
       background: #000000; border: 1px solid #262629; border-radius: 8px;
-      padding: 5px 1px; display: flex; align-items: center; justify-content: center;
+      padding: 8px 1px; display: flex; align-items: center; justify-content: center;
     }
     .w-val { font-size: clamp(24px, 13.5vw, 31px); font-weight: 900; line-height: 1; }
 
     /* QR Code 卡片 */
     .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
     .qr-card {
-      background: #FFFFFF; color: #000000; border-radius: 12px; padding: 4px 2px;
+      background: #FFFFFF; color: #000000; border-radius: 12px; padding: 6px 2px;
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      height: 100%; max-height: 250px;
+      height: 100%; max-height: 265px;
     }
-    .qr-card img { width: 92%; max-width: 118px; aspect-ratio: 1/1; image-rendering: pixelated; }
+    .qr-card img { width: 92%; max-width: 122px; aspect-ratio: 1/1; image-rendering: pixelated; }
 
     /* 行事曆網格 */
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.05; }
@@ -168,11 +159,11 @@
     .cal-cell.today { background: #0A84FF; font-weight: 900; }
     .cal-cell.selected { background: rgba(48,209,88,0.28); border-color: #30D158; }
 
-    /* ================= 更表名單：純淨大字人名 + 更碼（已刪除黃色字） ================= */
-    .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+    /* ================= 更表名單：無限往下滑動 A -> P -> N -> A -> P -> N ================= */
+    .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; flex-shrink: 0; }
     .duty-subbar {
       display: flex; justify-content: space-between; font-size: clamp(14px, 8vw, 17px); font-weight: 900;
-      color: #FFFFFF; background: #141416; border-radius: 8px; padding: 2px 6px; margin-bottom: 3px; line-height: 1.1;
+      color: #FFFFFF; background: #141416; border-radius: 8px; padding: 2px 6px; margin-bottom: 3px; line-height: 1.1; flex-shrink: 0;
     }
     .staff-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; }
     .staff-card {
@@ -192,7 +183,7 @@
     .post-badge.mid { background: rgba(100, 210, 255, 0.25); color: #64D2FF; border: 1px solid #64D2FF; }
 
     /* ================= 九巴 Watch ================= */
-    .bus-page { display: flex; flex-direction: column; padding: 19px 2px 2px 2px; background: #000000; }
+    .bus-page { display: flex; flex-direction: column; padding: 19px 3px 4px 3px; background: #000000; }
     .bus-topbar { display: flex; align-items: center; justify-content: space-between; gap: 2px; padding: 2px; border-bottom: 1px solid #27272A; margin-bottom: 3px; flex-shrink: 0; }
     .bus-group-btn { background: #1C1C1E; color: #64D2FF; font-size: clamp(15px, 8.5vw, 18px); font-weight: 900; padding: 2px 7px; border-radius: 99px; border: 1px solid #3F3F46; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .bus-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; transition: transform 0.15s; }
@@ -208,7 +199,7 @@
     .qr-zoom { position: absolute; inset: 0; z-index: 50; background: #FFFFFF; color: #000000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 8px; }
     .qr-zoom.show { display: flex; }
     #watch-toast {
-      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 60;
+      position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 60;
       background: #2C2C2E; border: 1px solid #FFD60A;
       color: #FFFFFF; font-size: 16px; font-weight: 900; padding: 4px 12px; border-radius: 99px;
       opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap;
@@ -223,88 +214,33 @@
     <div id="side-button" title="按此切換頁面" onclick="cycleHorizontalPage()"></div>
 
     <div id="watch-screen">
-      <!-- 超薄頂部導航膠囊 -->
-      <button onclick="cycleHorizontalPage()" class="mini-nav btn">
+      <!-- 超薄頂部狀態膠囊 -->
+      <div class="mini-nav">
         <span id="dot-duty" class="dot"></span>
         <span id="dot-hub" class="dot active-hub"></span>
         <span id="dot-bus" class="dot"></span>
         <span id="top-page-label">主頁</span>
         <span id="sync-dot" style="width:6px;height:6px;border-radius:99px;background:#30D158;"></span>
-      </button>
+      </div>
 
       <div id="horizontal-track">
         <!-- ============================================================== -->
-        <!-- PAGE 0 (左): QEH AED 21人更表                                   -->
+        <!-- PAGE 0 (左): QEH AED 無限向下滑動更表 (A -> P -> N -> A -> P -> N) -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-duty">
-          <div id="vertical-snap" class="v-snap no-scrollbar">
-            <!-- 當更同事 -->
-            <div class="v-sec">
-              <div class="duty-header">
-                <div style="display:flex;align-items:center;gap:3px;font-size:clamp(16px,9vw,19px);font-weight:900;">
-                  <span class="btn" onclick="shiftTargetDate(-1)" style="color:#A1A1AA;padding:0 3px;">◀</span>
-                  <span id="current-date-str">11/26</span>
-                  <span class="btn" onclick="shiftTargetDate(1)" style="color:#A1A1AA;padding:0 3px;">▶</span>
-                  <span id="current-shift-badge" style="font-size:15px;padding:1px 5px;border-radius:6px;border:1px solid #30D158;">P更</span>
-                </div>
-                <button onclick="openSettingsModal()" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#FFF;font-size:16px;">⚙</button>
-              </div>
-
-              <div class="duty-subbar tabular">
-                <span id="current-shift-time">13:45-23:03</span>
-                <span id="current-headcount" style="color:#30D158;">0人</span>
-              </div>
-
-              <div id="current-staff-list" class="staff-list no-scrollbar"></div>
-
-              <div class="footer-bar">
-                <span onclick="scrollToShift(1)" class="btn" style="color:#64D2FF;">↓下更</span>
-                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁→</span>
-              </div>
-            </div>
-
-            <!-- 下更同事 -->
-            <div class="v-sec">
-              <div class="duty-header">
-                <div style="display:flex;align-items:center;gap:4px;font-size:clamp(16px,9vw,19px);font-weight:900;">
-                  <span>下更</span>
-                  <span id="next-shift-badge" style="font-size:15px;padding:1px 5px;border-radius:6px;border:1px solid #64D2FF;">N更</span>
-                  <span id="next-date-hint" style="color:#A1A1AA;font-size:14px;">接更</span>
-                </div>
-                <button onclick="scrollToShift(0)" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#30D158;font-size:17px;font-weight:900;">↑</button>
-              </div>
-
-              <div class="duty-subbar tabular">
-                <span id="next-shift-time">22:30-07:18</span>
-                <span id="next-headcount" style="color:#64D2FF;">0人</span>
-              </div>
-
-              <div id="next-staff-list" class="staff-list no-scrollbar"></div>
-
-              <div class="footer-bar">
-                <span onclick="scrollToShift(0)" class="btn" style="color:#30D158;">↑當更</span>
-                <span onclick="goToPage(1)" class="btn" style="color:#30D158;">主頁→</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="v-dots">
-            <span id="v-dot-0" class="v-dot on"></span>
-            <span id="v-dot-1" class="v-dot"></span>
-          </div>
+          <div id="vertical-snap" class="v-snap no-scrollbar"></div>
         </section>
 
         <!-- ============================================================== -->
-        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:電量時鐘氣象 / 下:行事曆)   -->
+        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:時鐘氣象 / 下:行事曆)       -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-hub">
           <div id="hub-vertical-snap" class="v-snap no-scrollbar">
 
             <!-- Slide 0 (向上滑動): 兩張登入 QR Code (Mail & CMS) -->
             <div class="v-sec">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                <span style="font-size:17px;font-weight:900;color:#FFD60A;">🔐登入QR</span>
-                <button onclick="scrollHubSlide(1)" class="btn" style="font-size:15px;font-weight:900;color:#64D2FF;background:#1C1C1E;border:none;padding:2px 8px;border-radius:99px;">↓主頁</button>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <span style="font-size:17px;font-weight:900;color:#FFD60A;">🔐登入QR（點擊放大）</span>
               </div>
               <div class="qr-grid">
                 <div onclick="openQrZoom('MAIL')" class="qr-card btn">
@@ -318,56 +254,39 @@
                   <div style="font-size:13px;font-weight:900;color:#3F3F46;line-height:1;">點擊放大</div>
                 </div>
               </div>
-              <div class="footer-bar" style="color:#A1A1AA;">
-                <span>點圖放大</span>
-                <span onclick="scrollHubSlide(1)" class="btn" style="color:#30D158;">↓主頁</span>
-              </div>
             </div>
 
             <!-- Slide 1 (預設主畫面): 日期(左) · 時間(中) · 星期(右) 同一行 -->
-            <div class="v-sec" style="justify-content:space-between;">
-              <div style="flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:4px;">
-                <div class="oled-box">
-                  <div class="bat-strip btn" onclick="promptManualBattery()">
-                    <span style="color:#30D158;" class="tabular">📱<span id="hub-phone-bat">--%</span></span>
-                    <span style="color:#64D2FF;" class="tabular">⌚<span id="hub-watch-bat">--%</span></span>
+            <div class="v-sec" style="justify-content:space-evenly;gap:4px;">
+              <div class="oled-box">
+                <div class="date-time-row tabular">
+                  <div class="side-date-box">
+                    <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">◀</span>
+                    <span id="hub-gregorian-date">11/26</span>
                   </div>
-                  <div class="date-time-row tabular">
-                    <div class="side-date-box">
-                      <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">◀</span>
-                      <span id="hub-gregorian-date">11/26</span>
-                    </div>
-                    <div id="hub-live-time" class="clock-center">--:--<span class="clock-sec">:--</span></div>
-                    <div class="side-week-box">
-                      <span id="hub-weekday">週四</span>
-                      <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">▶</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="oled-box lunar-box">
-                  <span id="hub-lunar-date" class="lunar-txt">丙午(馬)十月十八</span>
-                  <span id="hub-festival-badge" class="fest-pill" style="background:#27272A;color:#FFFFFF;">平日</span>
-                </div>
-
-                <div class="oled-box weather-box btn" onclick="fetchLocationWeather(true)">
-                  <div class="weather-top">
-                    <span id="hub-weather-loc" style="color:#64D2FF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍定位</span>
-                    <span id="hub-weather-warning" class="warn-pill">無警告</span>
-                  </div>
-                  <div class="w-grid tabular">
-                    <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div></div>
-                    <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div></div>
-                    <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div></div>
+                  <div id="hub-live-time" class="clock-center">--:--<span class="clock-sec">:--</span></div>
+                  <div class="side-week-box">
+                    <span id="hub-weekday">週四</span>
+                    <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">▶</span>
                   </div>
                 </div>
               </div>
 
-              <div class="footer-bar">
-                <span onclick="goToPage(0)" class="btn" style="color:#30D158;">←更</span>
-                <span onclick="scrollHubSlide(0)" class="btn" style="color:#FFD60A;">↑QR</span>
-                <span onclick="scrollHubSlide(2)" class="btn" style="color:#64D2FF;">↓曆</span>
-                <span onclick="goToPage(2)" class="btn" style="color:#FF9F0A;">巴→</span>
+              <div class="oled-box lunar-box">
+                <span id="hub-lunar-date" class="lunar-txt">丙午(馬)十月十八</span>
+                <span id="hub-festival-badge" class="fest-pill" style="background:#27272A;color:#FFFFFF;">平日</span>
+              </div>
+
+              <div class="oled-box weather-box btn" onclick="fetchLocationWeather(true)">
+                <div class="weather-top">
+                  <span id="hub-weather-loc" style="color:#64D2FF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍定位</span>
+                  <span id="hub-weather-warning" class="warn-pill">無警告</span>
+                </div>
+                <div class="w-grid tabular">
+                  <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div></div>
+                  <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div></div>
+                  <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div></div>
+                </div>
               </div>
             </div>
 
@@ -376,7 +295,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
                 <div style="display:flex;align-items:center;gap:2px;">
                   <button onclick="changeCalendarMonth(-1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">◀</button>
-                  <span id="cal-month-title" style="font-size:16px;font-weight:900;">2026/11</span>
+                  <span id="cal-month-title" style="font-size:16px;font-weight:900;">2026/12</span>
                   <button onclick="changeCalendarMonth(1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">▶</button>
                 </div>
                 <div style="display:flex;align-items:center;gap:3px;">
@@ -392,9 +311,8 @@
               <div id="hub-calendar-grid" class="cal-grid"></div>
 
               <div class="oled-box no-scrollbar" style="flex:1;margin-top:3px;padding:3px 5px;overflow-y:auto;">
-                <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:#30D158;margin-bottom:2px;line-height:1.1;">
-                  <span id="cal-selected-duty">11/26 更：--</span>
-                  <span onclick="scrollHubSlide(1)" class="btn" style="color:#64D2FF;">↑主頁</span>
+                <div style="font-size:14px;font-weight:900;color:#30D158;margin-bottom:2px;line-height:1.1;">
+                  <span id="cal-selected-duty">12-14 更：--</span>
                 </div>
                 <div id="cal-day-events" style="display:flex;flex-direction:column;gap:3px;font-size:15px;"></div>
               </div>
@@ -414,7 +332,7 @@
         <!-- ============================================================== -->
         <section class="h-page bus-page" id="page-bus">
           <div class="bus-topbar">
-            <button onclick="cycleWatchGroup(1)" id="watch-group-btn" class="bus-group-btn btn">‹📍自動›</button>
+            <button onclick="cycleWatchGroup(1)" id="watch-group-btn" class="bus-group-btn btn">‹全部›</button>
             <div class="tabular" style="display:flex;align-items:center;gap:3px;font-size:16px;">
               <span id="watch-month-total" style="color:#30D158;font-weight:900;">$0</span>
               <button onclick="refreshWatchEtas(true)" class="btn" style="display:flex;align-items:center;gap:3px;background:#1C1C1E;border:none;color:#FFFFFF;padding:2px 5px;border-radius:6px;font-size:14px;font-weight:900;">
@@ -431,11 +349,6 @@
 
           <div id="watch-route-list" class="bus-list no-scrollbar">
             <div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:20px 0;">載入中...</div>
-          </div>
-
-          <div class="footer-bar" style="padding:3px 3px 0 3px;">
-            <span onclick="goToPage(1)" class="btn" style="color:#64D2FF;">←主頁</span>
-            <span onclick="cycleWatchGroup(1)" class="btn" style="color:#FFD60A;">換組›</span>
           </div>
         </section>
       </div>
@@ -455,7 +368,7 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;font-size:15px;">
           <div class="oled-box" style="padding:6px;">
-            <div style="font-size:14px;color:#A1A1AA;margin-bottom:4px;font-weight:900;">切換更次</div>
+            <div style="font-size:14px;color:#A1A1AA;margin-bottom:4px;font-weight:900;">切換起始更次</div>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
               <button onclick="setManualShift('AUTO')" id="btn-shift-AUTO" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#30D158;color:#000;">自動</button>
               <button onclick="setManualShift('A')" id="btn-shift-A" class="btn" style="padding:8px 0;border-radius:8px;border:none;font-size:16px;font-weight:900;background:#2C2C2E;color:#FFF;">A更</button>
@@ -485,7 +398,7 @@
     <button onclick="goToPage(2)" style="padding:6px 12px;border-radius:99px;border:none;background:#E3001B;color:#fff;font-weight:800;cursor:pointer;">九巴 Watch →</button>
   </div>
 
-  <!-- Firebase：九巴即時到站 ETA + 電話/Watch 雲端電量即時同步 -->
+  <!-- Firebase：九巴即時到站 ETA + 雲端行事曆同步 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -499,68 +412,21 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* 雲端電量同步（解決 Apple Watch 無法直接讀取 iPhone 電量的問題） */
-    const batteryDocRef = doc(db, "settings", "battery_status");
+    /* 雲端行事曆同步 */
+    const calDocRef = doc(db, "settings", "ios_calendar_events");
 
-    function applyBatteryUI(phoneVal, watchVal) {
-      if (phoneVal !== undefined && phoneVal !== null && String(phoneVal).trim() !== '') {
-        const cleanP = String(phoneVal).replace('%', '').trim();
-        localStorage.setItem('hub_phone_bat', cleanP);
-        const pEl = document.getElementById('hub-phone-bat');
-        if (pEl) pEl.textContent = `${cleanP}%`;
-      }
-      if (watchVal !== undefined && watchVal !== null && String(watchVal).trim() !== '') {
-        const cleanW = String(watchVal).replace('%', '').trim();
-        localStorage.setItem('hub_watch_bat', cleanW);
-        const wEl = document.getElementById('hub-watch-bat');
-        if (wEl) wEl.textContent = `${cleanW}%`;
-      }
-    }
-
-    // 即時監聽 Firestore 中的電量紀錄，iPhone 捷徑或任何裝置更新後 Watch 立即同步
-    onSnapshot(batteryDocRef, (snap) => {
-      if (snap.exists()) {
+    onSnapshot(calDocRef, (snap) => {
+      if (snap.exists() && window.mergeCloudCalendarEvents) {
         const data = snap.data();
-        applyBatteryUI(data.phone, data.watch);
+        if (data && data.events) {
+          window.mergeCloudCalendarEvents(data.events);
+        }
       }
     });
 
-    // 支援 URL 參數自動寫入雲端（例如 iPhone 捷徑開啟 ?phone=85 時自動同步給 Watch）
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlPhone = urlParams.get('phoneBat') || urlParams.get('phone');
-    const urlWatch = urlParams.get('watchBat') || urlParams.get('watch');
-    if (urlPhone || urlWatch) {
-      const payload = { updatedAt: Timestamp.now() };
-      if (urlPhone) payload.phone = String(urlPhone).replace('%', '').trim();
-      if (urlWatch) payload.watch = String(urlWatch).replace('%', '').trim();
-      applyBatteryUI(payload.phone, payload.watch);
-      setDoc(batteryDocRef, payload, { merge: true }).catch(() => {});
-    }
-
-    // 同時嘗試讀取瀏覽器原生 Battery API（如支援則自動寫入）
-    if (navigator.getBattery) {
-      navigator.getBattery().then((bat) => {
-        const isMobile = /iPhone|Android/i.test(navigator.userAgent);
-        const updateNativeBat = () => {
-          const pct = Math.round(bat.level * 100);
-          if (isMobile) {
-            applyBatteryUI(pct, null);
-            setDoc(batteryDocRef, { phone: String(pct), updatedAt: Timestamp.now() }, { merge: true }).catch(() => {});
-          }
-        };
-        updateNativeBat();
-        bat.addEventListener('levelchange', updateNativeBat);
-      }).catch(() => {});
-    }
-
-    // 暴露給手動設定電量視窗同步寫入雲端
-    window.saveBatteryToCloud = async (phoneVal, watchVal) => {
-      const payload = { updatedAt: Timestamp.now() };
-      if (phoneVal) payload.phone = String(phoneVal).replace('%', '').trim();
-      if (watchVal) payload.watch = String(watchVal).replace('%', '').trim();
-      applyBatteryUI(payload.phone, payload.watch);
+    window.saveCalendarEventsToCloud = async (eventsMap) => {
       try {
-        await setDoc(batteryDocRef, payload, { merge: true });
+        await setDoc(calDocRef, { events: eventsMap, updatedAt: Timestamp.now() }, { merge: true });
       } catch {}
     };
 
@@ -656,11 +522,15 @@
     }
     window.detectWatchAutoGroup = detectWatchAutoGroup;
 
+    // 修正：避免 'auto' 未匹配地點時與 'all' 重複顯示兩頁「全部」
     function getWatchFilterModes() {
       const hasGeo = customGroups.some(g => g.lat && g.lng);
       const modes = [];
       if (hasGeo) modes.push('auto');
-      modes.push('all');
+      // 只有當沒有啟用 auto 或 auto 已匹配到特定地點分組時，才額外保留獨立的 'all' 頁
+      if (!hasGeo || autoMatchedGroup) {
+        modes.push('all');
+      }
       customGroups.forEach(g => modes.push(g.id));
       return modes;
     }
@@ -668,7 +538,8 @@
     window.cycleWatchGroup = (step = 1) => {
       const modes = getWatchFilterModes();
       if (modes.length <= 1) return;
-      const idx = modes.indexOf(activeFilter);
+      let idx = modes.indexOf(activeFilter);
+      if (idx === -1) idx = 0;
       activeFilter = modes[(idx + step + modes.length) % modes.length];
       const listEl = document.getElementById('watch-route-list');
       listEl.style.transform = `translateX(${step > 0 ? '-10px' : '10px'})`;
@@ -696,11 +567,11 @@
       const groupBtn = document.getElementById('watch-group-btn');
       const hasGeo = customGroups.some(g => g.lat && g.lng);
       if (customGroups.length === 0) groupBtn.innerText = `全部(${savedRoutes.length})`;
-      else if (activeFilter === 'auto' && hasGeo) groupBtn.innerText = autoMatchedGroup ? `‹📍${autoMatchedGroup.name}›` : `‹📍全部›`;
+      else if (activeFilter === 'auto' && hasGeo) groupBtn.innerText = autoMatchedGroup ? `‹📍${autoMatchedGroup.name}›` : `‹📍全部(${savedRoutes.length})›`;
       else if (activeFilter === 'all') groupBtn.innerText = `‹全部(${savedRoutes.length})›`;
       else {
         const g = customGroups.find(x => x.id === activeFilter);
-        groupBtn.innerText = g ? `‹${g.name}›` : '‹全部›';
+        groupBtn.innerText = g ? `‹${g.name}›` : `‹全部(${savedRoutes.length})›`;
       }
 
       const listEl = document.getElementById('watch-route-list');
@@ -826,7 +697,7 @@
     });
   </script>
 
-  <!-- 完整 21 人更表引擎 + 中控主頁 + 行事曆 -->
+  <!-- 完整 21 人更表引擎（無限 A->P->N 向下滑動）+ 中控主頁 + 行事曆 -->
   <script>
     const ANCHOR_BASE_MONDAY = '2026-11-16';
     const MAIN_STORAGE_KEY = 'qeh_aed_duty_v26';
@@ -1028,6 +899,7 @@
     let currentHorizontalPage = 1;
     let currentVerticalSlide = 0;
     let currentHubSlide = 1;
+    let renderedDutyCardsCount = 0;
     let iosCalendarEvents = {};
 
     function parseLocalDate(dateStr) {
@@ -1193,30 +1065,6 @@
       );
     }
 
-    function initBatteryMonitor() {
-      const savedPhone = localStorage.getItem('hub_phone_bat');
-      const savedWatch = localStorage.getItem('hub_watch_bat');
-      if (savedPhone) document.getElementById('hub-phone-bat').textContent = `${savedPhone}%`;
-      if (savedWatch) document.getElementById('hub-watch-bat').textContent = `${savedWatch}%`;
-    }
-
-    function promptManualBattery() {
-      const curP = localStorage.getItem('hub_phone_bat') || '85';
-      const curW = localStorage.getItem('hub_watch_bat') || '90';
-      const input = prompt('輸入「電話電量,Watch電量」(例如 85,92)：', `${curP},${curW}`);
-      if (!input) return;
-      const [p, w] = input.split(',').map(s => s.trim().replace('%', ''));
-      const validP = (p && !isNaN(Number(p))) ? p : null;
-      const validW = (w && !isNaN(Number(w))) ? w : null;
-      if (window.saveBatteryToCloud) {
-        window.saveBatteryToCloud(validP, validW);
-      } else {
-        if (validP) { localStorage.setItem('hub_phone_bat', validP); document.getElementById('hub-phone-bat').textContent = `${validP}%`; }
-        if (validW) { localStorage.setItem('hub_watch_bat', validW); document.getElementById('hub-watch-bat').textContent = `${validW}%`; }
-      }
-      showToast('已同步電量');
-    }
-
     function renderLoginQrCodes() {
       const mailImg = document.getElementById('qr-img-mail');
       const cmsImg = document.getElementById('qr-img-cms');
@@ -1233,27 +1081,57 @@
     }
     function closeQrZoom() { document.getElementById('qr-zoom-modal').classList.remove('show'); }
 
+    /* ================= 行事曆正式行程載入與解析 ================= */
+    function normalizeDateKey(rawDate) {
+      const m = String(rawDate || '').trim().match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+      if (!m) return '';
+      return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+    }
+
+    function parseEventStrings(rawStr) {
+      return String(rawStr || '').split(/\||\n|;/).map(item => {
+        const trimmed = item.trim();
+        if (!trimmed) return null;
+        const m = trimmed.match(/^(\d{1,2}:\d{2}(?:\s*-\s*\d{1,2}:\d{2})?)\s+(.+)$/);
+        return m ? { time: m[1].replace(/\s+/g, ''), title: m[2] } : { time: '全日', title: trimmed };
+      }).filter(Boolean);
+    }
+
     function loadSavedIosEvents() {
       try {
         const raw = localStorage.getItem(IOS_CAL_STORAGE_KEY);
         if (raw) iosCalendarEvents = JSON.parse(raw) || {};
       } catch { iosCalendarEvents = {}; }
 
+      if (!iosCalendarEvents['2026-12-14']) {
+        iosCalendarEvents['2026-12-14'] = [
+          { time: '全日', title: 'B 萬人行補假' },
+          { time: '全日', title: '會所興趣班交錢' },
+          { time: '09:30', title: '【公立覆診】產前輔導 · TMH' },
+          { time: '10:00', title: '【公立覆診】多胎超聲波檢查 · TMH' },
+          { time: '14:00', title: '【公立覆診】助產士新症診所 · TMH' }
+        ];
+      }
+
       const params = new URLSearchParams(window.location.search);
       const urlEvents = params.get('calEvents') || params.get('events');
-      const urlDate = params.get('calDate') || formatLocalDate(new Date());
+      const urlDate = normalizeDateKey(params.get('calDate') || params.get('date')) || formatLocalDate(new Date());
       if (urlEvents) {
-        const parsed = urlEvents.split('|').map(item => {
-          const trimmed = item.trim();
-          const m = trimmed.match(/^(\d{1,2}:\d{2})\s+(.+)$/);
-          return m ? { time: m[1], title: m[2] } : { time: '全日', title: trimmed };
-        }).filter(x => x.title);
+        const parsed = parseEventStrings(urlEvents);
         if (parsed.length > 0) {
           iosCalendarEvents[urlDate] = parsed;
           localStorage.setItem(IOS_CAL_STORAGE_KEY, JSON.stringify(iosCalendarEvents));
+          if (window.saveCalendarEventsToCloud) window.saveCalendarEventsToCloud(iosCalendarEvents);
         }
       }
     }
+
+    window.mergeCloudCalendarEvents = (cloudEvents) => {
+      if (!cloudEvents || typeof cloudEvents !== 'object') return;
+      iosCalendarEvents = { ...iosCalendarEvents, ...cloudEvents };
+      localStorage.setItem(IOS_CAL_STORAGE_KEY, JSON.stringify(iosCalendarEvents));
+      renderHubCalendar();
+    };
 
     function parseIcsContent(icsText) {
       const unfolded = icsText.replace(/\r?\n[ \t]/g, '');
@@ -1296,6 +1174,7 @@
         if (daysCount === 0) { showToast('無日曆資料'); return; }
         iosCalendarEvents = { ...iosCalendarEvents, ...imported };
         localStorage.setItem(IOS_CAL_STORAGE_KEY, JSON.stringify(iosCalendarEvents));
+        if (window.saveCalendarEventsToCloud) window.saveCalendarEventsToCloud(iosCalendarEvents);
         renderHubCalendar();
         showToast(`✅匯入${daysCount}天`);
       };
@@ -1334,7 +1213,7 @@
         else if (isSelected) cls += ' selected';
 
         const dutyColor = isToday ? '#FFF' : (isOff ? '#FFD60A' : '#30D158');
-        const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#FFD60A;display:inline-block;margin-left:1px;"></span>` : '';
+        const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#FF453A;display:inline-block;margin-left:1px;"></span>` : '';
 
         cells.push(`
           <button onclick="selectCalendarDate('${dStr}')" class="${cls}">
@@ -1353,12 +1232,17 @@
       if (dayEvents.length === 0) {
         eventsBox.innerHTML = `<div style="color:#A1A1AA;font-size:14px;font-weight:800;">無行程</div>`;
       } else {
-        eventsBox.innerHTML = dayEvents.map(ev => `
-          <div style="display:flex;align-items:center;gap:4px;background:#000;border-radius:6px;padding:2px 5px;border-left:3px solid #FFD60A;">
-            <span class="tabular" style="font-size:14px;font-weight:900;color:#FFD60A;flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
-            <span style="font-size:15px;font-weight:900;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
-          </div>
-        `).join('');
+        eventsBox.innerHTML = dayEvents.map(ev => {
+          const isAllDay = ev.time === '全日';
+          const borderCol = isAllDay ? '#0A84FF' : '#FF453A';
+          const timeCol = isAllDay ? '#64D2FF' : '#FFD60A';
+          return `
+            <div style="display:flex;align-items:center;gap:4px;background:#000;border-radius:6px;padding:3px 5px;border-left:3px solid ${borderCol};">
+              <span class="tabular" style="font-size:13px;font-weight:900;color:${timeCol};flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
+              <span style="font-size:14px;font-weight:900;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
+            </div>
+          `;
+        }).join('');
       }
     }
 
@@ -1381,6 +1265,7 @@
       renderHubCalendar();
     }
 
+    /* ================= 更表同步與無限向下滑動 (A -> P -> N -> A -> P -> N) ================= */
     async function syncFromMainDutySystem(showFeedback = false) {
       let sourceLabel = '內置循環';
       try {
@@ -1483,53 +1368,15 @@
       return 'N';
     }
 
-    function renderDutyViews() {
-      const currCode = getActiveShiftCode();
-      const currMeta = SHIFT_META[currCode];
-      const nextCode = currMeta.next;
-      const nextMeta = SHIFT_META[nextCode];
-      const nextShiftDate = (currCode === 'N') ? addDays(targetDateStr, 1) : targetDateStr;
-
-      const dObj = parseLocalDate(targetDateStr);
-      const weekdays = ['日','一','二','三','四','五','六'];
-      document.getElementById('current-date-str').textContent = `${dObj.getMonth() + 1}/${dObj.getDate()}(${weekdays[dObj.getDay()]})`;
-      document.getElementById('watch-date-input').value = targetDateStr;
-
-      const currBadge = document.getElementById('current-shift-badge');
-      currBadge.textContent = currMeta.label;
-      currBadge.style.color = currMeta.color;
-      currBadge.style.borderColor = currMeta.color;
-      currBadge.style.backgroundColor = currMeta.color + '26';
-      document.getElementById('current-shift-time').textContent = currMeta.time;
-
-      const currList = getShiftRosterSmart(targetDateStr, currCode);
-      document.getElementById('current-headcount').textContent = `${currList.length}人`;
-      renderStaffCards('current-staff-list', currList);
-
-      const nextBadge = document.getElementById('next-shift-badge');
-      nextBadge.textContent = nextMeta.label;
-      nextBadge.style.color = nextMeta.color;
-      nextBadge.style.borderColor = nextMeta.color;
-      nextBadge.style.backgroundColor = nextMeta.color + '26';
-      document.getElementById('next-shift-time').textContent = nextMeta.time;
-      document.getElementById('next-date-hint').textContent = currCode === 'N' ? `明(${nextShiftDate.slice(5)})` : '接更';
-
-      const nextList = getShiftRosterSmart(nextShiftDate, nextCode);
-      document.getElementById('next-headcount').textContent = `${nextList.length}人`;
-      renderStaffCards('next-staff-list', nextList);
-    }
-
     function escapeHtmlDuty(str) {
       return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    function renderStaffCards(containerId, staffArray) {
-      const container = document.getElementById(containerId);
+    function buildStaffCardsHtml(staffArray) {
       if (!staffArray.length) {
-        container.innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:24px 0;">無資料</div>`;
-        return;
+        return `<div style="text-align:center;color:#A1A1AA;font-size:18px;font-weight:900;padding:24px 0;">無資料</div>`;
       }
-      container.innerHTML = staffArray.map(person => {
+      return staffArray.map(person => {
         const isMe = person.name.includes('陳曦彥');
         const isMid = person.code === '11-8' || person.code === '9-6';
         const cardCls = isMe ? 'staff-card me' : 'staff-card';
@@ -1544,6 +1391,77 @@
           </div>
         `;
       }).join('');
+    }
+
+    function getSequentialShiftInfo(index) {
+      const baseCode = getActiveShiftCode();
+      const order = ['A', 'P', 'N'];
+      const baseIdx = order.indexOf(baseCode);
+      const totalIdx = baseIdx + index;
+      const dayOffset = Math.floor(totalIdx / 3);
+      const shiftCode = order[totalIdx % 3];
+      const dateStr = addDays(targetDateStr, dayOffset);
+      return { dateStr, shiftCode, meta: SHIFT_META[shiftCode] };
+    }
+
+    function createDutySlideHtml(index) {
+      const { dateStr, shiftCode, meta } = getSequentialShiftInfo(index);
+      const dObj = parseLocalDate(dateStr);
+      const weekdays = ['日','一','二','三','四','五','六'];
+      const dateLabel = `${dObj.getMonth() + 1}/${dObj.getDate()}(${weekdays[dObj.getDay()]})`;
+      const roster = getShiftRosterSmart(dateStr, shiftCode);
+
+      const headerLeft = index === 0
+        ? `<span class="btn" onclick="shiftTargetDate(-1)" style="color:#A1A1AA;padding:0 3px;">◀</span>
+           <span>${dateLabel}</span>
+           <span class="btn" onclick="shiftTargetDate(1)" style="color:#A1A1AA;padding:0 3px;">▶</span>`
+        : `<span style="color:#A1A1AA;font-size:14px;">+${index}更</span>
+           <span>${dateLabel}</span>`;
+
+      const headerRight = index === 0
+        ? `<button onclick="openSettingsModal()" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#FFF;font-size:16px;">⚙</button>`
+        : `<button onclick="scrollToShift(0)" class="btn" style="width:30px;height:30px;border-radius:99px;background:#1C1C1E;border:1px solid #3F3F46;color:#30D158;font-size:16px;font-weight:900;">⤒</button>`;
+
+      return `
+        <div class="v-sec" data-duty-idx="${index}">
+          <div class="duty-header">
+            <div style="display:flex;align-items:center;gap:3px;font-size:clamp(16px,9vw,19px);font-weight:900;">
+              ${headerLeft}
+              <span style="font-size:15px;padding:1px 5px;border-radius:6px;border:1px solid ${meta.color};color:${meta.color};background:${meta.color}26;">${meta.label}</span>
+            </div>
+            ${headerRight}
+          </div>
+
+          <div class="duty-subbar tabular">
+            <span>${meta.time}</span>
+            <span style="color:${meta.color};">${roster.length}人</span>
+          </div>
+
+          <div class="staff-list no-scrollbar">
+            ${buildStaffCardsHtml(roster)}
+          </div>
+        </div>
+      `;
+    }
+
+    function appendMoreDutySlides(count = 4) {
+      const container = document.getElementById('vertical-snap');
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        html += createDutySlideHtml(renderedDutyCardsCount + i);
+      }
+      container.insertAdjacentHTML('beforeend', html);
+      renderedDutyCardsCount += count;
+    }
+
+    function renderDutyViews() {
+      document.getElementById('watch-date-input').value = targetDateStr;
+      const container = document.getElementById('vertical-snap');
+      container.innerHTML = '';
+      renderedDutyCardsCount = 0;
+      currentVerticalSlide = 0;
+      appendMoreDutySlides(6);
+      container.scrollTop = 0;
     }
 
     function shiftTargetDate(offsetDays) {
@@ -1566,6 +1484,7 @@
       showToast('已回今日');
     }
 
+    /* ================= 水平與垂直手勢切換 ================= */
     const horizontalTrack = document.getElementById('horizontal-track');
     const verticalSnap = document.getElementById('vertical-snap');
     const hubVerticalSnap = document.getElementById('hub-vertical-snap');
@@ -1582,9 +1501,12 @@
       dotHub.className = pageIndex === 1 ? 'dot active-hub' : 'dot';
       dotBus.className = pageIndex === 2 ? 'dot active-bus' : 'dot';
 
-      if (pageIndex === 0) topLabel.textContent = '更表';
-      else if (pageIndex === 1) topLabel.textContent = '主頁';
-      else {
+      if (pageIndex === 0) {
+        topLabel.textContent = '更表';
+        scrollToShift(0, false);
+      } else if (pageIndex === 1) {
+        topLabel.textContent = '主頁';
+      } else {
         topLabel.textContent = '巴士';
         if (window.detectWatchAutoGroup) window.detectWatchAutoGroup();
         if (window.refreshWatchEtas) window.refreshWatchEtas(false);
@@ -1593,18 +1515,20 @@
 
     function cycleHorizontalPage() { goToPage((currentHorizontalPage + 1) % 3); }
 
-    function scrollToShift(slideIdx) {
+    function scrollToShift(slideIdx, smooth = true) {
+      while (slideIdx >= renderedDutyCardsCount - 2) {
+        appendMoreDutySlides(4);
+      }
       currentVerticalSlide = slideIdx;
-      verticalSnap.scrollTo({ top: slideIdx * verticalSnap.clientHeight, behavior: 'smooth' });
-      document.getElementById('v-dot-0').className = slideIdx === 0 ? 'v-dot on' : 'v-dot';
-      document.getElementById('v-dot-1').className = slideIdx === 1 ? 'v-dot on-blue' : 'v-dot';
+      verticalSnap.scrollTo({ top: slideIdx * verticalSnap.clientHeight, behavior: smooth ? 'smooth' : 'auto' });
     }
+
     verticalSnap.addEventListener('scroll', () => {
+      if (!verticalSnap.clientHeight) return;
       const idx = Math.round(verticalSnap.scrollTop / verticalSnap.clientHeight);
-      if (idx !== currentVerticalSlide) {
-        currentVerticalSlide = idx;
-        document.getElementById('v-dot-0').className = idx === 0 ? 'v-dot on' : 'v-dot';
-        document.getElementById('v-dot-1').className = idx === 1 ? 'v-dot on-blue' : 'v-dot';
+      currentVerticalSlide = idx;
+      if (idx >= renderedDutyCardsCount - 3) {
+        appendMoreDutySlides(4);
       }
     }, { passive: true });
 
@@ -1638,7 +1562,7 @@
       isSwiping = false;
       const dx = e.changedTouches[0].clientX - touchStartX;
       const dy = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+      if (Math.abs(dx) > 38 && Math.abs(dx) > Math.abs(dy) * 1.15) {
         if (currentHorizontalPage === 1) {
           goToPage(dx < 0 ? 2 : 0);
         } else if (currentHorizontalPage === 0 && dx < 0) {
@@ -1674,7 +1598,6 @@
       syncFromMainDutySystem(false);
       fetchLocationWeather(false);
       setInterval(() => fetchHkoWeatherWarnings(), 300000);
-      initBatteryMonitor();
       renderLoginQrCodes();
       renderHubCalendar();
       requestAnimationFrame(() => scrollHubSlide(1, false));
