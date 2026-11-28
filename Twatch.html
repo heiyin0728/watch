@@ -143,14 +143,44 @@
     }
     .w-val { font-size: clamp(24px, 13.5vw, 31px); font-weight: 900; line-height: 1; }
 
-    /* QR Code 卡片 */
+    /* ================= QR Code 卡片：自動偵測並輸出完整 1:1 正方形 ================= */
     .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
     .qr-card {
-      background: #FFFFFF; color: #000000; border-radius: 12px; padding: 6px 2px;
+      background: #FFFFFF; color: #000000; border-radius: 12px; padding: 6px 4px;
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      height: 100%; max-height: 265px;
+      height: 100%; max-height: 265px; overflow: hidden;
     }
-    .qr-card img { width: 92%; max-width: 122px; aspect-ratio: 1/1; image-rendering: pixelated; }
+    .qr-crop-square {
+      width: 92%;
+      max-width: 124px;
+      aspect-ratio: 1 / 1;
+      background: #FFFFFF;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-crop-square img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+    .qr-zoom-box {
+      width: 82%;
+      max-width: 225px;
+      aspect-ratio: 1 / 1;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-zoom-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
 
     /* 行事曆網格 */
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.05; }
@@ -264,7 +294,7 @@
         <section class="h-page" id="page-hub">
           <div id="hub-vertical-snap" class="v-snap no-scrollbar">
 
-            <!-- Slide 0 (向上滑動): 兩張登入 QR Code (Mail & CMS) -->
+            <!-- Slide 0 (向上滑動): 兩張純淨 1:1 正方形登入 QR Code (Mail & CMS) -->
             <div class="v-sec">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
                 <span style="font-size:17px;font-weight:900;color:#FFD60A;">🔐登入QR（點擊放大）</span>
@@ -272,12 +302,16 @@
               <div class="qr-grid">
                 <div onclick="openQrZoom('MAIL')" class="qr-card btn">
                   <div style="font-size:22px;font-weight:900;line-height:1;">Mail</div>
-                  <img id="qr-img-mail" alt="Mail QR" />
+                  <div class="qr-crop-square">
+                    <img id="qr-img-mail" alt="Mail QR" />
+                  </div>
                   <div style="font-size:13px;font-weight:900;color:#3F3F46;line-height:1;">點擊放大</div>
                 </div>
                 <div onclick="openQrZoom('CMS')" class="qr-card btn">
                   <div style="font-size:22px;font-weight:900;line-height:1;">CMS</div>
-                  <img id="qr-img-cms" alt="CMS QR" />
+                  <div class="qr-crop-square">
+                    <img id="qr-img-cms" alt="CMS QR" />
+                  </div>
                   <div style="font-size:13px;font-weight:900;color:#3F3F46;line-height:1;">點擊放大</div>
                 </div>
               </div>
@@ -395,10 +429,12 @@
         </section>
       </div>
 
-      <!-- QR CODE 全螢幕放大掃描視窗 -->
+      <!-- QR CODE 全螢幕放大掃描視窗（純淨 1:1 正方形） -->
       <div id="qr-zoom-modal" onclick="closeQrZoom()" class="qr-zoom">
-        <div id="qr-zoom-title" style="font-size:28px;font-weight:900;margin-bottom:4px;line-height:1;">Mail</div>
-        <img id="qr-zoom-img" alt="Zoom QR" style="width:88%;max-width:210px;aspect-ratio:1/1;image-rendering:pixelated;" />
+        <div id="qr-zoom-title" style="font-size:26px;font-weight:900;margin-bottom:6px;line-height:1;">Mail</div>
+        <div class="qr-zoom-box">
+          <img id="qr-zoom-img" alt="Zoom QR" />
+        </div>
         <div style="font-size:15px;font-weight:900;color:#3F3F46;margin-top:6px;">點擊關閉</div>
       </div>
 
@@ -745,8 +781,18 @@
     const IOS_CAL_STORAGE_KEY = 'qeh_watch_ios_cal_events_v1';
 
     const QR_PAYLOADS = {
-      MAIL: { title: 'Mail', text: 'https://mail.ha.org.hk' },
-      CMS: { title: 'CMS', text: 'https://cms.ha.org.hk' }
+      MAIL: {
+        title: 'Mail',
+        imgUrl: 'https://raw.githubusercontent.com/heiyin0728/watch/main/IMG_0336.jpeg',
+        roi: { x: 0.0, y: 0.0, w: 0.56, h: 1.0 },
+        croppedDataUrl: ''
+      },
+      CMS: {
+        title: 'CMS',
+        imgUrl: 'https://raw.githubusercontent.com/heiyin0728/watch/main/IMG_0335.jpeg',
+        roi: { x: 0.0, y: 0.36, w: 1.0, h: 0.64 },
+        croppedDataUrl: ''
+      }
     };
 
     const SHIFT_META = {
@@ -1105,18 +1151,99 @@
       );
     }
 
+    /* ================= QR Code 自動像素掃描裁切並還原 1:1 正方形 ================= */
+    function extractSquareQrDataUrl(img, roi) {
+      const nw = img.naturalWidth;
+      const nh = img.naturalHeight;
+      const sx = Math.floor(nw * roi.x);
+      const sy = Math.floor(nh * roi.y);
+      const sw = Math.floor(nw * roi.w);
+      const sh = Math.floor(nh * roi.h);
+
+      const scanCanvas = document.createElement('canvas');
+      scanCanvas.width = sw;
+      scanCanvas.height = sh;
+      const sCtx = scanCanvas.getContext('2d');
+      sCtx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      const pixels = sCtx.getImageData(0, 0, sw, sh).data;
+      let minX = sw, minY = sh, maxX = 0, maxY = 0;
+
+      for (let y = 0; y < sh; y++) {
+        for (let x = 0; x < sw; x++) {
+          const i = (y * sw + x) * 4;
+          const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+          if (brightness < 128) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+
+      if (maxX <= minX || maxY <= minY) {
+        minX = 0; minY = 0; maxX = sw - 1; maxY = sh - 1;
+      }
+
+      const rawW = maxX - minX + 1;
+      const rawH = maxY - minY + 1;
+      const side = Math.max(rawW, rawH);
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+
+      const pad = Math.round(side * 0.06);
+      const cropX = Math.max(0, Math.floor(cx - side / 2 - pad));
+      const cropY = Math.max(0, Math.floor(cy - side / 2 - pad));
+      const cropW = Math.min(sw - cropX, side + pad * 2);
+      const cropH = Math.min(sh - cropY, side + pad * 2);
+
+      const outSize = 440;
+      const quietZone = 28;
+      const drawSize = outSize - quietZone * 2;
+
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = outSize;
+      outCanvas.height = outSize;
+      const oCtx = outCanvas.getContext('2d');
+      oCtx.fillStyle = '#FFFFFF';
+      oCtx.fillRect(0, 0, outSize, outSize);
+      oCtx.imageSmoothingEnabled = false;
+      oCtx.drawImage(scanCanvas, cropX, cropY, cropW, cropH, quietZone, quietZone, drawSize, drawSize);
+
+      return outCanvas.toDataURL('image/png');
+    }
+
+    function processSingleQr(type, targetImgId) {
+      const item = QR_PAYLOADS[type];
+      const targetEl = document.getElementById(targetImgId);
+      if (!item || !targetEl) return;
+
+      const loader = new Image();
+      loader.crossOrigin = 'anonymous';
+      loader.onload = () => {
+        try {
+          item.croppedDataUrl = extractSquareQrDataUrl(loader, item.roi);
+          targetEl.src = item.croppedDataUrl;
+        } catch {
+          targetEl.src = item.imgUrl;
+        }
+      };
+      loader.src = item.imgUrl;
+    }
+
     function renderLoginQrCodes() {
-      const mailImg = document.getElementById('qr-img-mail');
-      const cmsImg = document.getElementById('qr-img-cms');
-      if (mailImg) mailImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(QR_PAYLOADS.MAIL.text)}`;
-      if (cmsImg) cmsImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(QR_PAYLOADS.CMS.text)}`;
+      processSingleQr('MAIL', 'qr-img-mail');
+      processSingleQr('CMS', 'qr-img-cms');
     }
 
     function openQrZoom(type) {
       const item = QR_PAYLOADS[type];
       if (!item) return;
       document.getElementById('qr-zoom-title').textContent = item.title;
-      document.getElementById('qr-zoom-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(item.text)}`;
+      const zoomImg = document.getElementById('qr-zoom-img');
+      zoomImg.className = '';
+      zoomImg.src = item.croppedDataUrl || item.imgUrl;
       document.getElementById('qr-zoom-modal').classList.add('show');
     }
     function closeQrZoom() { document.getElementById('qr-zoom-modal').classList.remove('show'); }
@@ -1305,60 +1432,149 @@
       renderHubCalendar();
     }
 
-    /* ================= 香港即時新聞模組（明報、東方日報、香港01、有線新聞、星島頭條、Yahoo） ================= */
+    /* ================= 香港即時新聞模組（官方 RSS 直連 + 多重 Proxy 備援） ================= */
     const NEWS_SOURCES = [
-      { id: 'ALL', label: '全部新聞', color: '#FFD60A', bg: 'rgba(255,214,10,0.18)', domain: '' },
-      { id: 'MINGPAO', label: '明報', color: '#64D2FF', bg: 'rgba(100,210,255,0.2)', domain: 'news.mingpao.com' },
-      { id: 'ONCC', label: '東方日報', color: '#FF453A', bg: 'rgba(255,69,58,0.2)', domain: 'orientaldaily.on.cc' },
-      { id: 'HK01', label: '香港01', color: '#30D158', bg: 'rgba(48,209,88,0.2)', domain: 'hk01.com' },
-      { id: 'ICABLE', label: '有線新聞', color: '#FF9F0A', bg: 'rgba(255,159,10,0.2)', domain: 'i-cable.com' },
-      { id: 'STHEADLINE', label: '星島頭條', color: '#BF5AF2', bg: 'rgba(191,90,242,0.2)', domain: 'stheadline.com' },
-      { id: 'YAHOO', label: 'Yahoo', color: '#DA8FFF', bg: 'rgba(218,143,255,0.2)', domain: 'hk.news.yahoo.com' }
+      {
+        id: 'ALL',
+        label: '全部新聞',
+        color: '#FFD60A',
+        bg: 'rgba(255,214,10,0.18)',
+        feeds: [
+          { url: 'https://news.mingpao.com/rss/ins/s00001.xml', media: '明報', color: '#64D2FF', bg: 'rgba(100,210,255,0.2)' },
+          { url: 'https://orientaldaily.on.cc/rss/news.xml', media: '東方日報', color: '#FF453A', bg: 'rgba(255,69,58,0.2)' },
+          { url: 'https://hk.news.yahoo.com/rss/hong-kong', media: 'Yahoo', color: '#DA8FFF', bg: 'rgba(218,143,255,0.2)' },
+          { url: 'https://news.google.com/rss/search?q=site:hk01.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '香港01', color: '#30D158', bg: 'rgba(48,209,88,0.2)' },
+          { url: 'https://news.google.com/rss/search?q=site:i-cable.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '有線新聞', color: '#FF9F0A', bg: 'rgba(255,159,10,0.2)' },
+          { url: 'https://news.google.com/rss/search?q=site:stheadline.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '星島頭條', color: '#BF5AF2', bg: 'rgba(191,90,242,0.2)' }
+        ]
+      },
+      {
+        id: 'MINGPAO',
+        label: '明報',
+        color: '#64D2FF',
+        bg: 'rgba(100,210,255,0.2)',
+        feeds: [
+          { url: 'https://news.mingpao.com/rss/ins/s00001.xml', media: '明報', color: '#64D2FF', bg: 'rgba(100,210,255,0.2)' },
+          { url: 'https://news.mingpao.com/rss/ins/s00004.xml', media: '明報', color: '#64D2FF', bg: 'rgba(100,210,255,0.2)' }
+        ]
+      },
+      {
+        id: 'ONCC',
+        label: '東方日報',
+        color: '#FF453A',
+        bg: 'rgba(255,69,58,0.2)',
+        feeds: [
+          { url: 'https://orientaldaily.on.cc/rss/news.xml', media: '東方日報', color: '#FF453A', bg: 'rgba(255,69,58,0.2)' }
+        ]
+      },
+      {
+        id: 'HK01',
+        label: '香港01',
+        color: '#30D158',
+        bg: 'rgba(48,209,88,0.2)',
+        feeds: [
+          { url: 'https://news.google.com/rss/search?q=site:hk01.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '香港01', color: '#30D158', bg: 'rgba(48,209,88,0.2)' }
+        ]
+      },
+      {
+        id: 'ICABLE',
+        label: '有線新聞',
+        color: '#FF9F0A',
+        bg: 'rgba(255,159,10,0.2)',
+        feeds: [
+          { url: 'https://news.google.com/rss/search?q=site:i-cable.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '有線新聞', color: '#FF9F0A', bg: 'rgba(255,159,10,0.2)' }
+        ]
+      },
+      {
+        id: 'STHEADLINE',
+        label: '星島頭條',
+        color: '#BF5AF2',
+        bg: 'rgba(191,90,242,0.2)',
+        feeds: [
+          { url: 'https://news.google.com/rss/search?q=site:stheadline.com&hl=zh-HK&gl=HK&ceid=HK:zh-Hant', media: '星島頭條', color: '#BF5AF2', bg: 'rgba(191,90,242,0.2)' }
+        ]
+      },
+      {
+        id: 'YAHOO',
+        label: 'Yahoo',
+        color: '#DA8FFF',
+        bg: 'rgba(218,143,255,0.2)',
+        feeds: [
+          { url: 'https://hk.news.yahoo.com/rss/hong-kong', media: 'Yahoo', color: '#DA8FFF', bg: 'rgba(218,143,255,0.2)' }
+        ]
+      }
     ];
 
     let activeNewsSourceIdx = 0;
     let cachedNewsItems = [];
     let isFetchingNews = false;
 
-    function detectMediaSource(rawSource, title, link) {
-      const combined = `${rawSource} ${title} ${link}`.toLowerCase();
-      if (combined.includes('明報') || combined.includes('mingpao')) return NEWS_SOURCES[1];
-      if (combined.includes('東方') || combined.includes('on.cc') || combined.includes('東網')) return NEWS_SOURCES[2];
-      if (combined.includes('香港01') || combined.includes('hk01')) return NEWS_SOURCES[3];
-      if (combined.includes('有線') || combined.includes('i-cable')) return NEWS_SOURCES[4];
-      if (combined.includes('星島') || combined.includes('stheadline')) return NEWS_SOURCES[5];
-      if (combined.includes('yahoo') || combined.includes('雅虎')) return NEWS_SOURCES[6];
-      return { id: 'OTHER', label: rawSource || '港聞', color: '#A1A1AA', bg: '#27272A' };
-    }
-
     function cleanNewsTitle(rawTitle) {
       return String(rawTitle || '')
+        .replace(/<!\[CDATA\[|\]\]>/g, '')
         .replace(/\s*[-–—|｜]\s*(明報新聞網|明報|東方日報|東網|香港01|有線新聞|有線寬頻|星島頭條|星島日報|Yahoo新聞|Yahoo 雅虎香港).*$/i, '')
         .trim();
     }
 
-    async function fetchSingleNewsFeed(sourceObj) {
-      const querySite = sourceObj.id === 'ALL'
-        ? '(site:news.mingpao.com OR site:orientaldaily.on.cc OR site:hk01.com OR site:i-cable.com OR site:stheadline.com OR site:hk.news.yahoo.com)'
-        : `site:${sourceObj.domain}`;
-      const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(querySite + ' when:1d')}&hl=zh-HK&gl=HK&ceid=HK:zh-Hant`;
-      const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+    function parseXmlRssItems(xmlText, feedMeta) {
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlText, 'text/xml');
+        const nodes = Array.from(doc.querySelectorAll('item'));
+        return nodes.slice(0, 12).map(node => {
+          const title = cleanNewsTitle(node.querySelector('title')?.textContent || '');
+          const link = (node.querySelector('link')?.textContent || '#').trim();
+          const pubStr = node.querySelector('pubDate')?.textContent || '';
+          const pubDate = pubStr ? new Date(pubStr).getTime() || 0 : 0;
+          return {
+            title,
+            link,
+            pubDate,
+            source: { label: feedMeta.media, color: feedMeta.color, bg: feedMeta.bg }
+          };
+        }).filter(x => x.title && x.title.length > 3);
+      } catch {
+        return [];
+      }
+    }
 
-      const res = await fetch(proxyUrl, { cache: 'no-store' });
-      const data = await res.json();
-      if (!data || data.status !== 'ok' || !Array.isArray(data.items)) return [];
+    async function fetchSingleFeedWithFallback(feedMeta) {
+      const targetUrl = feedMeta.url;
 
-      return data.items.map(item => {
-        const srcMeta = sourceObj.id === 'ALL'
-          ? detectMediaSource(item.author || '', item.title || '', item.link || '')
-          : sourceObj;
-        return {
-          title: cleanNewsTitle(item.title),
-          link: item.link || '#',
-          pubDate: item.pubDate ? new Date(item.pubDate).getTime() : 0,
-          source: srcMeta
-        };
-      }).filter(x => x.title);
+      try {
+        const res1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`, { cache: 'no-store' });
+        if (res1.ok) {
+          const text1 = await res1.text();
+          const parsed1 = parseXmlRssItems(text1, feedMeta);
+          if (parsed1.length > 0) return parsed1;
+        }
+      } catch {}
+
+      try {
+        const res2 = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, { cache: 'no-store' });
+        if (res2.ok) {
+          const text2 = await res2.text();
+          const parsed2 = parseXmlRssItems(text2, feedMeta);
+          if (parsed2.length > 0) return parsed2;
+        }
+      } catch {}
+
+      try {
+        const res3 = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetUrl)}`, { cache: 'no-store' });
+        if (res3.ok) {
+          const data3 = await res3.json();
+          if (data3 && data3.status === 'ok' && Array.isArray(data3.items)) {
+            return data3.items.slice(0, 12).map(item => ({
+              title: cleanNewsTitle(item.title),
+              link: item.link || '#',
+              pubDate: item.pubDate ? new Date(item.pubDate).getTime() || 0 : 0,
+              source: { label: feedMeta.media, color: feedMeta.color, bg: feedMeta.bg }
+            })).filter(x => x.title && x.title.length > 3);
+          }
+        }
+      } catch {}
+
+      return [];
     }
 
     async function fetchAllHongKongNews(manual = false) {
@@ -1369,27 +1585,27 @@
 
       const currentSrc = NEWS_SOURCES[activeNewsSourceIdx];
       try {
-        let items = await fetchSingleNewsFeed(currentSrc);
-        if (items.length === 0 && currentSrc.id !== 'ALL') {
-          items = await fetchSingleNewsFeed(NEWS_SOURCES[0]);
-        }
-        // 按發佈時間新至舊排序並去重標題
+        const results = await Promise.all(
+          currentSrc.feeds.map(feed => fetchSingleFeedWithFallback(feed))
+        );
+        const merged = results.flat();
+
         const seen = new Set();
-        cachedNewsItems = items
+        cachedNewsItems = merged
           .sort((a, b) => b.pubDate - a.pubDate)
           .filter(item => {
             if (seen.has(item.title)) return false;
             seen.add(item.title);
             return true;
           })
-          .slice(0, 30);
+          .slice(0, 35);
 
         const now = new Date();
         const hh = String(now.getHours()).padStart(2, '0');
         const mm = String(now.getMinutes()).padStart(2, '0');
         const timeEl = document.getElementById('news-update-time');
         if (timeEl) timeEl.textContent = `${hh}:${mm}`;
-        if (manual) showToast('新聞已更新');
+        if (manual) showToast(cachedNewsItems.length ? `已更新 ${cachedNewsItems.length} 則` : '連線逾時');
       } catch {
         if (manual) showToast('新聞連線失敗');
       } finally {
@@ -1413,7 +1629,7 @@
       const listEl = document.getElementById('hk-news-list');
       if (!listEl) return;
       if (!cachedNewsItems.length) {
-        listEl.innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:16px;font-weight:900;padding:24px 0;">暫無即時新聞</div>`;
+        listEl.innerHTML = `<div onclick="fetchAllHongKongNews(true)" class="btn" style="text-align:center;color:#FFD60A;font-size:16px;font-weight:900;padding:24px 0;">暫無資料 · 點擊重試</div>`;
         return;
       }
       listEl.innerHTML = cachedNewsItems.map(item => `
