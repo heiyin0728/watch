@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <title>QEH AED Watch 中控台 · 更表 · 九巴 ETA</title>
+  <title>QEH AED Watch 中控台 · 更表 · 九巴 ETA · 即時新聞</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation; }
     html, body {
@@ -159,6 +159,33 @@
     .cal-cell.today { background: #0A84FF; font-weight: 900; }
     .cal-cell.selected { background: rgba(48,209,88,0.28); border-color: #30D158; }
 
+    /* ================= 即時新聞頁面 ================= */
+    .news-topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 3px;
+      padding-bottom: 3px; border-bottom: 1px solid #27272A; margin-bottom: 3px; flex-shrink: 0;
+    }
+    .news-filter-btn {
+      background: #1C1C1E; color: #FFD60A; font-size: clamp(14px, 8vw, 17px); font-weight: 900;
+      padding: 2px 8px; border-radius: 99px; border: 1px solid #3F3F46;
+      max-width: 155px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .news-list {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px;
+    }
+    .news-item {
+      background: #121214; border: 1px solid #27272A; border-radius: 9px;
+      padding: 5px 6px; display: flex; flex-direction: column; gap: 2px;
+      text-decoration: none; color: #FFFFFF;
+    }
+    .news-source-tag {
+      display: inline-block; font-size: 11px; font-weight: 900; padding: 1px 5px;
+      border-radius: 4px; line-height: 1.1; align-self: flex-start;
+    }
+    .news-title-txt {
+      font-size: clamp(15px, 8.4vw, 18px); font-weight: 800; color: #FFFFFF;
+      line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
     /* ================= 更表名單：無限往下滑動 A -> P -> N -> A -> P -> N ================= */
     .duty-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; flex-shrink: 0; }
     .duty-subbar {
@@ -232,7 +259,7 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:時鐘氣象 / 下:行事曆)       -->
+        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:時鐘氣象 / 下:行事曆 / 再下:即時新聞) -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-hub">
           <div id="hub-vertical-snap" class="v-snap no-scrollbar">
@@ -318,12 +345,27 @@
               </div>
             </div>
 
+            <!-- Slide 3 (日程表再向下滑動): 香港即時新聞（只列標題） -->
+            <div class="v-sec">
+              <div class="news-topbar">
+                <button onclick="cycleNewsSource(1)" id="news-source-btn" class="news-filter-btn btn">‹全部新聞›</button>
+                <button onclick="fetchAllHongKongNews(true)" class="btn" style="display:flex;align-items:center;gap:3px;background:#1C1C1E;border:none;color:#FFFFFF;padding:2px 6px;border-radius:6px;font-size:13px;font-weight:900;">
+                  <span id="news-live-dot" class="live-dot"></span>
+                  <span id="news-update-time">--:--</span>
+                </button>
+              </div>
+              <div id="hk-news-list" class="news-list no-scrollbar">
+                <div style="text-align:center;color:#A1A1AA;font-size:16px;font-weight:900;padding:24px 0;">載入即時新聞...</div>
+              </div>
+            </div>
+
           </div>
 
           <div class="v-dots">
             <span id="hub-v-dot-0" class="v-dot"></span>
             <span id="hub-v-dot-1" class="v-dot on-blue"></span>
             <span id="hub-v-dot-2" class="v-dot"></span>
+            <span id="hub-v-dot-3" class="v-dot"></span>
           </div>
         </section>
 
@@ -522,12 +564,10 @@
     }
     window.detectWatchAutoGroup = detectWatchAutoGroup;
 
-    // 修正：避免 'auto' 未匹配地點時與 'all' 重複顯示兩頁「全部」
     function getWatchFilterModes() {
       const hasGeo = customGroups.some(g => g.lat && g.lng);
       const modes = [];
       if (hasGeo) modes.push('auto');
-      // 只有當沒有啟用 auto 或 auto 已匹配到特定地點分組時，才額外保留獨立的 'all' 頁
       if (!hasGeo || autoMatchedGroup) {
         modes.push('all');
       }
@@ -697,7 +737,7 @@
     });
   </script>
 
-  <!-- 完整 21 人更表引擎（無限 A->P->N 向下滑動）+ 中控主頁 + 行事曆 -->
+  <!-- 完整 21 人更表引擎（無限 A->P->N 向下滑動）+ 中控主頁 + 行事曆 + 香港即時新聞 -->
   <script>
     const ANCHOR_BASE_MONDAY = '2026-11-16';
     const MAIN_STORAGE_KEY = 'qeh_aed_duty_v26';
@@ -1265,6 +1305,125 @@
       renderHubCalendar();
     }
 
+    /* ================= 香港即時新聞模組（明報、東方日報、香港01、有線新聞、星島頭條、Yahoo） ================= */
+    const NEWS_SOURCES = [
+      { id: 'ALL', label: '全部新聞', color: '#FFD60A', bg: 'rgba(255,214,10,0.18)', domain: '' },
+      { id: 'MINGPAO', label: '明報', color: '#64D2FF', bg: 'rgba(100,210,255,0.2)', domain: 'news.mingpao.com' },
+      { id: 'ONCC', label: '東方日報', color: '#FF453A', bg: 'rgba(255,69,58,0.2)', domain: 'orientaldaily.on.cc' },
+      { id: 'HK01', label: '香港01', color: '#30D158', bg: 'rgba(48,209,88,0.2)', domain: 'hk01.com' },
+      { id: 'ICABLE', label: '有線新聞', color: '#FF9F0A', bg: 'rgba(255,159,10,0.2)', domain: 'i-cable.com' },
+      { id: 'STHEADLINE', label: '星島頭條', color: '#BF5AF2', bg: 'rgba(191,90,242,0.2)', domain: 'stheadline.com' },
+      { id: 'YAHOO', label: 'Yahoo', color: '#DA8FFF', bg: 'rgba(218,143,255,0.2)', domain: 'hk.news.yahoo.com' }
+    ];
+
+    let activeNewsSourceIdx = 0;
+    let cachedNewsItems = [];
+    let isFetchingNews = false;
+
+    function detectMediaSource(rawSource, title, link) {
+      const combined = `${rawSource} ${title} ${link}`.toLowerCase();
+      if (combined.includes('明報') || combined.includes('mingpao')) return NEWS_SOURCES[1];
+      if (combined.includes('東方') || combined.includes('on.cc') || combined.includes('東網')) return NEWS_SOURCES[2];
+      if (combined.includes('香港01') || combined.includes('hk01')) return NEWS_SOURCES[3];
+      if (combined.includes('有線') || combined.includes('i-cable')) return NEWS_SOURCES[4];
+      if (combined.includes('星島') || combined.includes('stheadline')) return NEWS_SOURCES[5];
+      if (combined.includes('yahoo') || combined.includes('雅虎')) return NEWS_SOURCES[6];
+      return { id: 'OTHER', label: rawSource || '港聞', color: '#A1A1AA', bg: '#27272A' };
+    }
+
+    function cleanNewsTitle(rawTitle) {
+      return String(rawTitle || '')
+        .replace(/\s*[-–—|｜]\s*(明報新聞網|明報|東方日報|東網|香港01|有線新聞|有線寬頻|星島頭條|星島日報|Yahoo新聞|Yahoo 雅虎香港).*$/i, '')
+        .trim();
+    }
+
+    async function fetchSingleNewsFeed(sourceObj) {
+      const querySite = sourceObj.id === 'ALL'
+        ? '(site:news.mingpao.com OR site:orientaldaily.on.cc OR site:hk01.com OR site:i-cable.com OR site:stheadline.com OR site:hk.news.yahoo.com)'
+        : `site:${sourceObj.domain}`;
+      const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(querySite + ' when:1d')}&hl=zh-HK&gl=HK&ceid=HK:zh-Hant`;
+      const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
+      const data = await res.json();
+      if (!data || data.status !== 'ok' || !Array.isArray(data.items)) return [];
+
+      return data.items.map(item => {
+        const srcMeta = sourceObj.id === 'ALL'
+          ? detectMediaSource(item.author || '', item.title || '', item.link || '')
+          : sourceObj;
+        return {
+          title: cleanNewsTitle(item.title),
+          link: item.link || '#',
+          pubDate: item.pubDate ? new Date(item.pubDate).getTime() : 0,
+          source: srcMeta
+        };
+      }).filter(x => x.title);
+    }
+
+    async function fetchAllHongKongNews(manual = false) {
+      if (isFetchingNews) return;
+      isFetchingNews = true;
+      const dot = document.getElementById('news-live-dot');
+      if (dot) dot.style.background = '#FFD60A';
+
+      const currentSrc = NEWS_SOURCES[activeNewsSourceIdx];
+      try {
+        let items = await fetchSingleNewsFeed(currentSrc);
+        if (items.length === 0 && currentSrc.id !== 'ALL') {
+          items = await fetchSingleNewsFeed(NEWS_SOURCES[0]);
+        }
+        // 按發佈時間新至舊排序並去重標題
+        const seen = new Set();
+        cachedNewsItems = items
+          .sort((a, b) => b.pubDate - a.pubDate)
+          .filter(item => {
+            if (seen.has(item.title)) return false;
+            seen.add(item.title);
+            return true;
+          })
+          .slice(0, 30);
+
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const timeEl = document.getElementById('news-update-time');
+        if (timeEl) timeEl.textContent = `${hh}:${mm}`;
+        if (manual) showToast('新聞已更新');
+      } catch {
+        if (manual) showToast('新聞連線失敗');
+      } finally {
+        if (dot) dot.style.background = '#30D158';
+        isFetchingNews = false;
+        renderNewsList();
+      }
+    }
+
+    function cycleNewsSource(step = 1) {
+      activeNewsSourceIdx = (activeNewsSourceIdx + step + NEWS_SOURCES.length) % NEWS_SOURCES.length;
+      const src = NEWS_SOURCES[activeNewsSourceIdx];
+      const btn = document.getElementById('news-source-btn');
+      btn.textContent = `‹${src.label}›`;
+      btn.style.color = src.color;
+      document.getElementById('hk-news-list').innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:16px;font-weight:900;padding:24px 0;">載入${src.label}...</div>`;
+      fetchAllHongKongNews(false);
+    }
+
+    function renderNewsList() {
+      const listEl = document.getElementById('hk-news-list');
+      if (!listEl) return;
+      if (!cachedNewsItems.length) {
+        listEl.innerHTML = `<div style="text-align:center;color:#A1A1AA;font-size:16px;font-weight:900;padding:24px 0;">暫無即時新聞</div>`;
+        return;
+      }
+      listEl.innerHTML = cachedNewsItems.map(item => `
+        <a href="${escapeHtmlDuty(item.link)}" target="_blank" rel="noopener" class="news-item btn">
+          <span class="news-source-tag" style="color:${item.source.color};background:${item.source.bg};">${escapeHtmlDuty(item.source.label)}</span>
+          <div class="news-title-txt">${escapeHtmlDuty(item.title)}</div>
+        </a>
+      `).join('');
+    }
+
     /* ================= 更表同步與無限向下滑動 (A -> P -> N -> A -> P -> N) ================= */
     async function syncFromMainDutySystem(showFeedback = false) {
       let sourceLabel = '內置循環';
@@ -1505,7 +1664,7 @@
         topLabel.textContent = '更表';
         scrollToShift(0, false);
       } else if (pageIndex === 1) {
-        topLabel.textContent = '主頁';
+        topLabel.textContent = currentHubSlide === 3 ? '新聞' : '主頁';
       } else {
         topLabel.textContent = '巴士';
         if (window.detectWatchAutoGroup) window.detectWatchAutoGroup();
@@ -1532,22 +1691,31 @@
       }
     }, { passive: true });
 
-    function scrollHubSlide(slideIdx, smooth = true) {
-      currentHubSlide = slideIdx;
-      hubVerticalSnap.scrollTo({ top: slideIdx * hubVerticalSnap.clientHeight, behavior: smooth ? 'smooth' : 'auto' });
-      [0, 1, 2].forEach(i => {
+    function updateHubDots(slideIdx) {
+      [0, 1, 2, 3].forEach(i => {
         const el = document.getElementById(`hub-v-dot-${i}`);
         if (el) el.className = i === slideIdx ? 'v-dot on-blue' : 'v-dot';
       });
+      if (currentHorizontalPage === 1) {
+        const labels = ['QR碼', '主頁', '日程', '新聞'];
+        document.getElementById('top-page-label').textContent = labels[slideIdx] || '主頁';
+      }
+    }
+
+    function scrollHubSlide(slideIdx, smooth = true) {
+      currentHubSlide = slideIdx;
+      hubVerticalSnap.scrollTo({ top: slideIdx * hubVerticalSnap.clientHeight, behavior: smooth ? 'smooth' : 'auto' });
+      updateHubDots(slideIdx);
     }
     hubVerticalSnap.addEventListener('scroll', () => {
+      if (!hubVerticalSnap.clientHeight) return;
       const idx = Math.round(hubVerticalSnap.scrollTop / hubVerticalSnap.clientHeight);
       if (idx !== currentHubSlide) {
         currentHubSlide = idx;
-        [0, 1, 2].forEach(i => {
-          const el = document.getElementById(`hub-v-dot-${i}`);
-          if (el) el.className = i === idx ? 'v-dot on-blue' : 'v-dot';
-        });
+        updateHubDots(idx);
+        if (idx === 3 && cachedNewsItems.length === 0) {
+          fetchAllHongKongNews(false);
+        }
       }
     }, { passive: true });
 
@@ -1600,6 +1768,8 @@
       setInterval(() => fetchHkoWeatherWarnings(), 300000);
       renderLoginQrCodes();
       renderHubCalendar();
+      fetchAllHongKongNews(false);
+      setInterval(() => fetchAllHongKongNews(false), 300000);
       requestAnimationFrame(() => scrollHubSlide(1, false));
     });
   </script>
