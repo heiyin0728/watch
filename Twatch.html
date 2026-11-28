@@ -124,7 +124,8 @@
       border-radius: 6px; flex-shrink: 0; line-height: 1.1;
     }
 
-    .weather-box { padding: 6px 5px; border-color: rgba(100, 210, 255, 0.45); }
+    /* 天氣區塊：五項數據（溫度 / 濕度 / 風向 / 風力 / 氣壓） */
+    .weather-box { padding: 6px 4px; border-color: rgba(100, 210, 255, 0.45); }
     .weather-top {
       display: flex; align-items: center; justify-content: space-between; gap: 3px;
       font-size: clamp(15px, 8.2vw, 18px); font-weight: 900; margin-bottom: 5px; line-height: 1.05;
@@ -136,12 +137,14 @@
       font-size: clamp(13px, 7.5vw, 16px); font-weight: 900;
     }
     .warn-pill.alert { background: #FF3B30; color: #FFFFFF; border-color: #FF6961; }
-    .w-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; text-align: center; }
+    .w-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; text-align: center; }
     .w-cell {
-      background: #000000; border: 1px solid #262629; border-radius: 8px;
-      padding: 8px 1px; display: flex; align-items: center; justify-content: center;
+      background: #000000; border: 1px solid #262629; border-radius: 7px;
+      padding: 6px 1px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      min-width: 0;
     }
-    .w-val { font-size: clamp(24px, 13.5vw, 31px); font-weight: 900; line-height: 1; }
+    .w-lbl { font-size: clamp(10px, 5.2vw, 11px); font-weight: 800; color: #A1A1AA; line-height: 1; }
+    .w-val { font-size: clamp(14px, 7.6vw, 18px); font-weight: 900; line-height: 1.05; white-space: nowrap; }
 
     /* ================= QR Code 卡片：自動偵測並輸出完整 1:1 正方形 ================= */
     .qr-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: center; }
@@ -182,12 +185,12 @@
       image-rendering: pixelated;
     }
 
-    /* 行事曆網格 */
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.05; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center; flex-shrink: 0; }
-    .cal-cell { background: #141416; border-radius: 5px; padding: 1px 0; display: flex; flex-direction: column; align-items: center; color: #FFFFFF; border: 1px solid transparent; }
+    /* 行事曆網格（滿版月曆） */
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 14px; font-weight: 900; color: #D4D4D8; line-height: 1.1; margin-bottom: 2px; flex-shrink: 0; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; flex: 1; }
+    .cal-cell { background: #141416; border-radius: 6px; padding: 2px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FFFFFF; border: 1.5px solid transparent; }
     .cal-cell.today { background: #0A84FF; font-weight: 900; }
-    .cal-cell.selected { background: rgba(48,209,88,0.28); border-color: #30D158; }
+    .cal-cell.selected { background: rgba(48,209,88,0.32); border-color: #30D158; }
 
     /* ================= 即時新聞頁面 ================= */
     .news-topbar {
@@ -289,7 +292,7 @@
         </section>
 
         <!-- ============================================================== -->
-        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:時鐘氣象 / 下:行事曆 / 再下:即時新聞) -->
+        <!-- PAGE 1 (中): 中控主頁 (上:QR碼 / 中:時鐘氣象 / 下:月曆 / 下:行程 / 下:新聞) -->
         <!-- ============================================================== -->
         <section class="h-page" id="page-hub">
           <div id="hub-vertical-snap" class="v-snap no-scrollbar">
@@ -317,24 +320,24 @@
               </div>
             </div>
 
-            <!-- Slide 1 (預設主畫面): 日期(左) · 時間(中) · 星期(右) 同一行 -->
+            <!-- Slide 1 (預設主畫面): 日期(左) · 時間(中) · 星期(右) + 農曆 + 五項氣象 -->
             <div class="v-sec" style="justify-content:space-evenly;gap:4px;">
               <div class="oled-box">
                 <div class="date-time-row tabular">
                   <div class="side-date-box">
                     <span onclick="shiftHubDate(-1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">◀</span>
-                    <span id="hub-gregorian-date">11/26</span>
+                    <span id="hub-gregorian-date">11/28</span>
                   </div>
                   <div id="hub-live-time" class="clock-center">--:--<span class="clock-sec">:--</span></div>
                   <div class="side-week-box">
-                    <span id="hub-weekday">週四</span>
+                    <span id="hub-weekday">週六</span>
                     <span onclick="shiftHubDate(1)" class="btn" style="color:#A1A1AA;padding:2px 2px;">▶</span>
                   </div>
                 </div>
               </div>
 
               <div class="oled-box lunar-box">
-                <span id="hub-lunar-date" class="lunar-txt">丙午(馬)十月十八</span>
+                <span id="hub-lunar-date" class="lunar-txt">丙午(馬)十月二十</span>
                 <span id="hub-festival-badge" class="fest-pill" style="background:#27272A;color:#FFFFFF;">平日</span>
               </div>
 
@@ -343,20 +346,37 @@
                   <span id="hub-weather-loc" style="color:#64D2FF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">📍定位</span>
                   <span id="hub-weather-warning" class="warn-pill">無警告</span>
                 </div>
-                <div class="w-grid tabular">
-                  <div class="w-cell"><div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div></div>
-                  <div class="w-cell"><div id="hub-weather-rain" class="w-val" style="color:#64D2FF;">--</div></div>
-                  <div class="w-cell"><div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div></div>
+                <div class="w-grid-5 tabular">
+                  <div class="w-cell">
+                    <span class="w-lbl">溫度</span>
+                    <div id="hub-weather-temp" class="w-val" style="color:#FFFFFF;">--°</div>
+                  </div>
+                  <div class="w-cell">
+                    <span class="w-lbl">濕度</span>
+                    <div id="hub-weather-humid" class="w-val" style="color:#64D2FF;">--%</div>
+                  </div>
+                  <div class="w-cell">
+                    <span class="w-lbl">風向</span>
+                    <div id="hub-weather-wdir" class="w-val" style="color:#FFD60A;">--</div>
+                  </div>
+                  <div class="w-cell">
+                    <span class="w-lbl">風力</span>
+                    <div id="hub-weather-wind" class="w-val" style="color:#30D158;">--級</div>
+                  </div>
+                  <div class="w-cell">
+                    <span class="w-lbl">氣壓</span>
+                    <div id="hub-weather-press" class="w-val" style="color:#DA8FFF;">----</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Slide 2 (向下滑動): 行事曆 + iOS 日曆匯入當日行程 -->
+            <!-- Slide 2 (向下滑動): 月曆獨立頁（點擊日期高亮並跳轉至行程頁） -->
             <div class="v-sec">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;flex-shrink:0;">
                 <div style="display:flex;align-items:center;gap:2px;">
                   <button onclick="changeCalendarMonth(-1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">◀</button>
-                  <span id="cal-month-title" style="font-size:16px;font-weight:900;">2026/12</span>
+                  <span id="cal-month-title" style="font-size:16px;font-weight:900;">2026/11</span>
                   <button onclick="changeCalendarMonth(1)" class="btn" style="background:#1C1C1E;color:#FFF;border:none;border-radius:6px;padding:1px 6px;font-size:15px;font-weight:900;">▶</button>
                 </div>
                 <div style="display:flex;align-items:center;gap:3px;">
@@ -370,16 +390,20 @@
                 <span style="color:#FF453A;">日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span style="color:#64D2FF;">六</span>
               </div>
               <div id="hub-calendar-grid" class="cal-grid"></div>
+            </div>
 
-              <div class="oled-box no-scrollbar" style="flex:1;margin-top:3px;padding:3px 5px;overflow-y:auto;">
-                <div style="font-size:14px;font-weight:900;color:#30D158;margin-bottom:2px;line-height:1.1;">
-                  <span id="cal-selected-duty">12-14 更：--</span>
-                </div>
-                <div id="cal-day-events" style="display:flex;flex-direction:column;gap:3px;font-size:15px;"></div>
+            <!-- Slide 3: 選定日期的當日行程頁（向上滑回月曆頁即取消高亮） -->
+            <div class="v-sec">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-shrink:0;">
+                <span id="cal-selected-duty" style="font-size:16px;font-weight:900;color:#30D158;">11-28 更：--</span>
+                <button onclick="scrollHubSlide(2)" class="btn" style="background:#1C1C1E;color:#64D2FF;border:1px solid #3F3F46;border-radius:99px;padding:1px 8px;font-size:13px;font-weight:900;">▲月曆</button>
+              </div>
+              <div class="oled-box no-scrollbar" style="flex:1;padding:6px;overflow-y:auto;">
+                <div id="cal-day-events" style="display:flex;flex-direction:column;gap:5px;font-size:15px;"></div>
               </div>
             </div>
 
-            <!-- Slide 3 (日程表再向下滑動): 香港即時新聞（只列標題） -->
+            <!-- Slide 4: 香港即時新聞（每 5 分鐘自動更新） -->
             <div class="v-sec">
               <div class="news-topbar">
                 <button onclick="cycleNewsSource(1)" id="news-source-btn" class="news-filter-btn btn">‹全部新聞›</button>
@@ -400,6 +424,7 @@
             <span id="hub-v-dot-1" class="v-dot on-blue"></span>
             <span id="hub-v-dot-2" class="v-dot"></span>
             <span id="hub-v-dot-3" class="v-dot"></span>
+            <span id="hub-v-dot-4" class="v-dot"></span>
           </div>
         </section>
 
@@ -773,7 +798,7 @@
     });
   </script>
 
-  <!-- 完整 21 人更表引擎（無限 A->P->N 向下滑動）+ 中控主頁 + 行事曆 + 香港即時新聞 -->
+  <!-- 完整 21 人更表引擎（無限 A->P->N 向下滑動）+ 中控主頁 + 行事曆分頁 + 香港即時新聞 -->
   <script>
     const ANCHOR_BASE_MONDAY = '2026-11-16';
     const MAIN_STORAGE_KEY = 'qeh_aed_duty_v26';
@@ -982,6 +1007,7 @@
     let manualShiftOverride = 'AUTO';
     let targetDateStr = formatLocalDate(new Date());
     let calendarViewDate = new Date();
+    let calendarHighlightedDate = ''; /* 空字串表示月曆目前無高亮日期 */
     let currentHorizontalPage = 1;
     let currentVerticalSlide = 0;
     let currentHubSlide = 1;
@@ -1040,7 +1066,7 @@
         const dy = CN_DAYS[lunarDayNum] || (map.day ? `${map.day}日` : '');
         lunarText = `${ganzhi}${zodiac ? `(${zodiac})` : ''}${mo}${dy}`;
       } catch {
-        lunarText = '丙午(馬)十月十八';
+        lunarText = '丙午(馬)十月二十';
       }
 
       const gMonth = dateObj.getMonth() + 1, gDay = dateObj.getDate();
@@ -1097,6 +1123,13 @@
       return '9+級';
     }
 
+    function getWindDirectionText(deg) {
+      if (deg === undefined || deg === null || isNaN(deg)) return '--';
+      const dirs = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
+      const idx = Math.round(((deg % 360) + 360) % 360 / 45) % 8;
+      return dirs[idx];
+    }
+
     async function fetchHkoWeatherWarnings() {
       const warnEl = document.getElementById('hub-weather-warning');
       if (!warnEl) return;
@@ -1123,18 +1156,23 @@
 
       const loadByCoords = async (lat, lng, label) => {
         try {
-          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,precipitation,wind_speed_10m&timezone=Asia%2FHong_Kong`;
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,wind_direction_10m,wind_speed_10m,surface_pressure&timezone=Asia%2FHong_Kong`;
           const res = await fetch(url, { cache: 'no-store' });
           const data = await res.json();
           const cur = data.current || {};
           const temp = cur.temperature_2m !== undefined ? `${Math.round(cur.temperature_2m)}°` : '--°';
-          const rain = cur.precipitation !== undefined ? `${Number(cur.precipitation).toFixed(1)}` : '0.0';
+          const humid = cur.relative_humidity_2m !== undefined ? `${Math.round(cur.relative_humidity_2m)}%` : '--%';
+          const wdir = getWindDirectionText(cur.wind_direction_10m);
           const windKmh = Number(cur.wind_speed_10m || 0);
+          const press = cur.surface_pressure !== undefined ? `${Math.round(cur.surface_pressure)}` : '----';
+
           document.getElementById('hub-weather-loc').textContent = `📍${label}`;
           document.getElementById('hub-weather-temp').textContent = temp;
-          document.getElementById('hub-weather-rain').textContent = rain;
+          document.getElementById('hub-weather-humid').textContent = humid;
+          document.getElementById('hub-weather-wdir').textContent = wdir;
           document.getElementById('hub-weather-wind').textContent = getBeaufortScale(windKmh);
-          if (manual) showToast(`${temp} · ${rain}`);
+          document.getElementById('hub-weather-press').textContent = press;
+          if (manual) showToast(`${temp} · ${humid} · ${press}hPa`);
         } catch {
           if (locEl) locEl.textContent = '⚠️失敗';
         }
@@ -1370,43 +1408,45 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const isToday = dStr === todayStr;
-        const isSelected = dStr === targetDateStr;
+        const isSelected = Boolean(calendarHighlightedDate) && dStr === calendarHighlightedDate;
         const duty = getMyDutyCodeForDate(dStr);
         const hasEvent = Array.isArray(iosCalendarEvents[dStr]) && iosCalendarEvents[dStr].length > 0;
         const isOff = duty === 'O' || duty === 'WO' || duty === 'AL' || duty === 'SH';
 
         let cls = 'cal-cell btn';
-        if (isToday) cls += ' today';
-        else if (isSelected) cls += ' selected';
+        if (isSelected) cls += ' selected';
+        else if (isToday) cls += ' today';
 
-        const dutyColor = isToday ? '#FFF' : (isOff ? '#FFD60A' : '#30D158');
+        const dutyColor = (isToday && !isSelected) ? '#FFF' : (isOff ? '#FFD60A' : '#30D158');
         const dotHtml = hasEvent ? `<span style="width:5px;height:5px;border-radius:99px;background:#FF453A;display:inline-block;margin-left:1px;"></span>` : '';
 
         cells.push(`
           <button onclick="selectCalendarDate('${dStr}')" class="${cls}">
-            <span style="font-size:14px;line-height:1.05;font-weight:900;display:flex;align-items:center;">${d}${dotHtml}</span>
+            <span style="font-size:15px;line-height:1.05;font-weight:900;display:flex;align-items:center;">${d}${dotHtml}</span>
             <span style="font-size:11px;line-height:1;color:${dutyColor};font-weight:900;">${duty || '-'}</span>
           </button>
         `);
       }
 
       document.getElementById('hub-calendar-grid').innerHTML = cells.join('');
-      const selDuty = getMyDutyCodeForDate(targetDateStr);
-      document.getElementById('cal-selected-duty').textContent = `${targetDateStr.slice(5)} 更：${selDuty || '無'}`;
+
+      const activeEventDate = calendarHighlightedDate || targetDateStr;
+      const selDuty = getMyDutyCodeForDate(activeEventDate);
+      document.getElementById('cal-selected-duty').textContent = `${activeEventDate.slice(5)} 更：${selDuty || '無'}`;
 
       const eventsBox = document.getElementById('cal-day-events');
-      const dayEvents = iosCalendarEvents[targetDateStr] || [];
+      const dayEvents = iosCalendarEvents[activeEventDate] || [];
       if (dayEvents.length === 0) {
-        eventsBox.innerHTML = `<div style="color:#A1A1AA;font-size:14px;font-weight:800;">無行程</div>`;
+        eventsBox.innerHTML = `<div style="color:#A1A1AA;font-size:15px;font-weight:800;text-align:center;padding:24px 0;">當日無行程</div>`;
       } else {
         eventsBox.innerHTML = dayEvents.map(ev => {
           const isAllDay = ev.time === '全日';
           const borderCol = isAllDay ? '#0A84FF' : '#FF453A';
           const timeCol = isAllDay ? '#64D2FF' : '#FFD60A';
           return `
-            <div style="display:flex;align-items:center;gap:4px;background:#000;border-radius:6px;padding:3px 5px;border-left:3px solid ${borderCol};">
-              <span class="tabular" style="font-size:13px;font-weight:900;color:${timeCol};flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
-              <span style="font-size:14px;font-weight:900;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtmlDuty(ev.title)}</span>
+            <div style="display:flex;align-items:center;gap:5px;background:#000;border-radius:7px;padding:5px 6px;border-left:3px solid ${borderCol};">
+              <span class="tabular" style="font-size:14px;font-weight:900;color:${timeCol};flex-shrink:0;">${escapeHtmlDuty(ev.time)}</span>
+              <span style="font-size:15px;font-weight:900;color:#FFF;line-height:1.25;">${escapeHtmlDuty(ev.title)}</span>
             </div>
           `;
         }).join('');
@@ -1415,24 +1455,30 @@
 
     function changeCalendarMonth(delta) {
       calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+      calendarHighlightedDate = '';
       renderHubCalendar();
     }
     function resetCalendarToToday() {
       const now = new Date();
       targetDateStr = formatLocalDate(now);
       calendarViewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      calendarHighlightedDate = targetDateStr;
       updateHubClockAndDate();
       renderDutyViews();
       renderHubCalendar();
+      scrollHubSlide(3, true);
     }
     function selectCalendarDate(dateStr) {
       targetDateStr = dateStr;
+      calendarHighlightedDate = dateStr;
       updateHubClockAndDate();
       renderDutyViews();
       renderHubCalendar();
+      /* 點擊日期後自動切換至當日行程頁 (Slide 3) */
+      scrollHubSlide(3, true);
     }
 
-    /* ================= 香港即時新聞模組（官方 RSS 直連 + 多重 Proxy 備援） ================= */
+    /* ================= 香港即時新聞模組（每 5 分鐘自動更新） ================= */
     const NEWS_SOURCES = [
       {
         id: 'ALL',
@@ -1640,7 +1686,7 @@
       `).join('');
     }
 
-    /* ================= 更表同步與無限向下滑動 (A -> P -> N -> A -> P -> N) ================= */
+    /* ================= 更表同步與無限向下滑動 (9-6 及 11-8 同時列入 A 更與 P 更) ================= */
     async function syncFromMainDutySystem(showFeedback = false) {
       let sourceLabel = '內置循環';
       try {
@@ -1714,9 +1760,10 @@
       for (const item of list) {
         const raw = item.code;
         if (raw.startsWith('[') && raw.endsWith(']')) continue;
+        /* 9-6 與 11-8 同時在 A 更及 P 更顯示 */
         if (shiftCode === 'A' && ['Aa','Ac','Ad','Ae','9-6','9/5','11-8','11/8'].includes(raw)) {
           result.push({ name: item.name, code: raw, order: POST_ORDERS[raw] || 99 });
-        } else if (shiftCode === 'P' && ['Pa','Ec','Pe','Ed','Pu','11-8','11/8'].includes(raw)) {
+        } else if (shiftCode === 'P' && ['Pa','Ec','Pe','Ed','Pu','9-6','9/5','11-8','11/8'].includes(raw)) {
           result.push({ name: item.name, code: raw, order: POST_ORDERS[raw] || 99 });
         }
       }
@@ -1880,7 +1927,8 @@
         topLabel.textContent = '更表';
         scrollToShift(0, false);
       } else if (pageIndex === 1) {
-        topLabel.textContent = currentHubSlide === 3 ? '新聞' : '主頁';
+        const labels = ['QR碼', '主頁', '月曆', '行程', '新聞'];
+        topLabel.textContent = labels[currentHubSlide] || '主頁';
       } else {
         topLabel.textContent = '巴士';
         if (window.detectWatchAutoGroup) window.detectWatchAutoGroup();
@@ -1908,12 +1956,12 @@
     }, { passive: true });
 
     function updateHubDots(slideIdx) {
-      [0, 1, 2, 3].forEach(i => {
+      [0, 1, 2, 3, 4].forEach(i => {
         const el = document.getElementById(`hub-v-dot-${i}`);
         if (el) el.className = i === slideIdx ? 'v-dot on-blue' : 'v-dot';
       });
       if (currentHorizontalPage === 1) {
-        const labels = ['QR碼', '主頁', '日程', '新聞'];
+        const labels = ['QR碼', '主頁', '月曆', '行程', '新聞'];
         document.getElementById('top-page-label').textContent = labels[slideIdx] || '主頁';
       }
     }
@@ -1923,13 +1971,29 @@
       hubVerticalSnap.scrollTo({ top: slideIdx * hubVerticalSnap.clientHeight, behavior: smooth ? 'smooth' : 'auto' });
       updateHubDots(slideIdx);
     }
+
+    let prevHubSlide = 1;
     hubVerticalSnap.addEventListener('scroll', () => {
       if (!hubVerticalSnap.clientHeight) return;
       const idx = Math.round(hubVerticalSnap.scrollTop / hubVerticalSnap.clientHeight);
       if (idx !== currentHubSlide) {
+        prevHubSlide = currentHubSlide;
         currentHubSlide = idx;
+
+        /* 規則：從行程頁 (3) 滑回月曆頁 (2) 時，取消月曆高亮 */
+        if (prevHubSlide === 3 && idx === 2 && calendarHighlightedDate) {
+          calendarHighlightedDate = '';
+          renderHubCalendar();
+        }
+
+        /* 規則：在月曆頁 (2) 沒有高亮任何日期時，繼續向下滑動直接跳過行程頁進入新聞頁 (4) */
+        if (prevHubSlide === 2 && idx === 3 && !calendarHighlightedDate) {
+          scrollHubSlide(4, true);
+          return;
+        }
+
         updateHubDots(idx);
-        if (idx === 3 && cachedNewsItems.length === 0) {
+        if (idx === 4 && cachedNewsItems.length === 0) {
           fetchAllHongKongNews(false);
         }
       }
